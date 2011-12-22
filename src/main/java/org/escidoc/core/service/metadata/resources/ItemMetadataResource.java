@@ -6,7 +6,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 @Path("metadata")
-public class ItemMetadata {
+public class ItemMetadataResource {
+
+  @GET
+  @Produces("text/plain")
+  public String getAsText() {
+    return "Ok";
+  }
 
   @GET
   @Produces("application/xml")
