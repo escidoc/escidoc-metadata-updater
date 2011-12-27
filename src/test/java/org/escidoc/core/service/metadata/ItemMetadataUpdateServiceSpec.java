@@ -1,4 +1,4 @@
-package org.escidoc.core.service.metada;
+package org.escidoc.core.service.metadata;
 
 public interface ItemMetadataUpdateServiceSpec {
 
@@ -6,13 +6,11 @@ public interface ItemMetadataUpdateServiceSpec {
 
   void shouldReturn404ForNonExistingMetadata();
 
-  void shouldReturn200ForExistingItem();
-
-  void shouldGetEscidocMetadata();
+  void shouldReturn200ForExistingItemAndMetadata();
 
   void shouldUpdateEscidocMetadata();
 
   void shouldNotUpdateMetadataIfInConfict();
 
-  void shouldReturn200ForExistingMetadata();
+  void shouldGetEscidocMetadata();
 }

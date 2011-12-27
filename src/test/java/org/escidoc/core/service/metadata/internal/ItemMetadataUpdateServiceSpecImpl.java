@@ -1,4 +1,4 @@
-package org.escidoc.core.service.metada;
+package org.escidoc.core.service.metadata.internal;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -6,6 +6,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import static org.junit.Assert.assertEquals;
 
+import org.escidoc.core.service.metadata.ItemMetadataUpdateServiceSpec;
 import org.escidoc.core.service.metadata.Server;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.AfterClass;
@@ -37,7 +38,7 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
 
   private static final String NON_EXISTING_ITEM_ID = null;
 
-  private static final String NON_EXISTING_METADATA_NAME = "not-exist";
+  private static final String NON_EXISTING_METADATA_NAME = null;
 
   private static final String EXISTING_ITEM_ID = "escidoc:test";
 
@@ -75,9 +76,7 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
   public void shouldReturn200forHelloWorld() throws Exception {
     final ClientResponse response = resource.path("helloworld").accept("text/plain").get(
         ClientResponse.class);
-    final int status = response.getStatus();
-
-    assertEquals("response is not equals", 200, status);
+    assertEquals("response is not equals", 200, response.getStatus());
   }
 
   @Test
@@ -85,16 +84,16 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
   public void shouldGetEscidocMetadata() {
     final ClientResponse r = resource.path("items/" + ITEM_ID + "/metadata/" + METADATA_NAME).accept(
         MediaType.TEXT_PLAIN).get(ClientResponse.class);
-    final int s = r.getStatus();
-
-    assertEquals("response is not equals", 200, s);
+    assertEquals("response is not equals", 200, r.getStatus());
   }
 
+  @Test
   @Override
   public void shouldUpdateEscidocMetadata() {
     throw new UnsupportedOperationException("not-yet-implemented.");
   }
 
+  @Test
   @Override
   public void shouldNotUpdateMetadataIfInConfict() {
     throw new UnsupportedOperationException("not-yet-implemented.");
@@ -106,8 +105,7 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
     final ClientResponse r = resource.path(
         "items/" + NON_EXISTING_ITEM_ID + "/metadata/" + METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(
         ClientResponse.class);
-    final int s = r.getStatus();
-    assertEquals("response is not equals", 404, s);
+    assertEquals("response is not equals", 404, r.getStatus());
   }
 
   @Test
@@ -116,28 +114,18 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
     final ClientResponse r = resource.path(
         "items/" + EXISTING_ITEM_ID + "/metadata/" + NON_EXISTING_METADATA_NAME).accept(
         MediaType.TEXT_PLAIN).get(ClientResponse.class);
-    final int s = r.getStatus();
-    assertEquals("response is not equals", 404, s);
+    assertEquals("response is not equals", 404, r.getStatus());
   }
 
   @Test
   @Override
-  public void shouldReturn200ForExistingItem() {
-    final ClientResponse r = resource.path(
-        "items/" + EXISTING_ITEM_ID + "/metadata/" + NON_EXISTING_METADATA_NAME).accept(
-        MediaType.TEXT_PLAIN).get(ClientResponse.class);
-    final int s = r.getStatus();
-    assertEquals("response is not equals", 200, s);
-  }
-
-  @Test
-  @Override
-  public void shouldReturn200ForExistingMetadata() {
+  public void shouldReturn200ForExistingItemAndMetadata() {
     final ClientResponse r = resource.path(
         "items/" + EXISTING_ITEM_ID + "/metadata/" + EXISTING_METADATA_NAME).accept(
         MediaType.TEXT_PLAIN).get(ClientResponse.class);
-    final int s = r.getStatus();
-    assertEquals("response is not equals", 200, s);
-    throw new UnsupportedOperationException("not yet implemented");
+    final String e = r.getEntity(String.class);
+    LOG.debug(e);
+
+    assertEquals("response is not equals", 200, r.getStatus());
   }
 }
