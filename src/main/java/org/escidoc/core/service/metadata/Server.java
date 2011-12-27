@@ -31,5 +31,4 @@ public class Server {
     final ResourceConfig config = new PackagesResourceConfig(RESOURCE_PACKAGE);
     return GrizzlyServerFactory.createHttpServer(BASE_URI, config);
   }
-
 }

@@ -31,13 +31,17 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
 
   private static final String SYSADMIN_PASSWORD = "eSciDoc";
 
-  private static final String ITEM_ID = null;
+  private static final String ITEM_ID = "escidoc:139";
 
   private static final String METADATA_NAME = null;
 
   private static final String NON_EXISTING_ITEM_ID = null;
 
-  private static final String NON_EXISTING_METADATA_NAME = null;
+  private static final String NON_EXISTING_METADATA_NAME = "not-exist";
+
+  private static final String EXISTING_ITEM_ID = "escidoc:test";
+
+  private static final String EXISTING_METADATA_NAME = "escidoc";
 
   private String userHandle;
 
@@ -110,9 +114,30 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
   @Override
   public void shouldReturn404ForNonExistingMetadata() {
     final ClientResponse r = resource.path(
-        "items/" + NON_EXISTING_ITEM_ID + "/metadata/" + NON_EXISTING_METADATA_NAME).accept(
+        "items/" + EXISTING_ITEM_ID + "/metadata/" + NON_EXISTING_METADATA_NAME).accept(
         MediaType.TEXT_PLAIN).get(ClientResponse.class);
     final int s = r.getStatus();
     assertEquals("response is not equals", 404, s);
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200ForExistingItem() {
+    final ClientResponse r = resource.path(
+        "items/" + EXISTING_ITEM_ID + "/metadata/" + NON_EXISTING_METADATA_NAME).accept(
+        MediaType.TEXT_PLAIN).get(ClientResponse.class);
+    final int s = r.getStatus();
+    assertEquals("response is not equals", 200, s);
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200ForExistingMetadata() {
+    final ClientResponse r = resource.path(
+        "items/" + EXISTING_ITEM_ID + "/metadata/" + EXISTING_METADATA_NAME).accept(
+        MediaType.TEXT_PLAIN).get(ClientResponse.class);
+    final int s = r.getStatus();
+    assertEquals("response is not equals", 200, s);
+    throw new UnsupportedOperationException("not yet implemented");
   }
 }
