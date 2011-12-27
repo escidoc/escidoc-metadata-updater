@@ -44,6 +44,8 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
 
   private static final String EXISTING_METADATA_NAME = "escidoc";
 
+  private static final String EMPTY_METADATA = "empty";
+
   private String userHandle;
 
   private Client client;
@@ -115,6 +117,18 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
         "items/" + EXISTING_ITEM_ID + "/metadata/" + NON_EXISTING_METADATA_NAME).accept(
         MediaType.TEXT_PLAIN).get(ClientResponse.class);
     assertEquals("response is not equals", 404, r.getStatus());
+  }
+
+  @Test
+  @Override
+  public void shouldReturn204ForMetadataWithNoContent() {
+    final ClientResponse r = resource.path(
+        "items/" + EXISTING_ITEM_ID + "/metadata/" + EMPTY_METADATA).accept(MediaType.TEXT_PLAIN).get(
+        ClientResponse.class);
+    final String e = r.getEntity(String.class);
+    LOG.debug(e);
+
+    assertEquals("response is not equals", 204, r.getStatus());
   }
 
   @Test

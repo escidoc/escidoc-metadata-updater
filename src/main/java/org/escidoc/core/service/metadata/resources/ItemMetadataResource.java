@@ -16,6 +16,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -44,7 +46,8 @@ public class ItemMetadataResource {
     Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
     Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
 
-    final String msg = "Get a request for item with the id: " + itemId + " metadata name: " + metadataName;
+    final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
+        + metadataName;
     LOG.debug(msg);
 
     final Item item = fetchItem(itemId);
@@ -62,7 +65,12 @@ public class ItemMetadataResource {
       throw new WebApplicationException(404);
     }
 
-    return asString(metadataName, mr);
+    final String asString = asString(metadataName, mr);
+    // FIXME:!!!
+    if (asString.isEmpty()) {
+      return Response.status(Status.NO_CONTENT).build().toString();
+    }
+    return asString;
   }
 
   private static String asString(final String name, final MetadataRecord mr) {

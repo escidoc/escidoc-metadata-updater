@@ -13,4 +13,6 @@ public interface ItemMetadataUpdateServiceSpec {
   void shouldNotUpdateMetadataIfInConfict();
 
   void shouldGetEscidocMetadata();
+
+  void shouldReturn204ForMetadataWithNoContent();
 }
