@@ -2,6 +2,8 @@ package org.escidoc.core.service.metadata.resources;
 
 import com.google.common.base.Preconditions;
 
+import com.sun.jersey.api.NotFoundException;
+
 import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.escidoc.core.service.metadata.repository.internal.InMemoryItemRepository;
 import org.slf4j.Logger;
@@ -57,17 +59,17 @@ public class ItemMetadataResource {
 
     final Item item = fetchItem(itemId);
     if (item == null) {
-      throw new WebApplicationException(404);
+      throw new NotFoundException("Item, " + itemId + ", is not found.");
     }
 
     final MetadataRecords mrList = item.getMetadataRecords();
     if (mrList == null || mrList.isEmpty()) {
-      throw new WebApplicationException(404);
+      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
     }
 
     final MetadataRecord mr = mrList.get(metadataName);
     if (mr == null) {
-      throw new WebApplicationException(404);
+      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
     }
 
     final String asString = asString(metadataName, mr);
