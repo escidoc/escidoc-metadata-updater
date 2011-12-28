@@ -142,4 +142,15 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
 
     assertEquals("response is not equals", 200, r.getStatus());
   }
+
+  @Test
+  @Override
+  public void shouldReturn400ForMissingServerParameter() {
+    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
+        EXISTING_METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+    final String e = r.getEntity(String.class);
+    LOG.debug(e);
+
+    assertEquals("response is not equals", 400, r.getStatus());
+  }
 }

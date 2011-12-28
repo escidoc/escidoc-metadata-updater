@@ -15,6 +15,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -42,13 +43,17 @@ public class ItemMetadataResource {
   @GET
   @Produces("text/plain")
   public String getAsText(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName) {
+      @PathParam("metadata-name") final String metadataName,
+      @QueryParam("eu") final String escidocUri) {
     Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
     Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
 
     final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
-        + metadataName;
+        + metadataName + ", server uri: " + escidocUri;
     LOG.debug(msg);
+    if (escidocUri == null || escidocUri.isEmpty()) {
+      throw new WebApplicationException(400);
+    }
 
     final Item item = fetchItem(itemId);
     if (item == null) {

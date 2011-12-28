@@ -15,4 +15,6 @@ public interface ItemMetadataUpdateServiceSpec {
   void shouldGetEscidocMetadata();
 
   void shouldReturn204ForMetadataWithNoContent();
+
+  void shouldReturn400ForMissingServerParameter();
 }
