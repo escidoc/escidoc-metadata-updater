@@ -16,11 +16,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-
 import javax.ws.rs.core.MediaType;
-
-import de.escidoc.core.client.Authentication;
 
 public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServiceSpec {
 
@@ -46,8 +42,6 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
 
   private static final String EMPTY_METADATA = "empty";
 
-  private String userHandle;
-
   private Client client;
 
   private WebResource resource;
@@ -69,12 +63,14 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
     client = Client.create();
     resource = client.resource(Server.BASE_URI);
 
-    final Authentication authentication = new Authentication(new URL(SERVICE_URL), SYSADMIN,
-        SYSADMIN_PASSWORD);
-    userHandle = authentication.getHandle();
+    // final Authentication authentication = new Authentication(new
+    // URL(SERVICE_URL), SYSADMIN,
+    // SYSADMIN_PASSWORD);
+    // final String userHandle = authentication.getHandle();
   }
 
   @Test
+  @Override
   public void shouldReturn200forHelloWorld() throws Exception {
     final ClientResponse response = resource.path("helloworld").accept("text/plain").get(
         ClientResponse.class);
@@ -133,6 +129,17 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
 
   @Test
   @Override
+  public void shouldReturn400ForMissingServerParameter() {
+    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
+        EXISTING_METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+    final String e = r.getEntity(String.class);
+    LOG.debug(e);
+
+    assertEquals("response is not equals", 400, r.getStatus());
+  }
+
+  @Test
+  @Override
   public void shouldReturn200ForExistingItemAndMetadata() {
     final ClientResponse r = resource.path(
         "items/" + EXISTING_ITEM_ID + "/metadata/" + EXISTING_METADATA_NAME).accept(
@@ -141,16 +148,5 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
     LOG.debug(e);
 
     assertEquals("response is not equals", 200, r.getStatus());
-  }
-
-  @Test
-  @Override
-  public void shouldReturn400ForMissingServerParameter() {
-    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
-        EXISTING_METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
-    final String e = r.getEntity(String.class);
-    LOG.debug(e);
-
-    assertEquals("response is not equals", 400, r.getStatus());
   }
 }

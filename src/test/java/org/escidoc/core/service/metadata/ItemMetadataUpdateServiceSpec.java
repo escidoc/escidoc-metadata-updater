@@ -17,4 +17,6 @@ public interface ItemMetadataUpdateServiceSpec {
   void shouldReturn204ForMetadataWithNoContent();
 
   void shouldReturn400ForMissingServerParameter();
+
+  void shouldReturn200forHelloWorld() throws Exception;
 }

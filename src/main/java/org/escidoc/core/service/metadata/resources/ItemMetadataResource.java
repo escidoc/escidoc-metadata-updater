@@ -54,7 +54,7 @@ public class ItemMetadataResource {
         + metadataName + ", server uri: " + escidocUri;
     LOG.debug(msg);
     if (escidocUri == null || escidocUri.isEmpty()) {
-      throw new WebApplicationException(400);
+
     }
 
     final Item item = fetchItem(itemId);

@@ -7,7 +7,7 @@ A client should be able to fetch and update metadata of an eSciDoc (item) resour
 === URI ===
 
 GET/PUT
-http://{hostname}:{port}/metadata-updater/items/{item-id}/metadata/{metadata-name}
+http://{hostname}:{port}/metadata-updater/items/{item-id}/metadata/{metadata-name}?eu={http://hostname:port}
 [1]
 Accept: Content-Type: application/xml
 Produces: Content-Type: application/xml
