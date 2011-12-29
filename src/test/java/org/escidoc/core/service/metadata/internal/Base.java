@@ -55,4 +55,8 @@ public class Base {
     // SYSADMIN_PASSWORD);
     // final String userHandle = authentication.getHandle();
   }
+
+  public void shouldReturn200forHelloWorldXml() throws Exception {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
 }

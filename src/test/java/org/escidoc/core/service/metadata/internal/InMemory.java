@@ -18,9 +18,32 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
   @Test
   @Override
   public void shouldReturn200forHelloWorld() throws Exception {
-    final ClientResponse response = resource.path("helloworld").accept("text/plain").get(
-        ClientResponse.class);
+    // @formatter:off
+    final ClientResponse response = resource
+        .path("helloworld")
+        .accept(MediaType.TEXT_PLAIN)
+        .get(ClientResponse.class);
+    
+	   // @formatter:on
     assertEquals("response is not equals", 200, response.getStatus());
+    final String entity = response.getEntity(String.class);
+    LOG.debug("Got: " + entity);
+    assertEquals("Entity is not equals. ", "OK", entity);
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200forHelloWorldXml() throws Exception {
+    //@formatter:off
+    final ClientResponse response = resource
+        .path("helloworld")
+        .accept(MediaType.APPLICATION_XML)
+        .get(ClientResponse.class);
+    //@formatter:on
+    assertEquals("response is not equals", 200, response.getStatus());
+    final String entity = response.getEntity(String.class);
+    LOG.debug("Got: " + entity);
+    assertEquals("Entity is not equals. ", "<OK/>", entity);
   }
 
   @Test
