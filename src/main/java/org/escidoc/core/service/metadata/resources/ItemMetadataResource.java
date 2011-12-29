@@ -44,7 +44,7 @@ public class ItemMetadataResource {
 
   @GET
   @Produces("text/plain")
-  public String getAsText(@PathParam("item-id") final String itemId,
+  public Response getAsText(@PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName,
       @QueryParam("eu") final String escidocUri) {
     Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
@@ -54,7 +54,7 @@ public class ItemMetadataResource {
         + metadataName + ", server uri: " + escidocUri;
     LOG.debug(msg);
     if (escidocUri == null || escidocUri.isEmpty()) {
-
+      throw new WebApplicationException(400);
     }
 
     final Item item = fetchItem(itemId);
@@ -75,9 +75,9 @@ public class ItemMetadataResource {
     final String asString = asString(metadataName, mr);
     // FIXME:!!!
     if (asString.isEmpty()) {
-      return Response.status(Status.NO_CONTENT).build().toString();
+      return Response.status(Status.NO_CONTENT).build();
     }
-    return asString;
+    return Response.ok(asString).build();
   }
 
   private static String asString(final String name, final MetadataRecord mr) {

@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
 
-public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServiceSpec {
+public class InMemory implements ItemMetadataUpdateServiceSpec {
 
-  private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataUpdateServiceSpecImpl.class);
+  private final static Logger LOG = LoggerFactory.getLogger(InMemory.class);
 
   private static final String SERVICE_URL = "http://esfedrep1.fiz-karlsruhe.de:8080/";
 
@@ -30,11 +30,9 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
 
   private static final String ITEM_ID = "escidoc:139";
 
-  private static final String METADATA_NAME = null;
+  private static final String NON_EXISTING_ITEM_ID = "not-exists";
 
-  private static final String NON_EXISTING_ITEM_ID = null;
-
-  private static final String NON_EXISTING_METADATA_NAME = null;
+  private static final String NON_EXISTING_METADATA_NAME = "not-exists";
 
   private static final String EXISTING_ITEM_ID = "escidoc:test";
 
@@ -80,8 +78,9 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
   @Test
   @Override
   public void shouldGetEscidocMetadata() {
-    final ClientResponse r = resource.path("items/" + ITEM_ID + "/metadata/" + METADATA_NAME).accept(
-        MediaType.TEXT_PLAIN).get(ClientResponse.class);
+    final ClientResponse r = resource.path(
+        "items/" + ITEM_ID + "/metadata/" + EXISTING_METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(
+        ClientResponse.class);
     assertEquals("response is not equals", 200, r.getStatus());
   }
 
@@ -100,8 +99,8 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
   @Test
   @Override
   public void shouldReturn404ForNonExistingItem() {
-    final ClientResponse r = resource.path(
-        "items/" + NON_EXISTING_ITEM_ID + "/metadata/" + METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(
+    final ClientResponse r = resource.path("items").path(NON_EXISTING_ITEM_ID).path("metadata").path(
+        EXISTING_METADATA_NAME).queryParam("eu", SERVICE_URL).accept(MediaType.TEXT_PLAIN).get(
         ClientResponse.class);
     assertEquals("response is not equals", 404, r.getStatus());
   }
@@ -109,21 +108,17 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
   @Test
   @Override
   public void shouldReturn404ForNonExistingMetadata() {
-    final ClientResponse r = resource.path(
-        "items/" + EXISTING_ITEM_ID + "/metadata/" + NON_EXISTING_METADATA_NAME).accept(
-        MediaType.TEXT_PLAIN).get(ClientResponse.class);
+
+    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
+        NON_EXISTING_METADATA_NAME).queryParam("eu", SERVICE_URL).get(ClientResponse.class);
     assertEquals("response is not equals", 404, r.getStatus());
   }
 
   @Test
   @Override
   public void shouldReturn204ForMetadataWithNoContent() {
-    final ClientResponse r = resource.path(
-        "items/" + EXISTING_ITEM_ID + "/metadata/" + EMPTY_METADATA).accept(MediaType.TEXT_PLAIN).get(
-        ClientResponse.class);
-    final String e = r.getEntity(String.class);
-    LOG.debug(e);
-
+    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
+        EMPTY_METADATA).queryParam("eu", SERVICE_URL).get(ClientResponse.class);
     assertEquals("response is not equals", 204, r.getStatus());
   }
 
@@ -141,12 +136,18 @@ public class ItemMetadataUpdateServiceSpecImpl implements ItemMetadataUpdateServ
   @Test
   @Override
   public void shouldReturn200ForExistingItemAndMetadata() {
-    final ClientResponse r = resource.path(
-        "items/" + EXISTING_ITEM_ID + "/metadata/" + EXISTING_METADATA_NAME).accept(
-        MediaType.TEXT_PLAIN).get(ClientResponse.class);
-    final String e = r.getEntity(String.class);
-    LOG.debug(e);
+    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
+        EXISTING_METADATA_NAME).queryParam("eu", SERVICE_URL).get(ClientResponse.class);
 
     assertEquals("response is not equals", 200, r.getStatus());
+  }
+
+  @Test
+  @Override
+  public void shouldReturnXmlForMEtadata() {
+    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
+        EXISTING_METADATA_NAME).queryParam("eu", SERVICE_URL).accept(MediaType.APPLICATION_XML).get(
+        ClientResponse.class);
+    throw new UnsupportedOperationException("not-yet-implemented.");
   }
 }
