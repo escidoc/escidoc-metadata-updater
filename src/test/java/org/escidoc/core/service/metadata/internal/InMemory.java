@@ -1,71 +1,19 @@
 package org.escidoc.core.service.metadata.internal;
 
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 import static org.junit.Assert.assertEquals;
 
 import org.escidoc.core.service.metadata.ItemMetadataUpdateServiceSpec;
-import org.escidoc.core.service.metadata.Server;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
 
-public class InMemory implements ItemMetadataUpdateServiceSpec {
+public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
 
   private final static Logger LOG = LoggerFactory.getLogger(InMemory.class);
-
-  private static final String SERVICE_URL = "http://esfedrep1.fiz-karlsruhe.de:8080/";
-
-  private static final String SYSADMIN = "sysadmin";
-
-  private static final String SYSADMIN_PASSWORD = "eSciDoc";
-
-  private static final String ITEM_ID = "escidoc:139";
-
-  private static final String NON_EXISTING_ITEM_ID = "not-exists";
-
-  private static final String NON_EXISTING_METADATA_NAME = "not-exists";
-
-  private static final String EXISTING_ITEM_ID = "escidoc:test";
-
-  private static final String EXISTING_METADATA_NAME = "escidoc";
-
-  private static final String EMPTY_METADATA = "empty";
-
-  private Client client;
-
-  private WebResource resource;
-
-  private static HttpServer server;
-
-  @BeforeClass
-  public static void start() throws Exception {
-    server = Server.start();
-  }
-
-  @AfterClass
-  public static void shutdown() throws Exception {
-    server.stop();
-  }
-
-  @Before
-  public void setup() throws Exception {
-    client = Client.create();
-    resource = client.resource(Server.BASE_URI);
-
-    // final Authentication authentication = new Authentication(new
-    // URL(SERVICE_URL), SYSADMIN,
-    // SYSADMIN_PASSWORD);
-    // final String userHandle = authentication.getHandle();
-  }
 
   @Test
   @Override
@@ -73,15 +21,6 @@ public class InMemory implements ItemMetadataUpdateServiceSpec {
     final ClientResponse response = resource.path("helloworld").accept("text/plain").get(
         ClientResponse.class);
     assertEquals("response is not equals", 200, response.getStatus());
-  }
-
-  @Test
-  @Override
-  public void shouldGetEscidocMetadata() {
-    final ClientResponse r = resource.path(
-        "items/" + ITEM_ID + "/metadata/" + EXISTING_METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(
-        ClientResponse.class);
-    assertEquals("response is not equals", 200, r.getStatus());
   }
 
   @Test
@@ -144,7 +83,7 @@ public class InMemory implements ItemMetadataUpdateServiceSpec {
 
   @Test
   @Override
-  public void shouldReturnXmlForMEtadata() {
+  public void shouldReturnXmlForMetadata() {
     final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
         EXISTING_METADATA_NAME).queryParam("eu", SERVICE_URL).accept(MediaType.APPLICATION_XML).get(
         ClientResponse.class);

@@ -2,23 +2,21 @@ package org.escidoc.core.service.metadata;
 
 public interface ItemMetadataUpdateServiceSpec {
 
-  void shouldReturn404ForNonExistingItem();
+  void shouldReturn404ForNonExistingItem() throws Exception;
 
-  void shouldReturn404ForNonExistingMetadata();
+  void shouldReturn404ForNonExistingMetadata() throws Exception;
 
-  void shouldReturn200ForExistingItemAndMetadata();
+  void shouldReturn200ForExistingItemAndMetadata() throws Exception;
 
-  void shouldUpdateEscidocMetadata();
+  void shouldUpdateEscidocMetadata() throws Exception;
 
-  void shouldNotUpdateMetadataIfInConfict();
+  void shouldNotUpdateMetadataIfInConfict() throws Exception;
 
-  void shouldGetEscidocMetadata();
+  void shouldReturn204ForMetadataWithNoContent() throws Exception;
 
-  void shouldReturn204ForMetadataWithNoContent();
-
-  void shouldReturn400ForMissingServerParameter();
+  void shouldReturn400ForMissingServerParameter() throws Exception;
 
   void shouldReturn200forHelloWorld() throws Exception;
 
-  void shouldReturnXmlForMEtadata();
+  void shouldReturnXmlForMetadata() throws Exception;
 }
