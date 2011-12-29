@@ -5,10 +5,11 @@ import com.google.common.base.Preconditions;
 import com.sun.jersey.api.NotFoundException;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
-import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
+import org.escidoc.core.service.metadata.repository.internal.InMemoryItemRepository;
 import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -39,9 +40,9 @@ public class ItemMetadataResource {
   private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
 
   // FIXME configure this using Guice
-  // private final ItemRepository ir = new InMemoryItemRepository();
+  private final ItemRepository ir = new InMemoryItemRepository();
 
-  private final ItemRepository ir = new ItemRepositoryImpl();
+  // private final ItemRepository ir = new ItemRepositoryImpl();
 
   @GET
   @Produces(MediaType.TEXT_PLAIN)
@@ -83,7 +84,7 @@ public class ItemMetadataResource {
 
   @GET
   @Produces(MediaType.APPLICATION_XML)
-  public DOMSource getAsXml(@PathParam("item-id") final String itemId,
+  public Response getAsXml(@PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName,
       @QueryParam("eu") final String escidocUri) {
     Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
@@ -92,6 +93,7 @@ public class ItemMetadataResource {
     final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
         + metadataName + ", server uri: " + escidocUri;
     LOG.debug(msg);
+
     if (escidocUri == null || escidocUri.isEmpty()) {
       throw new WebApplicationException(400);
     }
@@ -111,7 +113,12 @@ public class ItemMetadataResource {
       throw new NotFoundException("Metadata, " + metadataName + ", is not found");
     }
 
-    return new DOMSource(mr.getContent());
+    final Element content = mr.getContent();
+    if (content == null) {
+      return Response.status(Status.NO_CONTENT).build();
+    }
+
+    return Response.ok(new DOMSource(mr.getContent())).build();
   }
 
   private Item fetchItem(final String itemId, final String s) {
