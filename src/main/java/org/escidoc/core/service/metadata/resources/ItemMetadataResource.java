@@ -6,11 +6,9 @@ import com.sun.jersey.api.NotFoundException;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.escidoc.core.service.metadata.repository.internal.InMemoryItemRepository;
+import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-
-import java.io.StringWriter;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -19,15 +17,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
@@ -43,7 +36,7 @@ public class ItemMetadataResource {
   private final ItemRepository ir = new InMemoryItemRepository();
 
   @GET
-  @Produces("text/plain")
+  @Produces(MediaType.TEXT_PLAIN)
   public Response getAsText(@PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName,
       @QueryParam("eu") final String escidocUri) {
@@ -72,42 +65,59 @@ public class ItemMetadataResource {
       throw new NotFoundException("Metadata, " + metadataName + ", is not found");
     }
 
-    final String asString = asString(metadataName, mr);
-    // FIXME:!!!
+    final String asString = Utils.asString(mr);
     if (asString.isEmpty()) {
       return Response.status(Status.NO_CONTENT).build();
     }
     return Response.ok(asString).build();
   }
 
-  private static String asString(final String name, final MetadataRecord mr) {
-    final Element node = mr.getContent();
-    final TransformerFactory transFactory = TransformerFactory.newInstance();
-    Transformer transformer;
-    try {
-      transformer = transFactory.newTransformer();
-      final StringWriter buffer = new StringWriter();
-      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-      transformer.transform(new DOMSource(node), new StreamResult(buffer));
-      final String str = buffer.toString();
-      LOG.debug("The content of metadata with the name " + name + " is: " + str);
-      return str;
-    } catch (final TransformerConfigurationException e) {
-      throw new WebApplicationException(500);
-    } catch (final TransformerException e) {
-      throw new WebApplicationException(500);
+  @GET
+  @Produces(MediaType.APPLICATION_XML)
+  public DOMSource getAsXml(@PathParam("item-id") final String itemId,
+      @PathParam("metadata-name") final String metadataName,
+      @QueryParam("eu") final String escidocUri) {
+    Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
+    Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
+
+    final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
+        + metadataName + ", server uri: " + escidocUri;
+    LOG.debug(msg);
+    if (escidocUri == null || escidocUri.isEmpty()) {
+      throw new WebApplicationException(400);
     }
+
+    final Item item = fetchItem(itemId);
+    if (item == null) {
+      throw new NotFoundException("Item, " + itemId + ", is not found.");
+    }
+
+    final MetadataRecords mrList = item.getMetadataRecords();
+    if (mrList == null || mrList.isEmpty()) {
+      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
+    }
+
+    final MetadataRecord mr = mrList.get(metadataName);
+    if (mr == null) {
+      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
+    }
+
+    return new DOMSource(mr.getContent());
   }
 
   private Item fetchItem(final String itemId) {
     try {
       return ir.find(itemId);
     } catch (final EscidocException e) {
-      throw new WebApplicationException(404);
+      // FIXME map the true exception.
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
-      throw new WebApplicationException(404);
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final TransportException e) {
-      throw new WebApplicationException(404);
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
 

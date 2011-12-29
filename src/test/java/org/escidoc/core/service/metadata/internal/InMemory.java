@@ -98,8 +98,15 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
   @Test
   @Override
   public void shouldReturn200ForExistingItemAndMetadata() {
-    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
-        EXISTING_METADATA_NAME).queryParam("eu", SERVICE_URL).get(ClientResponse.class);
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path(EXISTING_ITEM_ID)
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .get(ClientResponse.class);
+	   // @formatter:on
 
     assertEquals("response is not equals", 200, r.getStatus());
   }
@@ -107,9 +114,18 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
   @Test
   @Override
   public void shouldReturnXmlForMetadata() {
-    final ClientResponse r = resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(
-        EXISTING_METADATA_NAME).queryParam("eu", SERVICE_URL).accept(MediaType.APPLICATION_XML).get(
-        ClientResponse.class);
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    // @formatter:off
+	    final ClientResponse r = resource
+	        .path("items")
+	        .path(EXISTING_ITEM_ID)
+	        .path("metadata")
+	        .path(EXISTING_METADATA_NAME)
+          .queryParam("eu", SERVICE_URL)
+          .accept(MediaType.APPLICATION_XML)
+          .get(ClientResponse.class);
+	   // @formatter:on
+    assertEquals("response is not equals", 200, r.getStatus());
+
+    LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
   }
 }
