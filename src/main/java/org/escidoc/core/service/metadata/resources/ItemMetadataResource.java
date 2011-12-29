@@ -5,10 +5,14 @@ import com.google.common.base.Preconditions;
 import com.sun.jersey.api.NotFoundException;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
-import org.escidoc.core.service.metadata.repository.internal.InMemoryItemRepository;
+import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
 import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -33,7 +37,11 @@ import de.escidoc.core.resources.om.item.Item;
 public class ItemMetadataResource {
 
   private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
-  private final ItemRepository ir = new InMemoryItemRepository();
+
+  // FIXME configure this using Guice
+  // private final ItemRepository ir = new InMemoryItemRepository();
+
+  private final ItemRepository ir = new ItemRepositoryImpl();
 
   @GET
   @Produces(MediaType.TEXT_PLAIN)
@@ -46,11 +54,12 @@ public class ItemMetadataResource {
     final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
         + metadataName + ", server uri: " + escidocUri;
     LOG.debug(msg);
+
     if (escidocUri == null || escidocUri.isEmpty()) {
       throw new WebApplicationException(400);
     }
 
-    final Item item = fetchItem(itemId);
+    final Item item = fetchItem(itemId, escidocUri);
     if (item == null) {
       throw new NotFoundException("Item, " + itemId + ", is not found.");
     }
@@ -87,7 +96,7 @@ public class ItemMetadataResource {
       throw new WebApplicationException(400);
     }
 
-    final Item item = fetchItem(itemId);
+    final Item item = fetchItem(itemId, escidocUri);
     if (item == null) {
       throw new NotFoundException("Item, " + itemId + ", is not found.");
     }
@@ -105,9 +114,9 @@ public class ItemMetadataResource {
     return new DOMSource(mr.getContent());
   }
 
-  private Item fetchItem(final String itemId) {
+  private Item fetchItem(final String itemId, final String s) {
     try {
-      return ir.find(itemId);
+      return ir.find(itemId, new URI(s));
     } catch (final EscidocException e) {
       // FIXME map the true exception.
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
@@ -116,6 +125,12 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final TransportException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final MalformedURLException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final URISyntaxException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }

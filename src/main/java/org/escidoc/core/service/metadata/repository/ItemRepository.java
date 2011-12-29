@@ -1,5 +1,8 @@
 package org.escidoc.core.service.metadata.repository;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
@@ -9,4 +12,6 @@ public interface ItemRepository {
 
   Item find(String itemId) throws EscidocException, InternalClientException, TransportException;
 
+  Item find(String itemId, URI serviceUri) throws EscidocException, InternalClientException,
+      TransportException, MalformedURLException;
 }

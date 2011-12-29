@@ -13,15 +13,19 @@ import de.escidoc.core.client.interfaces.ItemHandlerClientInterface;
 import de.escidoc.core.resources.om.item.Item;
 
 public class ItemRepositoryImpl implements ItemRepository {
-  ItemHandlerClientInterface c;
-
-  public ItemRepositoryImpl(final URI serviceUri) throws MalformedURLException {
-    c = new ItemHandlerClient(serviceUri.toURL());
-  }
+  private ItemHandlerClientInterface c;
 
   @Override
   public Item find(final String itemId) throws EscidocException, InternalClientException,
       TransportException {
+    throw new UnsupportedOperationException("Remove this method");
+  }
+
+  @Override
+  public Item find(final String itemId, final URI serviceUri) throws EscidocException,
+      InternalClientException, TransportException, MalformedURLException {
+
+    c = new ItemHandlerClient(serviceUri.toURL());
     return c.retrieve(itemId);
   }
 }

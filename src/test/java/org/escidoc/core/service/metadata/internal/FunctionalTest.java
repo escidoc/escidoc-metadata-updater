@@ -6,10 +6,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.escidoc.core.service.metadata.ItemMetadataUpdateServiceSpec;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
 
 public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpec {
+
+  private final static Logger LOG = LoggerFactory.getLogger(FunctionalTest.class);
 
   @Test
   @Override
@@ -26,10 +30,19 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
   @Test
   @Override
   public void shouldReturn200ForExistingItemAndMetadata() {
-    final ClientResponse r = resource.path(
-        "items/" + ITEM_ID + "/metadata/" + EXISTING_METADATA_NAME).accept(MediaType.TEXT_PLAIN).get(
-        ClientResponse.class);
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path(ITEM_ID)
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML)
+        .get(ClientResponse.class);
+	   // @formatter:on
     assertEquals("response is not equals", 200, r.getStatus());
+
+    LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
   }
 
   @Test

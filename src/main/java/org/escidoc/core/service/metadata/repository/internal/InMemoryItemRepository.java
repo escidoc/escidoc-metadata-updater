@@ -4,11 +4,16 @@ import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import de.escidoc.core.client.exceptions.EscidocException;
+import de.escidoc.core.client.exceptions.InternalClientException;
+import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
@@ -47,6 +52,12 @@ public class InMemoryItemRepository implements ItemRepository {
 
   @Override
   public Item find(final String itemId) {
+    return map.get(itemId);
+  }
+
+  @Override
+  public Item find(final String itemId, final URI serviceUri) throws EscidocException,
+      InternalClientException, TransportException, MalformedURLException {
     return map.get(itemId);
   }
 }
