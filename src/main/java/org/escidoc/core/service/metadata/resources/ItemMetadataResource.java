@@ -9,13 +9,13 @@ import org.escidoc.core.service.metadata.repository.internal.InMemoryItemReposit
 import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -64,7 +64,7 @@ public class ItemMetadataResource {
     Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
     Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
 
-    final String msg = "Get a request for item with the id: " + itemId + " metadata name: " + metadataName
+    final String msg = "Get a request for item with the id: " + itemId + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;
     LOG.debug(msg);
   }
@@ -99,18 +99,39 @@ public class ItemMetadataResource {
   @GET
   @Produces(MediaType.APPLICATION_XML)
   public Response getAsXml(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri) {
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @CookieParam("escidocCookie") final String escidocCookie) {
     checkPreconditions(itemId, metadataName, escidocUri);
-
     checkQueryParameter(escidocUri);
 
-    final MetadataRecord mr = findMetadataByName(metadataName, findItem(itemId, escidocUri));
+    MetadataRecord mr = null;
+    if (escidocCookie == null) {
+      mr = findMetadataByName(metadataName, findItem(itemId, escidocUri));
+    } else {
+      mr = findMetadataByName(metadataName, findItem(itemId, escidocUri, escidocCookie));
+    }
 
+    Preconditions.checkNotNull(mr, "mr is null: %s", mr);
     if (mr.getContent() == null) {
       return Response.status(Status.NO_CONTENT).build();
     }
 
     return Response.ok(new DOMSource(mr.getContent())).build();
+  }
+
+  private Item findItem(final String itemId, final String escidocUri, final String cookie) {
+    final Item item = fetchItem(itemId, escidocUri, cookie);
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
+
+  private Item fetchItem(final String itemId, final String escidocUri, final String cookie) {
+    //@formatter:off
+    return ir.
+        find(itemId, new URI(escidocUri))
+        .withToken(cookie)
+        .execute();
+    //@formatter:on
+    throw new UnsupportedOperationException("not-yet-implemented.");
   }
 
   private Item fetchItem(final String itemId, final String s) {

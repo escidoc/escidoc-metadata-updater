@@ -39,8 +39,7 @@ public class InMemoryItemRepository implements ItemRepository {
   }
 
   private void addProtectedItem() {
-    final Item i = new Item();
-    map.put(Base.PROTECTED_ITEM_ID, i);
+    map.put(Base.PROTECTED_ITEM_ID, new Item());
   }
 
   private void addDefaultMetadata() {
@@ -58,12 +57,13 @@ public class InMemoryItemRepository implements ItemRepository {
   }
 
   @Override
-  public Item find(final String itemId) {
+  public Item find(final String itemId, final URI serviceUri) throws EscidocException, InternalClientException,
+      TransportException, MalformedURLException {
     return map.get(itemId);
   }
 
   @Override
-  public Item find(final String itemId, final URI serviceUri) throws EscidocException,
+  public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
       InternalClientException, TransportException, MalformedURLException {
     return map.get(itemId);
   }

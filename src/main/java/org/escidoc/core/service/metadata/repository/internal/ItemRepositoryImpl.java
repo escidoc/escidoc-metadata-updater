@@ -16,16 +16,21 @@ public class ItemRepositoryImpl implements ItemRepository {
   private ItemHandlerClientInterface c;
 
   @Override
-  public Item find(final String itemId) throws EscidocException, InternalClientException,
-      TransportException {
-    throw new UnsupportedOperationException("Remove this method");
-  }
-
-  @Override
-  public Item find(final String itemId, final URI serviceUri) throws EscidocException,
-      InternalClientException, TransportException, MalformedURLException {
+  public Item find(final String itemId, final URI serviceUri) throws EscidocException, InternalClientException,
+      TransportException, MalformedURLException {
 
     c = new ItemHandlerClient(serviceUri.toURL());
     return c.retrieve(itemId);
   }
+
+  // TODO NOTE: it can throw Authentification or AuthorizationException
+  @Override
+  public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
+      InternalClientException, TransportException, MalformedURLException {
+
+    c = new ItemHandlerClient(serviceUri.toURL());
+    c.setHandle(token);
+    return c.retrieve(itemId);
+  }
+
 }

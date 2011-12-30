@@ -189,8 +189,8 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
           .get(ClientResponse.class);
 	   // @formatter:on
 
-    assertEquals("response is not equals", 403, r.getStatus());
     LOG.debug("Error message: " + r.getEntity(String.class));
+    assertEquals("response is not equals", 403, r.getStatus());
   }
 
   @Test
