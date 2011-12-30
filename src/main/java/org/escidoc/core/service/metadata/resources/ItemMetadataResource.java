@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -144,8 +145,30 @@ public class ItemMetadataResource {
   }
 
   @PUT
+  @Consumes("application/xml")
   @Produces("application/xml")
-  public String update() {
-    throw new WebApplicationException(500);
+  public Response update(@PathParam("item-id") final String itemId,
+      @PathParam("metadata-name") final String metadataName,
+      @QueryParam("eu") final String escidocUri, final DOMSource s) {
+    Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
+    Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
+
+    final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
+        + metadataName + ", server uri: " + escidocUri;
+    LOG.debug(msg);
+
+    LOG.debug("Metadata should be updated to: " + s);
+    final Item item = fetchItem(itemId, escidocUri);
+    if (item == null) {
+      throw new NotFoundException("Item, " + itemId + ", is not found.");
+    }
+    // TODO check last modification date
+
+    // @formatter:off
+    return Response
+        .status(405)
+        .entity("PUT is not supported yet")
+        .build();
+	   // @formatter:on
   }
 }

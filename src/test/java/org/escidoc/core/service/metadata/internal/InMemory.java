@@ -158,14 +158,16 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
 	        .path(EXISTING_METADATA_NAME)
           .queryParam("eu", SERVICE_URL)
           .accept(MediaType.APPLICATION_XML);
+	   
     final DOMSource e = builder
         .get(ClientResponse.class)
         .getEntity(DOMSource.class);
     
-    
-    final DOMSource respose= builder.put(DOMSource.class,e);
+    final ClientResponse r= builder.put(ClientResponse.class,e);
     
 	   // @formatter:on
+
+    assertEquals("response is not equals", 200, r.getStatus());
   }
 
   @Test

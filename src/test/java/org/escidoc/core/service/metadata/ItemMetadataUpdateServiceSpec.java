@@ -19,4 +19,9 @@ public interface ItemMetadataUpdateServiceSpec {
   void shouldUpdateEscidocMetadata() throws Exception;
 
   void shouldNotUpdateMetadataIfInConfict() throws Exception;
+
+  void shouldReturn403WhenNoValidCookie() throws Exception;
+
+  void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception;
+
 }
