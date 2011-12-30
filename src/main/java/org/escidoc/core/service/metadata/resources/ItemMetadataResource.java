@@ -31,6 +31,7 @@ import javax.xml.transform.dom.DOMSource;
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
+import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
@@ -48,16 +49,119 @@ public class ItemMetadataResource {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public Response getAsText(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri) {
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @CookieParam("escidocCookie") final String escidocCookie) {
 
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
-    final MetadataRecord mr = findMetadataByName(metadataName, findItem(itemId, escidocUri));
 
+    MetadataRecord mr = null;
+    try {
+      mr = findMetadataByName(metadataName, findItem(itemId, escidocUri, escidocCookie));
+    } catch (final AuthorizationException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      return Response.seeOther(null).build();
+    } catch (final EscidocException e) {
+      // FIXME map the true exception.
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final InternalClientException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransportException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final MalformedURLException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final URISyntaxException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
     if (Utils.asString(mr).isEmpty()) {
       return Response.status(Status.NO_CONTENT).build();
     }
     return Response.ok(Utils.asString(mr)).build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_XML)
+  public Response getAsXml(@PathParam("item-id") final String itemId,
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @CookieParam("escidocCookie") final String escidocCookie) {
+    checkPreconditions(itemId, metadataName, escidocUri);
+    checkQueryParameter(escidocUri);
+
+    MetadataRecord mr = null;
+    try {
+      mr = findMetadataByName(metadataName, findItem(itemId, escidocUri, escidocCookie));
+    } catch (final AuthorizationException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      return Response.seeOther(null).build();
+    } catch (final EscidocException e) {
+      // FIXME map the true exception.
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final InternalClientException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransportException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final MalformedURLException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final URISyntaxException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
+
+    Preconditions.checkNotNull(mr, "mr is null: %s", mr);
+    if (mr.getContent() == null) {
+      return Response.status(Status.NO_CONTENT).build();
+    }
+
+    return Response.ok(new DOMSource(mr.getContent())).build();
+  }
+
+  @PUT
+  @Consumes("application/xml")
+  @Produces("application/xml")
+  public Response update(@PathParam("item-id") final String itemId,
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      final DOMSource s, @CookieParam("escidocCookie") final String escidocCookie) {
+    checkPreconditions(itemId, metadataName, escidocUri);
+
+    LOG.debug("Metadata should be updated to: " + s);
+    try {
+      final Item item = findItem(itemId, escidocUri, escidocCookie);
+
+    } catch (final AuthorizationException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      return Response.seeOther(null).build();
+    } catch (final EscidocException e) {
+      // FIXME map the true exception.
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final InternalClientException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransportException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final MalformedURLException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final URISyntaxException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
+    // @formatter:off
+    return Response
+        .status(405)
+        .entity("PUT is not supported yet")
+        .build();
+	   // @formatter:on
   }
 
   private static void checkPreconditions(final String itemId, final String metadataName, final String escidocUri) {
@@ -82,96 +186,17 @@ public class ItemMetadataResource {
     return mr;
   }
 
-  private Item findItem(final String itemId, final String escidocUri) {
-    final Item item = fetchItem(itemId, escidocUri);
-    if (item == null) {
-      throw new NotFoundException("Item, " + itemId + ", is not found.");
-    }
-    return item;
-  }
-
   private static void checkQueryParameter(final String escidocUri) {
     if (escidocUri == null || escidocUri.isEmpty()) {
       throw new WebApplicationException(400);
     }
   }
 
-  @GET
-  @Produces(MediaType.APPLICATION_XML)
-  public Response getAsXml(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @CookieParam("escidocCookie") final String escidocCookie) {
-    checkPreconditions(itemId, metadataName, escidocUri);
-    checkQueryParameter(escidocUri);
+  private Item findItem(final String itemId, final String escidocUri, final String cookie) throws EscidocException,
+      InternalClientException, TransportException, MalformedURLException, URISyntaxException {
+    // try {
+    return ir.find(itemId, new URI(escidocUri), cookie);
 
-    MetadataRecord mr = null;
-    if (escidocCookie == null) {
-      mr = findMetadataByName(metadataName, findItem(itemId, escidocUri));
-    } else {
-      mr = findMetadataByName(metadataName, findItem(itemId, escidocUri, escidocCookie));
-    }
-
-    Preconditions.checkNotNull(mr, "mr is null: %s", mr);
-    if (mr.getContent() == null) {
-      return Response.status(Status.NO_CONTENT).build();
-    }
-
-    return Response.ok(new DOMSource(mr.getContent())).build();
   }
 
-  private Item findItem(final String itemId, final String escidocUri, final String cookie) {
-    final Item item = fetchItem(itemId, escidocUri, cookie);
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
-
-  private Item fetchItem(final String itemId, final String escidocUri, final String cookie) {
-    //@formatter:off
-    return ir.
-        find(itemId, new URI(escidocUri))
-        .withToken(cookie)
-        .execute();
-    //@formatter:on
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
-
-  private Item fetchItem(final String itemId, final String s) {
-    try {
-      return ir.find(itemId, new URI(s));
-    } catch (final EscidocException e) {
-      // FIXME map the true exception.
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final InternalClientException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransportException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final MalformedURLException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final URISyntaxException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  @PUT
-  @Consumes("application/xml")
-  @Produces("application/xml")
-  public Response update(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      final DOMSource s) {
-    checkPreconditions(itemId, metadataName, escidocUri);
-
-    LOG.debug("Metadata should be updated to: " + s);
-    final Item item = findItem(itemId, escidocUri);
-
-    // @formatter:off
-    return Response
-        .status(405)
-        .entity("PUT is not supported yet")
-        .build();
-	   // @formatter:on
-  }
 }

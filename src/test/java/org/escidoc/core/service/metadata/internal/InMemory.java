@@ -177,7 +177,7 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
 
   @Test
   @Override
-  public void shouldReturn403WhenNoValidCookie() throws Exception {
+  public void shouldReturn303WhenNoValidCookie() throws Exception {
     // @formatter:off
 	    final ClientResponse r = resource
 	        .path("items")
@@ -190,7 +190,7 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
 	   // @formatter:on
 
     LOG.debug("Error message: " + r.getEntity(String.class));
-    assertEquals("response is not equals", 403, r.getStatus());
+    assertEquals("response is not equals", 303, r.getStatus());
   }
 
   @Test

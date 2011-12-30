@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
+import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
@@ -56,15 +57,25 @@ public class InMemoryItemRepository implements ItemRepository {
     mrs.add(new MetadataRecord("empty"));
   }
 
-  @Override
-  public Item find(final String itemId, final URI serviceUri) throws EscidocException, InternalClientException,
-      TransportException, MalformedURLException {
-    return map.get(itemId);
-  }
+  // @Override
+  // public Item find(final String itemId, final URI serviceUri) throws
+  // EscidocException, InternalClientException,
+  // TransportException, MalformedURLException {
+  // return map.get(itemId);
+  // }
 
   @Override
   public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
       InternalClientException, TransportException, MalformedURLException {
+    if (itemId.equals(Base.PROTECTED_ITEM_ID)) {
+      throw new AuthorizationException();
+    }
     return map.get(itemId);
+  }
+
+  @Override
+  public Item find(final String itemId, final URI serviceUri) throws EscidocException, InternalClientException,
+      TransportException, MalformedURLException {
+    throw new UnsupportedOperationException("not-yet-implemented.");
   }
 }

@@ -82,7 +82,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
   }
 
   @Override
-  public void shouldReturn403WhenNoValidCookie() throws Exception {
+  public void shouldReturn303WhenNoValidCookie() throws Exception {
     throw new UnsupportedOperationException("not-yet-implemented.");
   }
 
