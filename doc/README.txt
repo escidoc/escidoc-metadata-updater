@@ -1,6 +1,7 @@
 TODO
     if the client can accept html, it should response with XSLT-processed HTML Form
     if the server thrown Auth Exception, it should response with 303 See other => Login Form
+    there are a lot of similar/copy and paste code between in memory and real server implementation.
     
 == eSciDoc (Item) Metadata Update RESTful Web Service ==
 

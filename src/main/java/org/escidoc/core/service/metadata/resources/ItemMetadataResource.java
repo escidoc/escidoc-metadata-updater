@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import com.sun.jersey.api.NotFoundException;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
-import org.escidoc.core.service.metadata.repository.internal.InMemoryItemRepository;
+import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
 import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +23,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.transform.dom.DOMSource;
 
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
+import de.escidoc.core.client.exceptions.application.notfound.ResourceNotFoundException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
@@ -42,9 +46,9 @@ public class ItemMetadataResource {
   private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
 
   // FIXME configure this using Guice
-  private final ItemRepository ir = new InMemoryItemRepository();
+  // private final ItemRepository ir = new InMemoryItemRepository();
 
-  // private final ItemRepository ir = new ItemRepositoryImpl();
+  private final ItemRepository ir = new ItemRepositoryImpl();
 
   @GET
   @Produces(MediaType.TEXT_PLAIN)
@@ -86,7 +90,7 @@ public class ItemMetadataResource {
 
   @GET
   @Produces(MediaType.APPLICATION_XML)
-  public Response getAsXml(@PathParam("item-id") final String itemId,
+  public Response getAsXml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       @CookieParam("escidocCookie") final String escidocCookie) {
     checkPreconditions(itemId, metadataName, escidocUri);
@@ -98,13 +102,25 @@ public class ItemMetadataResource {
     } catch (final AuthorizationException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       return Response.seeOther(null).build();
+    } catch (final ResourceNotFoundException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      // FIXME add not found URI
+      throw new NotFoundException(e.getMessage());
     } catch (final EscidocException e) {
       // FIXME map the true exception.
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+      // FIXME this is bad, if the request is not auth-ed the server response
+      // with 303 and have HTML form as entity.
+      // TODO try with: using REST client and de/serialize the xml manually.
+
+      final URI u = UriBuilder.fromUri(escidocUri).path("aa").path("login").queryParam("target", ui.getRequestUri()).build();
+      LOG.debug("absolute path: " + u);
+      return Response.temporaryRedirect(
+      // seeOther(
+          UriBuilder.fromUri(escidocUri).path("aa").path("login").queryParam("target", ui.getRequestUri()).build()).build();
     } catch (final TransportException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
