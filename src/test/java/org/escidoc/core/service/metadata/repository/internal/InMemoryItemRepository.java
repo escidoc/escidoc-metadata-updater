@@ -1,5 +1,6 @@
 package org.escidoc.core.service.metadata.repository.internal;
 
+import org.escidoc.core.service.metadata.internal.Base;
 import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,19 +25,25 @@ public class InMemoryItemRepository implements ItemRepository {
 
   private final MetadataRecords mrs = new MetadataRecords();
   private final Item i = new Item();
-  private final Map<String, Item> map;
+  private final Map<String, Item> map = new HashMap<String, Item>();
 
   public InMemoryItemRepository() {
-    map = new HashMap<String, Item>();
 
-    addEmptyMetadata(mrs);
-    addDefaultMetadata(mrs);
-
+    addEmptyMetadata();
+    addDefaultMetadata();
     i.setMetadataRecords(mrs);
+
     map.put("escidoc:test", i);
+
+    addProtectedItem();
   }
 
-  private static void addDefaultMetadata(final MetadataRecords mrs) {
+  private void addProtectedItem() {
+    final Item i = new Item();
+    map.put(Base.PROTECTED_ITEM_ID, i);
+  }
+
+  private void addDefaultMetadata() {
     final MetadataRecord mr = new MetadataRecord("escidoc");
     try {
       mr.setContent(Utils.buildSimpleMetadata());
@@ -46,7 +53,7 @@ public class InMemoryItemRepository implements ItemRepository {
     mrs.add(mr);
   }
 
-  private static void addEmptyMetadata(final MetadataRecords mrs) {
+  private void addEmptyMetadata() {
     mrs.add(new MetadataRecord("empty"));
   }
 

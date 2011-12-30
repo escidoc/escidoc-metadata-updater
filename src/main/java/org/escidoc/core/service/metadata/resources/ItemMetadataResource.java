@@ -48,24 +48,28 @@ public class ItemMetadataResource {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public Response getAsText(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName,
-      @QueryParam("eu") final String escidocUri) {
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri) {
+
+    checkPreconditions(itemId, metadataName, escidocUri);
+    checkQueryParameter(escidocUri);
+    final MetadataRecord mr = findMetadataByName(metadataName, findItem(itemId, escidocUri));
+
+    if (Utils.asString(mr).isEmpty()) {
+      return Response.status(Status.NO_CONTENT).build();
+    }
+    return Response.ok(Utils.asString(mr)).build();
+  }
+
+  private static void checkPreconditions(final String itemId, final String metadataName, final String escidocUri) {
     Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
     Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
 
-    final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
-        + metadataName + ", server uri: " + escidocUri;
+    final String msg = "Get a request for item with the id: " + itemId + " metadata name: " + metadataName
+        + ", server uri: " + escidocUri;
     LOG.debug(msg);
+  }
 
-    if (escidocUri == null || escidocUri.isEmpty()) {
-      throw new WebApplicationException(400);
-    }
-
-    final Item item = fetchItem(itemId, escidocUri);
-    if (item == null) {
-      throw new NotFoundException("Item, " + itemId + ", is not found.");
-    }
-
+  private static MetadataRecord findMetadataByName(final String metadataName, final Item item) {
     final MetadataRecords mrList = item.getMetadataRecords();
     if (mrList == null || mrList.isEmpty()) {
       throw new NotFoundException("Metadata, " + metadataName + ", is not found");
@@ -75,47 +79,34 @@ public class ItemMetadataResource {
     if (mr == null) {
       throw new NotFoundException("Metadata, " + metadataName + ", is not found");
     }
+    return mr;
+  }
 
-    final String asString = Utils.asString(mr);
-    if (asString.isEmpty()) {
-      return Response.status(Status.NO_CONTENT).build();
+  private Item findItem(final String itemId, final String escidocUri) {
+    final Item item = fetchItem(itemId, escidocUri);
+    if (item == null) {
+      throw new NotFoundException("Item, " + itemId + ", is not found.");
     }
-    return Response.ok(asString).build();
+    return item;
+  }
+
+  private static void checkQueryParameter(final String escidocUri) {
+    if (escidocUri == null || escidocUri.isEmpty()) {
+      throw new WebApplicationException(400);
+    }
   }
 
   @GET
   @Produces(MediaType.APPLICATION_XML)
   public Response getAsXml(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName,
-      @QueryParam("eu") final String escidocUri) {
-    Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
-    Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri) {
+    checkPreconditions(itemId, metadataName, escidocUri);
 
-    final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
-        + metadataName + ", server uri: " + escidocUri;
-    LOG.debug(msg);
+    checkQueryParameter(escidocUri);
 
-    if (escidocUri == null || escidocUri.isEmpty()) {
-      throw new WebApplicationException(400);
-    }
+    final MetadataRecord mr = findMetadataByName(metadataName, findItem(itemId, escidocUri));
 
-    final Item item = fetchItem(itemId, escidocUri);
-    if (item == null) {
-      throw new NotFoundException("Item, " + itemId + ", is not found.");
-    }
-
-    final MetadataRecords mrList = item.getMetadataRecords();
-    if (mrList == null || mrList.isEmpty()) {
-      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
-    }
-
-    final MetadataRecord mr = mrList.get(metadataName);
-    if (mr == null) {
-      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
-    }
-
-    final Element content = mr.getContent();
-    if (content == null) {
+    if (mr.getContent() == null) {
       return Response.status(Status.NO_CONTENT).build();
     }
 
@@ -148,21 +139,12 @@ public class ItemMetadataResource {
   @Consumes("application/xml")
   @Produces("application/xml")
   public Response update(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName,
-      @QueryParam("eu") final String escidocUri, final DOMSource s) {
-    Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
-    Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
-
-    final String msg = "Get a request for item with the id: " + itemId + " metadata name: "
-        + metadataName + ", server uri: " + escidocUri;
-    LOG.debug(msg);
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      final DOMSource s) {
+    checkPreconditions(itemId, metadataName, escidocUri);
 
     LOG.debug("Metadata should be updated to: " + s);
-    final Item item = fetchItem(itemId, escidocUri);
-    if (item == null) {
-      throw new NotFoundException("Item, " + itemId + ", is not found.");
-    }
-    // TODO check last modification date
+    final Item item = findItem(itemId, escidocUri);
 
     // @formatter:off
     return Response

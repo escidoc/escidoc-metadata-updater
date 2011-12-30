@@ -25,6 +25,8 @@ public class Base {
 
   protected static final String EXISTING_ITEM_ID = "escidoc:test";
 
+  public static final String PROTECTED_ITEM_ID = "protected";
+
   protected static final String EXISTING_METADATA_NAME = "escidoc";
 
   protected static final String EMPTY_METADATA = "empty";

@@ -163,8 +163,7 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
         .get(ClientResponse.class)
         .getEntity(DOMSource.class);
     
-    final ClientResponse r= builder.put(ClientResponse.class,e);
-    
+    final ClientResponse r = builder.put(ClientResponse.class,e);
 	   // @formatter:on
 
     assertEquals("response is not equals", 200, r.getStatus());
@@ -173,6 +172,30 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
   @Test
   @Override
   public void shouldNotUpdateMetadataIfInConfict() {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
+
+  @Test
+  @Override
+  public void shouldReturn403WhenNoValidCookie() throws Exception {
+    // @formatter:off
+	    final ClientResponse r = resource
+	        .path("items")
+	        .path(PROTECTED_ITEM_ID)
+	        .path("metadata")
+	        .path(EXISTING_METADATA_NAME)
+          .queryParam("eu", SERVICE_URL)
+          .accept(MediaType.APPLICATION_XML)
+          .get(ClientResponse.class);
+	   // @formatter:on
+
+    assertEquals("response is not equals", 403, r.getStatus());
+    LOG.debug("Error message: " + r.getEntity(String.class));
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception {
     throw new UnsupportedOperationException("not-yet-implemented.");
   }
 }
