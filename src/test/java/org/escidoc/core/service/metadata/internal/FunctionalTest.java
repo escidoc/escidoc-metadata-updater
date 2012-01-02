@@ -2,6 +2,7 @@ package org.escidoc.core.service.metadata.internal;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.core.util.Base64;
 
 import static org.junit.Assert.assertEquals;
 
@@ -140,6 +141,32 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .queryParam("eu", SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .cookie(new Cookie("escidocCookie",token));
+    
+    final DOMSource e = builder
+        .get(ClientResponse.class)
+        .getEntity(DOMSource.class);
+    
+    final ClientResponse r = builder.put(ClientResponse.class,e);
+   // @formatter:on
+
+    LOG.debug("Entity: " + r.getEntity(String.class));
+    assertEquals("response is not equals", 200, r.getStatus());
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception {
+
+    final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
+    // @formatter:off
+    final Builder builder = resource
+        .path("items")
+        .path("escidoc:93")
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .queryParam("eSciDocUserHandle", new String(Base64.encode(token)))
+        .accept(MediaType.APPLICATION_XML);
     
     final DOMSource e = builder
         .get(ClientResponse.class)

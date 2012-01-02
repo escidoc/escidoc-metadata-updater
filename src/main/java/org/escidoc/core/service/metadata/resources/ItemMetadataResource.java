@@ -3,6 +3,7 @@ package org.escidoc.core.service.metadata.resources;
 import com.google.common.base.Preconditions;
 
 import com.sun.jersey.api.NotFoundException;
+import com.sun.jersey.core.util.Base64;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
@@ -89,24 +90,29 @@ public class ItemMetadataResource {
     return Response.ok(Utils.asString(mr)).build();
   }
 
+  // TODO we should use the browser cookie instead of eSciDocUserHandle query
+  // parameter
   @GET
   @Produces(MediaType.APPLICATION_XML)
   public Response getAsXml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @CookieParam("escidocCookie") final String escidocCookie) {
+      @CookieParam("escidocCookie") final String escidocCookie, @QueryParam("eSciDocUserHandle") final String handle) {
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
 
     MetadataRecord mr;
     try {
-      mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, escidocCookie);
+
+      String d = "";
+      if (handle != null) {
+        d = Base64.base64Decode(handle);
+      }
+      mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, d);
     }
 
     catch (final InternalClientException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      // FIXME this is bad, if the request is not auth-ed the server response
-      // with 303 and have HTML form as entity.
-      // TODO try with: using REST client and de/serialize the xml manually.
+      LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
+      // Redirect to login page.
       // @formatter:off
       final URI u = UriBuilder.
           fromUri(escidocUri)
@@ -114,10 +120,10 @@ public class ItemMetadataResource {
           .path("login")
           .queryParam("target",ui.getRequestUri())
           .build();
+      return Response.seeOther(u).build();
 	   // @formatter:on
 
-      LOG.debug("absolute path: " + u);
-      return Response.status(303).build();
+      // return Response.status(303).build();
     }
 
     Preconditions.checkNotNull(mr, "mr is null: %s", mr);
@@ -159,11 +165,11 @@ public class ItemMetadataResource {
   @Produces("application/xml")
   public Response update(@PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      final DOMSource s, @CookieParam("escidocCookie") final String escidocCookie) {
+      final DOMSource s, @CookieParam("escidocCookie") final String escidocCookie,
+      @QueryParam("eSciDocUserHandle") final String handle) {
     checkPreconditions(itemId, metadataName, escidocUri);
 
-    LOG.debug("Metadata should be updated to: " + s);
-    final Item item = tryFindItemById(itemId, escidocUri, escidocCookie);
+    final Item item = tryFindItemById(itemId, escidocUri, Base64.base64Decode(handle));
     final MetadataRecord mr = findMetadataByName(metadataName, item);
     mr.setContent((Element) s.getNode().getFirstChild());
 
@@ -176,13 +182,16 @@ public class ItemMetadataResource {
           .build();
   	   // @formatter:on
     } catch (final EscidocException e) {
-      LOG.error("Can not update item " + itemId + " cause: " + e.getMessage(), e);
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
-      LOG.error("Can not update item " + itemId + " cause: " + e.getMessage(), e);
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final TransportException e) {
-      LOG.error("Can not update item " + itemId + " cause: " + e.getMessage(), e);
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
@@ -234,7 +243,7 @@ public class ItemMetadataResource {
 
   private static void checkQueryParameter(final String escidocUri) {
     if (escidocUri == null || escidocUri.isEmpty()) {
-      throw new WebApplicationException(400);
+      throw new WebApplicationException(Status.BAD_REQUEST);
     }
   }
 

@@ -25,4 +25,6 @@ public interface ItemMetadataUpdateServiceSpec {
   void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception;
 
   void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception;
+
+  void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception;
 }

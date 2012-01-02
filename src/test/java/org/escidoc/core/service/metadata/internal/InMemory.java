@@ -198,4 +198,9 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
   public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception {
     throw new UnsupportedOperationException("not-yet-implemented.");
   }
+
+  @Override
+  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
 }

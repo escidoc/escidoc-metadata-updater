@@ -71,4 +71,9 @@ public class InMemoryItemRepository implements ItemRepository {
       TransportException, MalformedURLException {
     throw new UnsupportedOperationException("not-yet-implemented.");
   }
+
+  @Override
+  public Item update(final Item item) throws EscidocException, InternalClientException, TransportException {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
 }
