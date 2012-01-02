@@ -100,19 +100,15 @@ public class ItemMetadataResource {
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
 
-    MetadataRecord mr;
     try {
-
-      String d = "";
-      if (handle != null) {
-        d = Base64.base64Decode(handle);
+      final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
+      Preconditions.checkNotNull(mr, "mr is null: %s", mr);
+      if (mr.getContent() == null) {
+        return Response.status(Status.NO_CONTENT).build();
       }
-      mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, d);
-    }
-
-    catch (final InternalClientException e) {
+      return Response.ok(new DOMSource(mr.getContent())).build();
+    } catch (final InternalClientException e) {
       LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
-      // Redirect to login page.
       // @formatter:off
       final URI u = UriBuilder.
           fromUri(escidocUri)
@@ -122,16 +118,7 @@ public class ItemMetadataResource {
           .build();
       return Response.seeOther(u).build();
 	   // @formatter:on
-
-      // return Response.status(303).build();
     }
-
-    Preconditions.checkNotNull(mr, "mr is null: %s", mr);
-    if (mr.getContent() == null) {
-      return Response.status(Status.NO_CONTENT).build();
-    }
-
-    return Response.ok(new DOMSource(mr.getContent())).build();
   }
 
   private MetadataRecord tryFindMetadataByName(final UriInfo ui, final String itemId, final String metadataName,
@@ -194,6 +181,13 @@ public class ItemMetadataResource {
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static String decodeHandle(final String handle) {
+    if (handle != null) {
+      return Base64.base64Decode(handle);
+    }
+    return "";
   }
 
   private Item tryFindItemById(final String itemId, final String escidocUri, final String escidocCookie) {
