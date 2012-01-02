@@ -9,6 +9,7 @@ import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
 import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -96,12 +97,42 @@ public class ItemMetadataResource {
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
 
+    MetadataRecord mr;
+    try {
+      mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, escidocCookie);
+    }
+
+    catch (final InternalClientException e) {
+      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
+      // FIXME this is bad, if the request is not auth-ed the server response
+      // with 303 and have HTML form as entity.
+      // TODO try with: using REST client and de/serialize the xml manually.
+      // @formatter:off
+      final URI u = UriBuilder.
+          fromUri(escidocUri)
+          .path("aa")
+          .path("login")
+          .queryParam("target",ui.getRequestUri())
+          .build();
+	   // @formatter:on
+
+      LOG.debug("absolute path: " + u);
+      return Response.status(303).build();
+    }
+
+    Preconditions.checkNotNull(mr, "mr is null: %s", mr);
+    if (mr.getContent() == null) {
+      return Response.status(Status.NO_CONTENT).build();
+    }
+
+    return Response.ok(new DOMSource(mr.getContent())).build();
+  }
+
+  private MetadataRecord tryFindMetadataByName(final UriInfo ui, final String itemId, final String metadataName,
+      final String escidocUri, final String escidocCookie) throws InternalClientException {
     MetadataRecord mr = null;
     try {
       mr = findMetadataByName(metadataName, findItem(itemId, escidocUri, escidocCookie));
-    } catch (final AuthorizationException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      return Response.seeOther(null).build();
     } catch (final ResourceNotFoundException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       // FIXME add not found URI
@@ -110,18 +141,6 @@ public class ItemMetadataResource {
       // FIXME map the true exception.
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final InternalClientException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      // FIXME this is bad, if the request is not auth-ed the server response
-      // with 303 and have HTML form as entity.
-      // TODO try with: using REST client and de/serialize the xml manually.
-      final URI u = UriBuilder.fromUri(escidocUri).path("aa").path("login").queryParam("target", ui.getRequestUri()).build();
-      LOG.debug("absolute path: " + u);
-      return Response.temporaryRedirect(
-      // seeOther(
-          UriBuilder.fromUri(escidocUri).path("aa").path("login").queryParam("target",
-          // ui.getRequestUri()
-              "http://localhost:9998/items/escidoc:93/metadata/escidoc").build()).build();
     } catch (final TransportException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -132,13 +151,7 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
-
-    Preconditions.checkNotNull(mr, "mr is null: %s", mr);
-    if (mr.getContent() == null) {
-      return Response.status(Status.NO_CONTENT).build();
-    }
-
-    return Response.ok(new DOMSource(mr.getContent())).build();
+    return mr;
   }
 
   @PUT
@@ -150,14 +163,36 @@ public class ItemMetadataResource {
     checkPreconditions(itemId, metadataName, escidocUri);
 
     LOG.debug("Metadata should be updated to: " + s);
+    final Item item = tryFindItemById(itemId, escidocUri, escidocCookie);
+    final MetadataRecord mr = findMetadataByName(metadataName, item);
+    mr.setContent((Element) s.getNode().getFirstChild());
+
+    try {
+      final Item updated = ir.update(item);
+      Preconditions.checkNotNull(updated, "updated is null: %s", updated);
+      // @formatter:off
+      return Response
+          .ok()
+          .build();
+  	   // @formatter:on
+    } catch (final EscidocException e) {
+      LOG.error("Can not update item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final InternalClientException e) {
+      LOG.error("Can not update item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransportException e) {
+      LOG.error("Can not update item " + itemId + " cause: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private Item tryFindItemById(final String itemId, final String escidocUri, final String escidocCookie) {
     try {
       final Item item = findItem(itemId, escidocUri, escidocCookie);
       Preconditions.checkNotNull(item, "item is null: %s", item);
-    } catch (final AuthorizationException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      return Response.seeOther(null).build();
+      return item;
     } catch (final EscidocException e) {
-      // FIXME map the true exception.
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
@@ -173,13 +208,6 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
-
-    // @formatter:off
-    return Response
-        .status(405)
-        .entity("PUT is not supported yet")
-        .build();
-	   // @formatter:on
   }
 
   private static void checkPreconditions(final String itemId, final String metadataName, final String escidocUri) {
@@ -212,9 +240,6 @@ public class ItemMetadataResource {
 
   private Item findItem(final String itemId, final String escidocUri, final String cookie) throws EscidocException,
       InternalClientException, TransportException, MalformedURLException, URISyntaxException {
-    // try {
     return ir.find(itemId, new URI(escidocUri), cookie);
-
   }
-
 }

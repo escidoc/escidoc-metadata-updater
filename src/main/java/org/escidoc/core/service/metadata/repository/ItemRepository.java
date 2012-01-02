@@ -10,9 +10,11 @@ import de.escidoc.core.resources.om.item.Item;
 
 public interface ItemRepository {
 
-  Item find(String itemId, URI serviceUri) throws EscidocException, InternalClientException, TransportException,
-      MalformedURLException;
-
-  Item find(String itemId, URI serviceUri, String token) throws EscidocException, InternalClientException,
+  Item find(String itemId, URI serviceUri) throws EscidocException, InternalClientException,
       TransportException, MalformedURLException;
+
+  Item find(String itemId, URI serviceUri, String token) throws EscidocException,
+      InternalClientException, TransportException, MalformedURLException;
+
+  Item update(Item item) throws EscidocException, InternalClientException, TransportException;
 }

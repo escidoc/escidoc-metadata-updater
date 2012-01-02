@@ -1,6 +1,7 @@
 package org.escidoc.core.service.metadata.internal;
 
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource.Builder;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +10,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
+
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
+import javax.xml.transform.dom.DOMSource;
+
+import de.escidoc.core.client.Authentication;
 
 public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpec {
 
@@ -99,8 +106,49 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
     assertEquals("response is not equals", 303, r.getStatus());
   }
 
+  @Test
   @Override
   public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path("escidoc:93")
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML)
+        .cookie(new Cookie("escidocCookie",token)) 
+        .get(ClientResponse.class);
+   // @formatter:on
+
+    LOG.debug("Entity: " + r.getEntity(String.class));
+    assertEquals("response is not equals", 200, r.getStatus());
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception {
+
+    final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
+    // @formatter:off
+    final Builder builder = resource
+        .path("items")
+        .path("escidoc:93")
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML)
+        .cookie(new Cookie("escidocCookie",token));
+    
+    final DOMSource e = builder
+        .get(ClientResponse.class)
+        .getEntity(DOMSource.class);
+    
+    final ClientResponse r = builder.put(ClientResponse.class,e);
+   // @formatter:on
+
+    LOG.debug("Entity: " + r.getEntity(String.class));
+    assertEquals("response is not equals", 200, r.getStatus());
   }
 }
