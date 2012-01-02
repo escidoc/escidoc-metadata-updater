@@ -115,12 +115,13 @@ public class ItemMetadataResource {
       // FIXME this is bad, if the request is not auth-ed the server response
       // with 303 and have HTML form as entity.
       // TODO try with: using REST client and de/serialize the xml manually.
-
       final URI u = UriBuilder.fromUri(escidocUri).path("aa").path("login").queryParam("target", ui.getRequestUri()).build();
       LOG.debug("absolute path: " + u);
       return Response.temporaryRedirect(
       // seeOther(
-          UriBuilder.fromUri(escidocUri).path("aa").path("login").queryParam("target", ui.getRequestUri()).build()).build();
+          UriBuilder.fromUri(escidocUri).path("aa").path("login").queryParam("target",
+          // ui.getRequestUri()
+              "http://localhost:9998/items/escidoc:93/metadata/escidoc").build()).build();
     } catch (final TransportException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -151,7 +152,7 @@ public class ItemMetadataResource {
     LOG.debug("Metadata should be updated to: " + s);
     try {
       final Item item = findItem(itemId, escidocUri, escidocCookie);
-
+      Preconditions.checkNotNull(item, "item is null: %s", item);
     } catch (final AuthorizationException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       return Response.seeOther(null).build();
@@ -172,6 +173,7 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+
     // @formatter:off
     return Response
         .status(405)

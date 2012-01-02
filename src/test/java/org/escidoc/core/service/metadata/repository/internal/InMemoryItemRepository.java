@@ -57,13 +57,6 @@ public class InMemoryItemRepository implements ItemRepository {
     mrs.add(new MetadataRecord("empty"));
   }
 
-  // @Override
-  // public Item find(final String itemId, final URI serviceUri) throws
-  // EscidocException, InternalClientException,
-  // TransportException, MalformedURLException {
-  // return map.get(itemId);
-  // }
-
   @Override
   public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
       InternalClientException, TransportException, MalformedURLException {
