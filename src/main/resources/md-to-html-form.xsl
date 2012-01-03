@@ -32,18 +32,17 @@
             function send(){
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', getUri(), false);
-                //xhr.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
                 xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
                 xhr.onreadystatechange = function (oEvent) {  
                     if (xhr.readyState === 4) {  
                         if (xhr.status === 200) {  
-                            console.log(xhr.responseText)  
+                            var r=xhr.responseText;
+                            console.log(r);  
                         } else {  
                             console.log("Error", xhr.statusText);  
                         }  
                     }  
                 }; 
-
                 xhr.send(null);
                 return false;
             }
