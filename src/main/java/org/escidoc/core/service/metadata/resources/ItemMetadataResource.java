@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,7 +33,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
@@ -75,6 +82,8 @@ public class ItemMetadataResource {
     }
   }
 
+  private static final String XSLT_FILE = "md-to-html-form.xsl";
+
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getAsHtml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
@@ -90,12 +99,36 @@ public class ItemMetadataResource {
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
-      return Response.ok("<html>hallo</html>").type(MediaType.TEXT_HTML).build();// new
+
+      final DOMSource ds = new DOMSource(mr.getContent());
+      final StringWriter s = new StringWriter();
+      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(ds, new StreamResult(s));
+      LOG.info("result: " + s);
+      // @formatter:off
+        return Response
+            .ok(s.toString())
+            .build();
+      //@formatter:on
+
+      // return
+      // Response.ok("<html>hallo</html>").type(MediaType.TEXT_HTML).build();//
+      // new
       // DOMSource(mr.getContent())).build();
     } catch (final InternalClientException e) {
       LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
       return redirect(ui, escidocUri);
+
+    } catch (final TransformerConfigurationException e) {
+      LOG.error("Error: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransformerException e) {
+      LOG.error("Error: " + e.getMessage(), e);
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static InputStream readXsl() {
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(XSLT_FILE);
   }
 
   @GET

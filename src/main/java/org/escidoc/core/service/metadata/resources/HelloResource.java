@@ -23,6 +23,12 @@ import javax.xml.transform.stream.StreamSource;
 @Path("helloworld")
 public class HelloResource {
 
+  // private static final String XSLT_FILE = "e.xsl";
+  // private static final String XML_FILE = "e.xml";
+
+  private static final String XSLT_FILE = "md-to-html-form.xsl";
+  private static final String XML_FILE = "org-unit-metadata.xml";
+
   private final static Logger LOG = LoggerFactory.getLogger(HelloResource.class);
 
   @GET
@@ -48,11 +54,11 @@ public class HelloResource {
   }
 
   private static InputStream readXml() {
-    return Thread.currentThread().getContextClassLoader().getResourceAsStream("e.xml");
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(XML_FILE);
   }
 
   private static InputStream readXsl() {
-    return Thread.currentThread().getContextClassLoader().getResourceAsStream("e.xsl");
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(XSLT_FILE);
   }
 
   @GET
