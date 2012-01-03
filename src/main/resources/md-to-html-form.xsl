@@ -37,6 +37,11 @@
                                 if (xhr.status === 200) {  
                                     var r=xhr.responseText;
                                     console.log(r);  
+                                    console.log('uri'+getUri());
+                                    xhr.open('PUT', getUri(), false);
+                                    xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
+                                    xhr.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
+                                    xhr.send('<xml/>');
                                 } else {  
                                     console.log("Error", xhr.statusText);  
                                 }  
