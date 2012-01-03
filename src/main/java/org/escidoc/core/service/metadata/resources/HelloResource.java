@@ -28,14 +28,10 @@ public class HelloResource {
   @GET
   @Produces({"text/plain", "text/html"})
   public Response getAsTextOrHtmlOrXml() {
-    final InputStream xsl = Thread.currentThread().getContextClassLoader().getResourceAsStream("e.xsl");
-    final InputStream xml = Thread.currentThread().getContextClassLoader().getResourceAsStream("e.xml");
     try {
       final StringWriter s = new StringWriter();
-      TransformerFactory.newInstance().newTransformer(new StreamSource(xsl)).transform(new StreamSource(xml),
-          new StreamResult(s)
-      // new StreamResult(new FileOutputStream("e.html"))
-      );
+      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(
+          new StreamSource(readXml()), new StreamResult(s));
       LOG.info("result: " + s);
       // @formatter:off
       return Response
@@ -49,6 +45,14 @@ public class HelloResource {
       LOG.error("Error: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static InputStream readXml() {
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream("e.xml");
+  }
+
+  private static InputStream readXsl() {
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream("e.xsl");
   }
 
   @GET
