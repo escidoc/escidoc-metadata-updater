@@ -22,39 +22,38 @@
 				<meta
 					name="keywords"
 					content="escidoc, metadata editor" />
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" />
+                <link
+                  rel="stylesheet"
+                  type="text/css"
+                  href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" />
+                <script type="text/javascript">
+                    function send(){
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', getUri(), false);
+                        xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
+                        xhr.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
+                        xhr.onreadystatechange = function (oEvent) {  
+                            if (xhr.readyState === 4) {  
+                                if (xhr.status === 200) {  
+                                    var r=xhr.responseText;
+                                    console.log(r);  
+                                } else {  
+                                    console.log("Error", xhr.statusText);  
+                                }  
+                            }  
+                        }; 
+                        xhr.send(null);
+                        return false;
+                    }
 
-
-        <script type="text/javascript">
-            function send(){
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', getUri(), false);
-                xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
-                xhr.onreadystatechange = function (oEvent) {  
-                    if (xhr.readyState === 4) {  
-                        if (xhr.status === 200) {  
-                            var r=xhr.responseText;
-                            console.log(r);  
-                        } else {  
-                            console.log("Error", xhr.statusText);  
-                        }  
-                    }  
-                }; 
-                xhr.send(null);
-                return false;
-            }
-
-            function getUri(){
-                return window.location.href;
-            }
-            </script>
-			</head>
-			<body>
-				<xsl:apply-templates />
-			</body>
+                    function getUri(){
+                        return window.location.href;
+                    }
+                </script>
+            </head>
+            <body>
+                <xsl:apply-templates />
+            </body>
 		</html>
 	</xsl:template>
 
