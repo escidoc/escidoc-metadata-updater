@@ -44,6 +44,7 @@ import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.notfound.ResourceNotFoundException;
+import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
@@ -79,6 +80,9 @@ public class ItemMetadataResource {
     } catch (final InternalClientException e) {
       LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
       return redirect(ui, escidocUri);
+    } catch (final AuthenticationException e) {
+      LOG.debug("Cookie is not valid while accessing protected source. ");
+      return redirect(ui, escidocUri);
     }
   }
 
@@ -109,15 +113,12 @@ public class ItemMetadataResource {
             .ok(s.toString())
             .build();
       //@formatter:on
-
-      // return
-      // Response.ok("<html>hallo</html>").type(MediaType.TEXT_HTML).build();//
-      // new
-      // DOMSource(mr.getContent())).build();
+    } catch (final AuthenticationException e) {
+      LOG.debug("Cookie is not valid while accessing protected source. ");
+      return redirect(ui, escidocUri);
     } catch (final InternalClientException e) {
       LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
       return redirect(ui, escidocUri);
-
     } catch (final TransformerConfigurationException e) {
       LOG.error("Error: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -148,6 +149,9 @@ public class ItemMetadataResource {
       return Response.ok(Utils.asString(mr)).build();
     } catch (final InternalClientException e) {
       LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
+      return redirect(ui, escidocUri);
+    } catch (final AuthenticationException e) {
+      LOG.debug("Cookie is not valid while accessing protected source. ");
       return redirect(ui, escidocUri);
     }
   }
@@ -199,10 +203,12 @@ public class ItemMetadataResource {
   }
 
   private MetadataRecord tryFindMetadataByName(final UriInfo ui, final String itemId, final String metadataName,
-      final String escidocUri, final String escidocCookie) throws InternalClientException {
+      final String escidocUri, final String escidocCookie) throws InternalClientException, AuthenticationException {
     MetadataRecord mr = null;
     try {
       mr = findMetadataByName(metadataName, findItem(itemId, escidocUri, escidocCookie));
+    } catch (final AuthenticationException e) {
+      throw new AuthenticationException("", e);
     } catch (final ResourceNotFoundException e) {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       // FIXME add not found URI
@@ -283,7 +289,7 @@ public class ItemMetadataResource {
   }
 
   private Item findItem(final String itemId, final String escidocUri, final String cookie) throws EscidocException,
-      InternalClientException, TransportException, MalformedURLException, URISyntaxException {
+      InternalClientException, TransportException, MalformedURLException, URISyntaxException, AuthenticationException {
     return ir.find(itemId, new URI(escidocUri), cookie);
   }
 }

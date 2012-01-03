@@ -22,10 +22,36 @@
 				<meta
 					name="keywords"
 					content="escidoc, metadata editor" />
-				<link
-					rel="stylesheet"
-					type="text/css"
-					href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" />
+
+
+        <script type="text/javascript">
+            function send(){
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', getUri(), false);
+                //xhr.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
+                xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
+                xhr.onreadystatechange = function (oEvent) {  
+                    if (xhr.readyState === 4) {  
+                        if (xhr.status === 200) {  
+                            console.log(xhr.responseText)  
+                        } else {  
+                            console.log("Error", xhr.statusText);  
+                        }  
+                    }  
+                }; 
+
+                xhr.send(null);
+                return false;
+            }
+
+            function getUri(){
+                return window.location.href;
+            }
+            </script>
 			</head>
 			<body>
 				<xsl:apply-templates />
@@ -33,13 +59,13 @@
 		</html>
 	</xsl:template>
 
+	<!-- TODO find a better match patter for root node -->
 	<xsl:template match="/node()[position()=1]">
 		<div class="content">
 			<div class="span12">
 				<form
 					id="metadata-editor"
-					action=""
-					method="post">
+					onSubmit="return send();">
 					<fieldset>
 						<legend>
 							<xsl:value-of select="local-name()" />
