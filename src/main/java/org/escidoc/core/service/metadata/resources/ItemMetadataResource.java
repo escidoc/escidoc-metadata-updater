@@ -86,7 +86,6 @@ public class ItemMetadataResource {
       // @formatter:off
       return Response
           .ok(new DOMSource(mr.getContent()))
-          .lastModified(mr.getLastModificationDate().toDate())
           .tag(new EntityTag(computeDigest(mr.getContent().toString().getBytes())))
           .build();
 	   // @formatter:on
@@ -123,7 +122,6 @@ public class ItemMetadataResource {
       // @formatter:off
         return Response
             .ok(s.toString(),MediaType.TEXT_HTML)
-            .lastModified(mr.getLastModificationDate().toDate())
             .tag(new EntityTag(computeDigest(s.toString().getBytes())))
             .build();
       //@formatter:on
@@ -160,7 +158,6 @@ public class ItemMetadataResource {
       // @formatter:off
       return Response
           .ok(Utils.asString(mr))
-          .lastModified(mr.getLastModificationDate().toDate())
           .tag(new EntityTag(computeDigest(Utils.asString(mr).getBytes())))
           .build();
 	   // @formatter:on 
