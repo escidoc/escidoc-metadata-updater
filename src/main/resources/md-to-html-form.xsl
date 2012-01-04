@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet
     version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:md="http://www.escidoc.de/schemas/metadatarecords/0.5">
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:output
         encoding="iso-8859-1"
@@ -10,11 +9,9 @@
         method="html" />
 
     <xsl:template match="/">
+        <!DOCTYPE html>
         <html>
             <head>
-                <meta
-                    http-equiv="Content-Type"
-                    content="text/html; charset=utf-8" />
                 <title>eSciDoc Metadata Editor</title>
                 <meta
                     name="description"

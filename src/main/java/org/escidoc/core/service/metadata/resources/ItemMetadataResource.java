@@ -115,9 +115,8 @@ public class ItemMetadataResource {
         return Response.status(Status.NO_CONTENT).build();
       }
 
-      final DOMSource ds = new DOMSource(mr.getContent());
       final StringWriter s = new StringWriter();
-      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(ds, new StreamResult(s));
+      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(new DOMSource(mr.getContent()), new StreamResult(s));
       LOG.info("result: " + s);
       // @formatter:off
         return Response
