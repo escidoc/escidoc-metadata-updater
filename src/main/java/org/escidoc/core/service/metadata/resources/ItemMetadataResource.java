@@ -14,10 +14,11 @@ import org.w3c.dom.Element;
 
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
+import java.security.MessageDigest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
@@ -31,6 +32,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
@@ -53,10 +55,12 @@ import de.escidoc.core.resources.om.item.Item;
 
 @Path("items/{item-id}/metadata/{metadata-name}")
 public class ItemMetadataResource {
+  @Context
+  Request request;
 
   private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
-
-  // FIXME configure this using Guice
+  private static final String XSLT_FILE = "md-to-html-form.xsl";
+  // FIXME make it configurable
   // private final ItemRepository ir = new InMemoryItemRepository();
 
   private final ItemRepository ir = new ItemRepositoryImpl();
@@ -71,6 +75,7 @@ public class ItemMetadataResource {
 
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
+    Preconditions.checkNotNull(request, "request is null: %s", request);
 
     try {
       final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
@@ -78,7 +83,13 @@ public class ItemMetadataResource {
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
-      return Response.ok(new DOMSource(mr.getContent())).build();
+      // @formatter:off
+      return Response
+          .ok(new DOMSource(mr.getContent()))
+          .lastModified(mr.getLastModificationDate().toDate())
+          .tag(new EntityTag(computeDigest(mr.getContent().toString().getBytes())))
+          .build();
+	   // @formatter:on
     } catch (final InternalClientException e) {
       LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
       return redirect(ui, escidocUri);
@@ -88,8 +99,6 @@ public class ItemMetadataResource {
     }
   }
 
-  private static final String XSLT_FILE = "md-to-html-form.xsl";
-
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getAsHtml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
@@ -98,6 +107,7 @@ public class ItemMetadataResource {
 
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
+    Preconditions.checkNotNull(request, "request is null: %s", request);
 
     try {
       final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
@@ -112,8 +122,9 @@ public class ItemMetadataResource {
       LOG.info("result: " + s);
       // @formatter:off
         return Response
-            .ok(s.toString())
-            .tag(new EntityTag(new Date().toString()))
+            .ok(s.toString(),MediaType.TEXT_HTML)
+            .lastModified(mr.getLastModificationDate().toDate())
+            .tag(new EntityTag(computeDigest(s.toString().getBytes())))
             .build();
       //@formatter:on
     } catch (final AuthenticationException e) {
@@ -131,10 +142,6 @@ public class ItemMetadataResource {
     }
   }
 
-  private static InputStream readXsl() {
-    return Thread.currentThread().getContextClassLoader().getResourceAsStream(XSLT_FILE);
-  }
-
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public Response getAsText(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
@@ -143,13 +150,20 @@ public class ItemMetadataResource {
 
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
+    Preconditions.checkNotNull(request, "request is null: %s", request);
 
     try {
       final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
       if (Utils.asString(mr).isEmpty()) {
         return Response.status(Status.NO_CONTENT).build();
       }
-      return Response.ok(Utils.asString(mr)).build();
+      // @formatter:off
+      return Response
+          .ok(Utils.asString(mr))
+          .lastModified(mr.getLastModificationDate().toDate())
+          .tag(new EntityTag(computeDigest(Utils.asString(mr).getBytes())))
+          .build();
+	   // @formatter:on 
     } catch (final InternalClientException e) {
       LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
       return redirect(ui, escidocUri);
@@ -166,7 +180,9 @@ public class ItemMetadataResource {
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       final DOMSource s, @CookieParam("escidocCookie") final String escidocCookie,
       @QueryParam("eSciDocUserHandle") final String handle) {
+
     checkPreconditions(itemId, metadataName, escidocUri);
+    Preconditions.checkNotNull(request, "request is null: %s", request);
 
     final Item item = tryFindItemById(itemId, escidocUri, Base64.base64Decode(handle));
     final MetadataRecord mr = findMetadataByName(metadataName, item);
@@ -191,6 +207,21 @@ public class ItemMetadataResource {
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static String computeDigest(final byte[] content) {
+    try {
+      final MessageDigest md = MessageDigest.getInstance("SHA");
+      final byte[] digest = md.digest(content);
+      final BigInteger bi = new BigInteger(digest);
+      return bi.toString(16);
+    } catch (final Exception e) {
+      return "";
+    }
+  }
+
+  private static InputStream readXsl() {
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(XSLT_FILE);
   }
 
   private static Response redirect(final UriInfo ui, final String escidocUri) {
