@@ -17,6 +17,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
@@ -28,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -111,6 +113,7 @@ public class ItemMetadataResource {
       // @formatter:off
         return Response
             .ok(s.toString())
+            .tag(new EntityTag(new Date().toString()))
             .build();
       //@formatter:on
     } catch (final AuthenticationException e) {

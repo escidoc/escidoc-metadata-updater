@@ -56,6 +56,9 @@ A: Client has to send the eSciDoc cookies/token with every request
 === Approach ===
 
 - XSLT Transformation: XML --> XUL / HTML5 / XForms
+There are a couple of alternatives for building/serving the Metadata Editor UI.
+1. a HTML page that GET/PUT the metadata XML and apply the XSLT on the client.
+2. a HTML page that generated on the server by applying XSLT to XML.
 
 === Possible Outcome ===
 
