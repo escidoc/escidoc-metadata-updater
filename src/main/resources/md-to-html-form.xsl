@@ -9,7 +9,10 @@
         method="html" />
 
     <xsl:template match="/">
-        <!DOCTYPE html>
+    <!--TODO
+         <xsl:text disable-output-escaping="yes"><!DOCTYPE html></xsl:text>
+         -->
+
         <html>
             <head>
                 <title>eSciDoc Metadata Editor</title>
@@ -44,12 +47,12 @@
                                     var list=document.getElementsByTagName('input');
 
                                     Array.prototype.forEach.call(list, function(li, index, nodeList) {
-                                        if(li.type !== 'button') { 
+                                        if(li.type !== 'button') {
                                             if(li.defaultValue !== li.value) {
                                                 var found= rXml.getElementsByTagName(li.name);
                                                 var input=found[0];
                                                 input.textContent= li.value;
-                                            } 
+                                            }
                                         }
                                     });
                                     put(rXml);
@@ -89,55 +92,51 @@
                 </script>
             </head>
             <body>
-                <xsl:apply-templates />
+		        <div class="content">
+		            <div class="span12">
+		                <form
+		                    id="metadata-editor"
+		                    onSubmit="return send();">
+		                    <fieldset>
+		                        <legend>Metadata Editor</legend>
+				                <xsl:apply-templates />
+		                        <div class="actions">
+		                            <input
+		                                type="submit"
+		                                class="btn primary"
+		                                value="Save changes" />
+		                            <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+		                            <button
+		                                type="reset"
+		                                class="btn">Cancel</button>
+		                        </div>
+		                    </fieldset>
+		                </form>
+		            </div>
+		        </div>
             </body>
         </html>
     </xsl:template>
 
-    <!-- TODO find a better match patter for root node -->
-    <xsl:template match="/node()[position()=1]">
-        <div class="content">
-            <div class="span12">
-                <form
-                    id="metadata-editor"
-                    onSubmit="return send();">
-                    <fieldset>
-                        <legend>
-                            <xsl:value-of select="local-name()" />
-                        </legend>
-                        <xsl:for-each select="/node()/*">
-                            <div class="clearfix">
-                                <label>
-                                    <xsl:value-of select="local-name()" />
-                                </label>
-                                <div class="input">
-                                    <xsl:variable
-                                        name="key"
-                                        select="local-name()" />
-                                    <xsl:variable
-                                        name="value"
-                                        select="text()" />
-                   				<input
-                                    id="{$key}"
-                                    name="{$key}"
-                                    type="text"
-                                    value="{$value}" />
-                                </div>
-                            </div>
-                        </xsl:for-each>
-                        <div class="actions">
-                            <input
-                                type="submit"
-                                class="btn primary"
-                                value="Save changes" />
-                            <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                            <button
-                                type="reset"
-                                class="btn">Cancel</button>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
+	<xsl:template match="//*[not(*)]">
+       <xsl:variable
+           name="key"
+           select="local-name()" />
+       <xsl:variable
+           name="value"
+           select="text()" />
+       <div class="clearfix">
+           <label for="{$key}">
+               <xsl:value-of select="name()" />
+           </label>
+           <div class="input">
+             <input 
+               class="span6"
+               id="{$key}"
+               name="{$key}"
+               type="text"
+               value="{$value}" />
+           </div>
+       </div> <!--/clearfix-->
     </xsl:template>
 </xsl:stylesheet>

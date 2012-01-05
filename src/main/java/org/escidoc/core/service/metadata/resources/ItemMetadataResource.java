@@ -116,7 +116,8 @@ public class ItemMetadataResource {
       }
 
       final StringWriter s = new StringWriter();
-      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(new DOMSource(mr.getContent()), new StreamResult(s));
+      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(
+          new DOMSource(mr.getContent()), new StreamResult(s));
       LOG.info("result: " + s);
       // @formatter:off
         return Response
@@ -180,7 +181,7 @@ public class ItemMetadataResource {
     checkPreconditions(itemId, metadataName, escidocUri);
     Preconditions.checkNotNull(request, "request is null: %s", request);
 
-    final Item item = tryFindItemById(itemId, escidocUri, Base64.base64Decode(handle));
+    final Item item = tryFindItemById(itemId, escidocUri, decodeHandle(handle));
     final MetadataRecord mr = findMetadataByName(metadataName, item);
     mr.setContent((Element) s.getNode().getFirstChild());
 
