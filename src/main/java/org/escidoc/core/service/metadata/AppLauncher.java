@@ -13,9 +13,9 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class App {
+public class AppLauncher {
 
-  private final static Logger LOG = LoggerFactory.getLogger(App.class);
+  private final static Logger LOG = LoggerFactory.getLogger(AppLauncher.class);
   public static final String RESOURCE_PACKAGE = "org.escidoc.core.service.metadata.resources";
   public static final String HOST = "http://localhost/";
   public static final int PORT = 9998;

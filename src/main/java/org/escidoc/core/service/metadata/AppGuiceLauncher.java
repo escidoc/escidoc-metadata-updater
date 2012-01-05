@@ -1,15 +1,18 @@
-package org.escidoc.core.service.metadata.guice;
+package org.escidoc.core.service.metadata;
 
 import com.google.inject.servlet.GuiceFilter;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.escidoc.core.service.metadata.guice.AppServletConfig;
 
 public class AppGuiceLauncher {
 
+  private static final int PORT_NUMBER = 8088;
+
   public static void main(final String[] args) throws Exception {
-    final Server server = new Server(8088);
+    final Server server = new Server(PORT_NUMBER);
     final ServletContextHandler sch = new ServletContextHandler(server, "/");
     sch.addEventListener(new AppServletConfig());
     sch.addFilter(GuiceFilter.class, "/*", null);
@@ -17,5 +20,4 @@ public class AppGuiceLauncher {
     server.start();
     server.join();
   }
-
 }

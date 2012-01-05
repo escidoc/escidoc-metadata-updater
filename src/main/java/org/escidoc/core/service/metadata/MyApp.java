@@ -9,6 +9,6 @@ import javax.ws.rs.ApplicationPath;
 public class MyApp extends PackagesResourceConfig {
 
   public MyApp() {
-    super(App.RESOURCE_PACKAGE);
+    super(AppLauncher.RESOURCE_PACKAGE);
   }
 }

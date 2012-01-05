@@ -1,12 +1,12 @@
 package org.escidoc.core.service.metadata.resources;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.core.util.Base64;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
-import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
 import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +60,9 @@ public class ItemMetadataResource {
 
   private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
   private static final String XSLT_FILE = "md-to-html-form.xsl";
-  // FIXME make it configurable
-  // private final ItemRepository ir = new InMemoryItemRepository();
 
-  private final ItemRepository ir = new ItemRepositoryImpl();
+  @Inject
+  private ItemRepository ir;
 
   // TODO we should use the browser cookie instead of eSciDocUserHandle query
   // parameter
