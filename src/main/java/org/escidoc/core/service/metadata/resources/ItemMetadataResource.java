@@ -49,6 +49,7 @@ import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.notfound.ResourceNotFoundException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
+import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
@@ -71,11 +72,8 @@ public class ItemMetadataResource {
   public Response getAsXml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       @CookieParam("escidocCookie") final String escidocCookie, @QueryParam("eSciDocUserHandle") final String handle) {
-
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
-    Preconditions.checkNotNull(request, "request is null: %s", request);
-
     try {
       final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
       Preconditions.checkNotNull(mr, "mr is null: %s", mr);
@@ -105,7 +103,6 @@ public class ItemMetadataResource {
 
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
-    Preconditions.checkNotNull(request, "request is null: %s", request);
 
     try {
       final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
@@ -147,7 +144,6 @@ public class ItemMetadataResource {
 
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
-    Preconditions.checkNotNull(request, "request is null: %s", request);
 
     try {
       final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
@@ -192,6 +188,10 @@ public class ItemMetadataResource {
           .ok()
           .build();
   	   // @formatter:on
+    } catch (final AuthorizationException e) {
+      return redirect(ui, escidocUri);
+    } catch (final AuthenticationException e) {
+      return redirect(ui, escidocUri);
     } catch (final EscidocException e) {
       LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
           + e.getMessage());

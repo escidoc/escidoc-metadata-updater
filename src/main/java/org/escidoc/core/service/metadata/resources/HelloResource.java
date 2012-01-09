@@ -23,9 +23,6 @@ import javax.xml.transform.stream.StreamSource;
 @Path("helloworld")
 public class HelloResource {
 
-  // private static final String XSLT_FILE = "e.xsl";
-  // private static final String XML_FILE = "e.xml";
-
   private static final String XSLT_FILE = "md-to-html-form.xsl";
   private static final String XML_FILE = "org-unit-metadata.xml";
 
