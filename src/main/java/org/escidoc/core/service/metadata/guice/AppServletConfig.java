@@ -9,6 +9,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
+import org.escidoc.core.service.metadata.resources.HelloResource;
 import org.escidoc.core.service.metadata.resources.ItemMetadataResource;
 
 public class AppServletConfig extends GuiceServletContextListener {
@@ -20,8 +21,7 @@ public class AppServletConfig extends GuiceServletContextListener {
       protected void configureServlets() {
         super.configureServlets();
         bind(ItemMetadataResource.class);
-
-        // bind(ItemRepository.class).to(InMemoryItemRepository.class);
+        bind(HelloResource.class);
         bind(ItemRepository.class).to(ItemRepositoryImpl.class);
         serve("/*").with(GuiceContainer.class);
       }
