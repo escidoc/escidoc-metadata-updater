@@ -10,6 +10,7 @@ import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
+import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.client.interfaces.ItemHandlerClientInterface;
 import de.escidoc.core.resources.om.item.Item;
 
@@ -35,7 +36,8 @@ public class ItemRepositoryImpl implements ItemRepository {
   }
 
   @Override
-  public Item update(final Item item) throws EscidocException, InternalClientException, TransportException {
+  public Item update(final Item item) throws AuthorizationException, EscidocException, InternalClientException,
+      TransportException {
     return c.update(item);
   }
 
