@@ -84,7 +84,7 @@
                         xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
                         xhr.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
 
-                        xhr.onreadystatechange = function (oEvent) {
+                        xhr.onreadystatechange = function (event) {
                             if (xhr.readyState === 4) {
                                 if (xhr.status === 200) {
                                     var r=xhr.responseText;
@@ -108,7 +108,7 @@
                                     });
                                     put(rXml);
                                 } else {
-                                    console.log("Error", xhr.statusText);
+                                  console.log("status: ", xhr2.statusText);
                                 }
                             }
                         };
@@ -123,15 +123,21 @@
                         xhr2.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
                         xhr2.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
 
-                        xhr2.onreadystatechange = function (oEvent) {
+                        xhr2.onreadystatechange = function (event) {
                             if (xhr2.readyState === 4) {
                                 if (xhr2.status === 200) {
                                     var r=xhr2.responseXML;
                                     console.log("Successfully update the metadata.");
                                     console.log(r);
+                                    alert('The response was: ' + xhr2.status +', '+ xhr2.responseText);
+                                } else if(xhr2.status === 303){
+                                    alert('redirect');
+                                } else if(xhr2.status === 0){
+                                    alert('zero...');
                                 } else {
-                                    console.log("Error", xhr2.statusText);
-                                }
+                                    console.log("status: ", xhr2.statusText);
+                                    alert('Snap, something went wrong: ' + xhr2.status +', reason: '+ xhr2.responseText);
+                                } 
                             }
                         };
                         xhr2.send(xml);
