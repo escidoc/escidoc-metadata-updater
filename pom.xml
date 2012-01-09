@@ -6,8 +6,9 @@
 	<groupId>org.escidoc.core.service</groupId>
 	<artifactId>escidoc-metadata-updater</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<name>eSciDoc Metadata Updater Web Service</name>
 	<packaging>war</packaging>
-	
+
 	<properties>
 		<compiler.level>1.6</compiler.level>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -187,7 +188,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.github.crh.sword.App</mainClass>
+					<mainClass>org.escidoc.core.service.metadata.AppGuiceLauncher</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
