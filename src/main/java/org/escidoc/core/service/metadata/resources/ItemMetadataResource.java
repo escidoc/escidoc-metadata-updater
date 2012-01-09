@@ -56,11 +56,12 @@ import de.escidoc.core.resources.om.item.Item;
 
 @Path("items/{item-id}/metadata/{metadata-name}")
 public class ItemMetadataResource {
-  @Context
-  Request request;
 
   private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
   private static final String XSLT_FILE = "md-to-html-form.xsl";
+
+  @Context
+  private Request request;
 
   @Inject
   private ItemRepository ir;
