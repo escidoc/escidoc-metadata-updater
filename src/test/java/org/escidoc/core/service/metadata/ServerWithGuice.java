@@ -8,13 +8,13 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.escidoc.core.service.metadata.guice.AppServletConfig;
 
 public class ServerWithGuice {
-  public static final String RESOURCE_PACKAGE = "org.escidoc.core.service.metadata.resources";
+
   public static final String HOST = "http://localhost/";
-  public static final int PORT = 9997;
+  public static final int PORT_NUMBER = 9997;
   private final Server server;
 
   public ServerWithGuice() {
-    server = new Server(PORT);
+    server = new Server(PORT_NUMBER);
     final ServletContextHandler sch = new ServletContextHandler(server, "/");
     sch.addEventListener(new AppServletConfig());
     sch.addFilter(GuiceFilter.class, "/*", null);
