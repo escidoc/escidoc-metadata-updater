@@ -1,11 +1,21 @@
 package org.escidoc.core.service.metadata.internal;
 
+import com.google.inject.servlet.GuiceFilter;
+
+import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.escidoc.core.service.metadata.InMemoryServletConfig;
 import org.escidoc.core.service.metadata.ItemMetadataUpdateServiceSpec;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +26,25 @@ import javax.xml.transform.dom.DOMSource;
 public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
 
   private final static Logger LOG = LoggerFactory.getLogger(InMemory.class);
+  private Server server;
+  private Client client;
+
+  @Before
+  public void setup() throws Exception {
+    server = new Server(8089);
+    final ServletContextHandler sch = new ServletContextHandler(server, "/");
+    sch.addEventListener(new InMemoryServletConfig());
+    sch.addFilter(GuiceFilter.class, "/*", null);
+    sch.addServlet(DefaultServlet.class, "/");
+    server.start();
+    client = Client.create();
+    resource = client.resource("http://localhost:8089").path("rest");
+  }
+
+  @After
+  public void stop() throws Exception {
+    server.stop();
+  }
 
   @Test
   @Override
@@ -177,7 +206,26 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
 
   @Test
   @Override
-  public void shouldReturn303WhenNoValidCookie() throws Exception {
+  public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
+
+  @Test
+  @Override
+  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
+
+  @Test
+  @Override
+  public void shouldReturn401WhenNoValidCookie() throws Exception {
+
     // @formatter:off
 	    final ClientResponse r = resource
 	        .path("items")
@@ -190,27 +238,26 @@ public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
 	   // @formatter:on
 
     LOG.debug("Error message: " + r.getEntity(String.class));
-    assertEquals("response is not equals", 303, r.getStatus());
+    assertEquals("response is not equals", 401, r.getStatus());
   }
 
   @Test
   @Override
-  public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
+  public void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception {
+    client.addFilter(new HTTPBasicAuthFilter("sysadmin", "eSciDoc"));
 
-  @Override
-  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
+    // @formatter:off
+      final ClientResponse r = resource
+          .path("items")
+          .path(PROTECTED_ITEM_ID)
+          .path("metadata")
+          .path(EXISTING_METADATA_NAME)
+          .queryParam("eu", SERVICE_URL)
+          .accept(MediaType.APPLICATION_XML)
+          .get(ClientResponse.class);
+     // @formatter:on
 
-  @Override
-  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
-
-  @Override
-  public void shouldReturn401WhenNoValidCookie() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    LOG.debug("Error message: " + r.getEntity(String.class));
+    assertEquals("response is not equals", 200, r.getStatus());
   }
 }

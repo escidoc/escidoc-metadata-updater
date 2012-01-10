@@ -20,8 +20,6 @@ public interface ItemMetadataUpdateServiceSpec {
 
   void shouldNotUpdateMetadataIfInConfict() throws Exception;
 
-  void shouldReturn303WhenNoValidCookie() throws Exception;
-
   void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception;
 
   void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception;
@@ -31,4 +29,6 @@ public interface ItemMetadataUpdateServiceSpec {
   void shouldReturn200forHelloWorldXml() throws Exception;
 
   void shouldReturn401WhenNoValidCookie() throws Exception;
+
+  void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception;
 }
