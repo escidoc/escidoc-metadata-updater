@@ -6,6 +6,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.Base64;
 
 import static org.junit.Assert.assertEquals;
@@ -37,6 +38,8 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
 
   private Server server;
 
+  private Client client;
+
   @Before
   public void setup() throws Exception {
     server = new Server(8089);
@@ -45,7 +48,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
     sch.addFilter(GuiceFilter.class, "/*", null);
     sch.addServlet(DefaultServlet.class, "/");
     server.start();
-    final Client client = Client.create();
+    client = Client.create();
     resource = client.resource("http://localhost:8089").path("rest");
   }
 
@@ -224,6 +227,25 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
   @Test
   @Override
   public void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    client.addFilter(new HTTPBasicAuthFilter("sysadmin", "eSciDoc"));
+
+    // @formatter:off
+    final Builder builder = resource
+        .path("items")
+        .path("escidoc:93")
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML);
+    
+    final DOMSource e = builder
+        .get(ClientResponse.class)
+        .getEntity(DOMSource.class);
+    
+    final ClientResponse r = builder.put(ClientResponse.class,e);
+   // @formatter:on
+
+    LOG.debug("Entity: " + r.getEntity(String.class));
+    assertEquals("response is not equals", 200, r.getStatus());
   }
 }
