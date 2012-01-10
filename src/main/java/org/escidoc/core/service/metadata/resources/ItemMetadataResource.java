@@ -76,7 +76,7 @@ public class ItemMetadataResource {
     checkPreconditions(itemId, metadataName, escidocUri);
     checkQueryParameter(escidocUri);
     try {
-      final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
+      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(handle));
       Preconditions.checkNotNull(mr, "mr is null: %s", mr);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
@@ -106,7 +106,7 @@ public class ItemMetadataResource {
     checkQueryParameter(escidocUri);
 
     try {
-      final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
+      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(handle));
       Preconditions.checkNotNull(mr, "mr is null: %s", mr);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
@@ -147,7 +147,7 @@ public class ItemMetadataResource {
     checkQueryParameter(escidocUri);
 
     try {
-      final MetadataRecord mr = tryFindMetadataByName(ui, itemId, metadataName, escidocUri, decodeHandle(handle));
+      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(handle));
       if (Utils.asString(mr).isEmpty()) {
         return Response.status(Status.NO_CONTENT).build();
       }
@@ -233,11 +233,11 @@ public class ItemMetadataResource {
     return Response.seeOther(u).build();
   }
 
-  private MetadataRecord tryFindMetadataByName(final UriInfo ui, final String itemId, final String metadataName,
-      final String escidocUri, final String escidocCookie) throws InternalClientException, AuthenticationException {
+  private MetadataRecord tryFindMetadataByName(final String itemId, final String metadataName, final String escidocUri,
+      final String escidocCookie) throws InternalClientException, AuthenticationException {
     MetadataRecord mr = null;
     try {
-      mr = findMetadataByName(metadataName, findItem(itemId, escidocUri, escidocCookie));
+      mr = findMetadataByName(metadataName, ir.find(itemId, new URI(escidocUri), escidocCookie));
     } catch (final AuthenticationException e) {
       throw new AuthenticationException("", e);
     } catch (final ResourceNotFoundException e) {
@@ -245,7 +245,6 @@ public class ItemMetadataResource {
       // FIXME add not found URI
       throw new NotFoundException(e.getMessage());
     } catch (final EscidocException e) {
-      // FIXME map the true exception.
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final TransportException e) {
@@ -261,16 +260,9 @@ public class ItemMetadataResource {
     return mr;
   }
 
-  private static String decodeHandle(final String handle) {
-    if (handle != null) {
-      return Base64.base64Decode(handle);
-    }
-    return "";
-  }
-
   private Item tryFindItemById(final String itemId, final String escidocUri, final String escidocCookie) {
     try {
-      final Item item = findItem(itemId, escidocUri, escidocCookie);
+      final Item item = ir.find(itemId, new URI(escidocUri), escidocCookie);
       Preconditions.checkNotNull(item, "item is null: %s", item);
       return item;
     } catch (final EscidocException e) {
@@ -289,6 +281,13 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static String decodeHandle(final String handle) {
+    if (handle != null) {
+      return Base64.base64Decode(handle);
+    }
+    return "";
   }
 
   private static void checkPreconditions(final String itemId, final String metadataName, final String escidocUri) {
@@ -317,10 +316,5 @@ public class ItemMetadataResource {
     if (escidocUri == null || escidocUri.isEmpty()) {
       throw new WebApplicationException(Status.BAD_REQUEST);
     }
-  }
-
-  private Item findItem(final String itemId, final String escidocUri, final String cookie) throws EscidocException,
-      InternalClientException, TransportException, MalformedURLException, URISyntaxException, AuthenticationException {
-    return ir.find(itemId, new URI(escidocUri), cookie);
   }
 }

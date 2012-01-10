@@ -21,7 +21,6 @@
                 <meta
                     name="keywords"
                     content="escidoc, metadata editor" />
-                  
                 <link
                   rel="stylesheet"
                   type="text/css"
@@ -82,7 +81,7 @@
             </head>
             <body>
             <div class="container">
-              <div class="alert">test</div>
+              <div class="alert"></div>
               <div class="content">
                 <div class="page-header">
                   <h1>Metadata Editor</h1>

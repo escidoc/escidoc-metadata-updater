@@ -17,14 +17,6 @@ import de.escidoc.core.resources.om.item.Item;
 public class ItemRepositoryImpl implements ItemRepository {
   private ItemHandlerClientInterface c;
 
-  @Override
-  public Item find(final String itemId, final URI serviceUri) throws EscidocException, InternalClientException,
-      TransportException, MalformedURLException {
-
-    c = new ItemHandlerClient(serviceUri.toURL());
-    return c.retrieve(itemId);
-  }
-
   // TODO NOTE: it can throw Authentification or AuthorizationException
   @Override
   public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
@@ -40,5 +32,4 @@ public class ItemRepositoryImpl implements ItemRepository {
       TransportException {
     return c.update(item);
   }
-
 }
