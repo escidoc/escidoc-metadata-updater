@@ -22,7 +22,6 @@ import java.security.MessageDigest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -71,12 +70,10 @@ public class ItemMetadataResource {
   @Produces(MediaType.APPLICATION_XML)
   public Response getAsXml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @CookieParam("escidocCookie") final String escidocCookie, @QueryParam("eSciDocUserHandle") final String handle) {
-    checkPreconditions(itemId, metadataName, escidocUri);
-    checkQueryParameter(escidocUri);
-    Preconditions.checkNotNull(request, "request is null: %s", request);
+      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    checkPreconditions(itemId, metadataName, escidocUri, request);
+    final String token = encodedHandle;
 
-    final String token = handle;
     // if (request.getHeader("authorization") != null) {
     // final String u =
     // decodeHandle(request.getHeader("authorization").split(" ")[1]).split(":")[0];
@@ -100,8 +97,8 @@ public class ItemMetadataResource {
     // }
 
     try {
-      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, token);
-      Preconditions.checkNotNull(mr, "mr is null: %s", mr);
+      final Item item = findItem(itemId, escidocUri, encodedHandle);
+      final MetadataRecord mr = findMetadataByName(metadataName, item);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
@@ -111,26 +108,52 @@ public class ItemMetadataResource {
           .tag(new EntityTag(computeDigest(mr.getContent().toString().getBytes())))
           .build();
 	   // @formatter:on
-    } catch (final InternalClientException e) {
-      LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
-      return response401(ui, escidocUri);
     } catch (final AuthenticationException e) {
       LOG.debug("Cookie is not valid while accessing protected source. ");
       return response401(ui, escidocUri);
+    } catch (final AuthorizationException e) {
+      LOG.debug("Cookie is not valid while accessing protected source. ");
+      return response401(ui, escidocUri);
+    } catch (final EscidocException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final InternalClientException e) {
+      LOG.debug("No auth token is provided or not valid while accessing protected source. ");
+      return response401(ui, escidocUri);
+    } catch (final TransportException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final MalformedURLException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final URISyntaxException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private Item findItem(final String itemId, final String escidocUri, final String encodedHandle)
+      throws EscidocException, InternalClientException, TransportException, MalformedURLException, URISyntaxException {
+    final Item item = ir.find(itemId, new URI(escidocUri), decodeHandle(encodedHandle));
+    if (item == null) {
+      throw new NotFoundException("Item," + itemId + ", not found");
+    }
+    return item;
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getAsHtml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @CookieParam("escidocCookie") final String escidocCookie, @QueryParam("eSciDocUserHandle") final String handle) {
-
-    checkPreconditions(itemId, metadataName, escidocUri);
-    checkQueryParameter(escidocUri);
+      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    checkPreconditions(itemId, metadataName, escidocUri, request);
 
     try {
-      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(handle));
+      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(encodedHandle));
       Preconditions.checkNotNull(mr, "mr is null: %s", mr);
 
       if (mr.getContent() == null) {
@@ -170,13 +193,11 @@ public class ItemMetadataResource {
   @Produces(MediaType.TEXT_PLAIN)
   public Response getAsText(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @CookieParam("escidocCookie") final String escidocCookie, @QueryParam("eSciDocUserHandle") final String handle) {
-
-    checkPreconditions(itemId, metadataName, escidocUri);
-    checkQueryParameter(escidocUri);
+      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    checkPreconditions(itemId, metadataName, escidocUri, request);
 
     try {
-      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(handle));
+      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(encodedHandle));
       if (Utils.asString(mr).isEmpty()) {
         return Response.status(Status.NO_CONTENT).build();
       }
@@ -200,12 +221,10 @@ public class ItemMetadataResource {
   @Produces("application/xml")
   public Response update(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      final DOMSource s, @CookieParam("escidocCookie") final String escidocCookie,
-      @QueryParam("eSciDocUserHandle") final String handle) {
+      final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    checkPreconditions(itemId, metadataName, escidocUri, request);
 
-    checkPreconditions(itemId, metadataName, escidocUri);
-
-    final Item item = tryFindItemById(itemId, escidocUri, decodeHandle(handle));
+    final Item item = tryFindItemById(itemId, escidocUri, decodeHandle(encodedHandle));
     final MetadataRecord mr = findMetadataByName(metadataName, item);
     mr.setContent((Element) s.getNode().getFirstChild());
 
@@ -284,9 +303,9 @@ public class ItemMetadataResource {
     return mr;
   }
 
-  private Item tryFindItemById(final String itemId, final String escidocUri, final String escidocCookie) {
+  private Item tryFindItemById(final String itemId, final String escidocUri, final String token) {
     try {
-      final Item item = ir.find(itemId, new URI(escidocUri), escidocCookie);
+      final Item item = ir.find(itemId, new URI(escidocUri), token);
       Preconditions.checkNotNull(item, "item is null: %s", item);
       return item;
     } catch (final EscidocException e) {
@@ -314,9 +333,12 @@ public class ItemMetadataResource {
     return "";
   }
 
-  private static void checkPreconditions(final String itemId, final String metadataName, final String escidocUri) {
+  private static void checkPreconditions(final String itemId, final String metadataName, final String escidocUri,
+      final HttpServletRequest request) {
     Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
     Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
+    Preconditions.checkNotNull(request, "request is null: %s", request);
+    checkQueryParameter(escidocUri);
 
     final String msg = "Get a request for item with the id: " + itemId + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;

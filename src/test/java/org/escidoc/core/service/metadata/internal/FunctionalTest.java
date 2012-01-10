@@ -192,11 +192,13 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
     assertEquals("response is not equals", 200, r.getStatus());
   }
 
+  @Test
   @Override
   public void shouldReturn200forHelloWorldXml() throws Exception {
     throw new UnsupportedOperationException("not-yet-implemented.");
   }
 
+  @Test
   @Override
   public void shouldReturn401WhenNoValidCookie() throws Exception {
     // @formatter:off
@@ -219,6 +221,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
     assertEquals("response is not equals", 401, r.getStatus());
   }
 
+  @Test
   @Override
   public void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception {
     throw new UnsupportedOperationException("not-yet-implemented.");

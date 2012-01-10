@@ -7,7 +7,7 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.escidoc.core.service.metadata.guice.AppServletConfig;
 
-public class AppGuiceLauncher {
+public class AppLauncher {
 
   private static final int PORT_NUMBER = 8088;
 
