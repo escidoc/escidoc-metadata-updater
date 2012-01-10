@@ -46,7 +46,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
     sch.addServlet(DefaultServlet.class, "/");
     server.start();
     final Client client = Client.create();
-    resource = client.resource("http://localhost:8089");
+    resource = client.resource("http://localhost:8089").path("rest");
   }
 
   @After
@@ -212,6 +212,11 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
 
   @Override
   public void shouldReturn200forHelloWorldXml() throws Exception {
+    throw new UnsupportedOperationException("not-yet-implemented.");
+  }
+
+  @Override
+  public void shouldReturn401WhenNoValidCookie() throws Exception {
     throw new UnsupportedOperationException("not-yet-implemented.");
   }
 }

@@ -29,4 +29,6 @@ public interface ItemMetadataUpdateServiceSpec {
   void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception;
 
   void shouldReturn200forHelloWorldXml() throws Exception;
+
+  void shouldReturn401WhenNoValidCookie() throws Exception;
 }
