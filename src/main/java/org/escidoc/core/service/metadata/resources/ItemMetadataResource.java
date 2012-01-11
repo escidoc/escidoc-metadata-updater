@@ -177,7 +177,6 @@ public class ItemMetadataResource {
           .tag(new EntityTag(computeDigest(s.toString().getBytes())))
           .build();
     //@formatter:on
-
     } catch (final AuthenticationException e) {
       LOG.debug("Cookie is not valid while accessing protected source. ");
       return response401(ui, escidocUri);
