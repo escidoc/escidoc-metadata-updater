@@ -61,6 +61,7 @@ public class ItemMetadataResource {
   private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
   private static final String XSLT_FILE = "md-to-html-form.xsl";
   private static final String BASIC_REALM = "www.escidoc.org";
+  private static final String AUTHORIZATION = "authorization";
 
   @Context
   private HttpServletRequest request;
@@ -79,11 +80,11 @@ public class ItemMetadataResource {
 
     try {
       String decodedHandle = null;
-      if (request.getHeader("authorization") == null) {
+      if (request.getHeader(AUTHORIZATION) == null) {
         decodedHandle = decodeHandle(encodedHandle);
       } else {
-        final String u = decodeHandle(request.getHeader("authorization").split(" ")[1]).split(":")[0];
-        final String p = decodeHandle(request.getHeader("authorization").split(" ")[1]).split(":")[1];
+        final String u = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[0];
+        final String p = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[1];
         final Authentication authentication = new Authentication(new URL(escidocUri), u, p);
         decodedHandle = authentication.getHandle();
       }
@@ -149,11 +150,11 @@ public class ItemMetadataResource {
 
     try {
       String decodedHandle = null;
-      if (request.getHeader("authorization") == null) {
+      if (request.getHeader(AUTHORIZATION) == null) {
         decodedHandle = decodeHandle(encodedHandle);
       } else {
-        final String u = decodeHandle(request.getHeader("authorization").split(" ")[1]).split(":")[0];
-        final String p = decodeHandle(request.getHeader("authorization").split(" ")[1]).split(":")[1];
+        final String u = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[0];
+        final String p = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[1];
         final Authentication authentication = new Authentication(new URL(escidocUri), u, p);
         decodedHandle = authentication.getHandle();
       }
