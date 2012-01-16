@@ -1,15 +1,3 @@
-RUN
-===
-
-$mvn clean package jetty:run
-
-
-TODO
-====
-    if the client can accept html, it should response with XSLT-processed HTML Form
-    if the server thrown Auth Exception, it should response with 303 See other => Login Form
-    there are a lot of similar/copy and paste code between in memory and real server implementation.
-    
 == eSciDoc (Item) Metadata Update RESTful Web Service ==
 
 === Goal ===
@@ -18,11 +6,14 @@ A client should be able to fetch and update metadata of an eSciDoc (item) resour
 
 === URI ===
 
-GET/PUT
+GET
 http://{hostname}:{port}/metadata-updater/items/{item-id}/metadata/{metadata-name}?eu={http://hostname:port}
-[1]
-Accept: Content-Type: application/xml
+Content-Type: application/xml, text/plain, text/html
+
+PUT
+http://{hostname}:{port}/metadata-updater/items/{item-id}/metadata/{metadata-name}?eu={http://hostname:port}
 Produces: Content-Type: application/xml
+Accept: Content-Type: application/xml
     
 === Protocol Interactions ===
 
@@ -52,11 +43,35 @@ to fetch the item with a given id. Then:
           the server offers two options to the client to either download the current version and adapt the change manually or
           directly replace the current version with her modification. [2]
 
-Q: Where does the client get the item metadata from? eSciDoc Browser? 
-A: From the Web Service
-    
-Q: How does the client authentificate and authorize herself?
-A: Client has to send the eSciDoc cookies/token with every request
+
+=== RUN ===
+
+How to run the service in dev. mode:
+$mvn clean package jetty:run
+
+=== TODO ===
+
+# determine, if we should use eSciDoc client library/ijc or directly access the eSciDoc infrastructure using HTTP client.
+# there are a lot of similar/copy and paste code between in memory and real server implementation.
+# determine, which URI is better:
+## http://{hostname}:{port}/metadata-updater/items/{item-id}/metadata/{metadata-name}?eu={http://hostname:port}
+## http://{hostname}:{port}/metadata-updater?source=http://{hostname}:{port}/ir/items/{item-id}/md-records/md-record/{metadata-name}}
+
+=== Q&A ===
+
+Q: Does the client always have to be authorized to use the service?
+A: ???
+
+Q: How does the client authenticate and authorize herself?
+A: use the cookie she gets somewhere or service offers HTTP Basic Auth.
+
+Q: How does the service reacts, if the client fetch a resource with a version X
+modifies it, authentificates and update the resource? It means the client is not
+updating based on the latest resource.
+A: ???
+
+Q: What are the use cases for metadata update service?
+A: ???
 
 == eSciDoc (Item) Metadata User Interface ==
 
