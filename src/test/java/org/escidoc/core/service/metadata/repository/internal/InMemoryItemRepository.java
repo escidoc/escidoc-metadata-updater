@@ -40,7 +40,10 @@ public class InMemoryItemRepository implements ItemRepository {
   }
 
   private void addProtectedItem() {
-    map.put(Base.PROTECTED_ITEM_ID, new Item());
+    final Item i = new Item();
+    map.put(Base.PROTECTED_ITEM_ID, i);
+    i.setMetadataRecords(mrs);
+
   }
 
   private void addDefaultMetadata() {
@@ -60,10 +63,14 @@ public class InMemoryItemRepository implements ItemRepository {
   @Override
   public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
       InternalClientException, TransportException, MalformedURLException {
-    if (itemId.equals(Base.PROTECTED_ITEM_ID)) {
+    if (itemId.equals(Base.PROTECTED_ITEM_ID) && notEscidoc(token)) {
       throw new AuthenticationException("Item, " + itemId + ", is a protected resource", new Exception());
     }
     return map.get(itemId);
+  }
+
+  private static boolean notEscidoc(final String token) {
+    return token == null || !token.startsWith("ESCIDOC");
   }
 
   @Override

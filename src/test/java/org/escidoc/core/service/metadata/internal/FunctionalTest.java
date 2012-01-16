@@ -213,14 +213,8 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .queryParam("eu", SERVICE_URL)
         .accept(MediaType.APPLICATION_XML);
     
-    final DOMSource e = builder
-        .get(ClientResponse.class)
-        .getEntity(DOMSource.class);
-    
-    final ClientResponse r = builder.put(ClientResponse.class,e);
+    final ClientResponse r = builder.get(ClientResponse.class);
    // @formatter:on
-
-    LOG.debug("Entity: " + r.getEntity(String.class));
     assertEquals("response is not equals", 401, r.getStatus());
   }
 
@@ -247,5 +241,23 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
 
     LOG.debug("Entity: " + r.getEntity(String.class));
     assertEquals("response is not equals", 200, r.getStatus());
+  }
+
+  @Test
+  public void shouldRechallangeIfUsernameAndPasswordIsEmpty() {
+    client.addFilter(new HTTPBasicAuthFilter("", ""));
+
+    // @formatter:off
+    final Builder builder = resource
+        .path("items")
+        .path("escidoc:93")
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML);
+    
+    final ClientResponse r = builder.get(ClientResponse.class);
+    assertEquals("response is not equals", 401, r.getStatus());
+
   }
 }

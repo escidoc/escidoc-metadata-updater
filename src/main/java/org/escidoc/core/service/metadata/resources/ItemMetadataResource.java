@@ -7,7 +7,6 @@ import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.core.util.Base64;
 
 import org.escidoc.core.service.metadata.repository.ItemRepository;
-import org.escidoc.core.service.metadata.repository.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -48,7 +47,6 @@ import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.notfound.ItemNotFoundException;
-import de.escidoc.core.client.exceptions.application.notfound.ResourceNotFoundException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.common.MetadataRecord;
@@ -62,6 +60,7 @@ public class ItemMetadataResource {
   private static final String XSLT_FILE = "md-to-html-form.xsl";
   private static final String BASIC_REALM = "www.escidoc.org";
   private static final String AUTHORIZATION = "authorization";
+  private static final String BASIC = "Basic";
 
   @Context
   private HttpServletRequest request;
@@ -79,25 +78,12 @@ public class ItemMetadataResource {
     checkPreconditions(itemId, metadataName, escidocUri, request);
 
     try {
-      String decodedHandle = null;
-      if (request.getHeader(AUTHORIZATION) == null) {
-        decodedHandle = decodeHandle(encodedHandle);
-      } else {
-        final String u = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[0];
-        final String p = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[1];
-        final Authentication authentication = new Authentication(new URL(escidocUri), u, p);
-        decodedHandle = authentication.getHandle();
-      }
-
-      final Item item = ir.find(itemId, new URI(escidocUri), decodedHandle);
-      if (item == null) {
-        throw new NotFoundException("Item," + itemId + ", not found");
-      }
-
+      final Item item = findItem(itemId, escidocUri, encodedHandle);
       final MetadataRecord mr = findMetadataByName(metadataName, item);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
+
       // @formatter:off
       return Response
           .ok(new DOMSource(mr.getContent()))
@@ -106,10 +92,10 @@ public class ItemMetadataResource {
 	   // @formatter:on
     } catch (final AuthenticationException e) {
       LOG.debug("Cookie is not valid while accessing protected source. ");
-      return response401(ui, escidocUri);
+      return response401();
     } catch (final AuthorizationException e) {
       LOG.debug("Cookie is not valid while accessing protected source. ");
-      return response401(ui, escidocUri);
+      return response401();
     } catch (final ItemNotFoundException e) {
       throw new NotFoundException("Item," + itemId + ", not found");
     } catch (final EscidocException e) {
@@ -120,7 +106,7 @@ public class ItemMetadataResource {
       if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
         // We assume here, the ijc can not unmarshall the HTML Login Form.
         LOG.debug("No auth token is provided or not valid while accessing protected source. ");
-        return response401(ui, escidocUri);
+        return response401();
       }
       LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
           + e.getMessage());
@@ -140,6 +126,61 @@ public class ItemMetadataResource {
     }
   }
 
+  private Item findItem(final String itemId, final String escidocUri, final String encodedHandle)
+      throws AuthenticationException, TransportException, MalformedURLException, EscidocException,
+      InternalClientException, URISyntaxException {
+    final String decodedHandle = getHandleIfAny(escidocUri, encodedHandle);
+    final Item item = ir.find(itemId, new URI(escidocUri), decodedHandle);
+    if (item == null) {
+      throw new NotFoundException("Item," + itemId + ", not found");
+    }
+    return item;
+  }
+
+  private String getHandleIfAny(final String escidocUri, final String encodedHandle) throws AuthenticationException,
+      TransportException, MalformedURLException {
+    if (has(encodedHandle)) {
+      return decodeHandle(encodedHandle);
+    } else if (hasAuthHeader()) {
+      final String[] creds = request.getHeader(AUTHORIZATION).split(" ");
+      if (useHttpBasicAuth(creds) && notEmpty(creds)) {
+        return loginToEscidoc(escidocUri, creds);
+      }
+    }
+    return "";
+  }
+
+  private static String loginToEscidoc(final String escidocUri, final String[] creds) throws AuthenticationException,
+      TransportException, MalformedURLException {
+    String decodedHandle;
+    decodedHandle = new Authentication(new URL(escidocUri), getUserName(creds), getPassword(creds)).getHandle();
+    return decodedHandle;
+  }
+
+  private static String getPassword(final String[] creds) {
+    return decodeHandle(creds[1]).split(":")[1];
+  }
+
+  private static String getUserName(final String[] creds) {
+    return decodeHandle(creds[1]).split(":")[0];
+  }
+
+  private static boolean notEmpty(final String[] creds) {
+    return decodeHandle(creds[1]).split(":").length > 0;
+  }
+
+  private static boolean useHttpBasicAuth(final String[] creds) {
+    return creds[0].contains(BASIC);
+  }
+
+  private boolean hasAuthHeader() {
+    return request.getHeader(AUTHORIZATION) != null;
+  }
+
+  private static boolean has(final String encodedHandle) {
+    return encodedHandle != null;
+  }
+
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getAsHtml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
@@ -149,21 +190,7 @@ public class ItemMetadataResource {
     checkPreconditions(itemId, metadataName, escidocUri, request);
 
     try {
-      String decodedHandle = null;
-      if (request.getHeader(AUTHORIZATION) == null) {
-        decodedHandle = decodeHandle(encodedHandle);
-      } else {
-        final String u = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[0];
-        final String p = decodeHandle(request.getHeader(AUTHORIZATION).split(" ")[1]).split(":")[1];
-        final Authentication authentication = new Authentication(new URL(escidocUri), u, p);
-        decodedHandle = authentication.getHandle();
-      }
-
-      final Item item = ir.find(itemId, new URI(escidocUri), decodedHandle);
-      if (item == null) {
-        throw new NotFoundException("Item," + itemId + ", not found");
-      }
-
+      final Item item = findItem(itemId, escidocUri, encodedHandle);
       final MetadataRecord mr = findMetadataByName(metadataName, item);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
@@ -180,10 +207,10 @@ public class ItemMetadataResource {
     //@formatter:on
     } catch (final AuthenticationException e) {
       LOG.debug("Cookie is not valid while accessing protected source. ");
-      return response401(ui, escidocUri);
+      return response401();
     } catch (final AuthorizationException e) {
       LOG.debug("Cookie is not valid while accessing protected source. ");
-      return response401(ui, escidocUri);
+      return response401();
     }
 
     catch (final ItemNotFoundException e) {
@@ -198,7 +225,7 @@ public class ItemMetadataResource {
       if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
         // We assume here, the ijc can not unmarshall the HTML Login Form.
         LOG.debug("No auth token is provided or not valid while accessing protected source. ");
-        return response401(ui, escidocUri);
+        return response401();
       }
       LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
           + e.getMessage());
@@ -226,33 +253,6 @@ public class ItemMetadataResource {
     }
   }
 
-  @GET
-  @Produces(MediaType.TEXT_PLAIN)
-  public Response getAsText(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-    checkPreconditions(itemId, metadataName, escidocUri, request);
-
-    try {
-      final MetadataRecord mr = tryFindMetadataByName(itemId, metadataName, escidocUri, decodeHandle(encodedHandle));
-      if (Utils.asString(mr).isEmpty()) {
-        return Response.status(Status.NO_CONTENT).build();
-      }
-      // @formatter:off
-      return Response
-          .ok(Utils.asString(mr))
-          .tag(new EntityTag(computeDigest(Utils.asString(mr).getBytes())))
-          .build();
-	   // @formatter:on 
-    } catch (final InternalClientException e) {
-      LOG.debug("Cookie is not provided or not valid while accessing protected source. ");
-      return response401(ui, escidocUri);
-    } catch (final AuthenticationException e) {
-      LOG.debug("Cookie is not valid while accessing protected source. ");
-      return response401(ui, escidocUri);
-    }
-  }
-
   @PUT
   @Consumes("application/xml")
   @Produces("application/xml")
@@ -261,11 +261,15 @@ public class ItemMetadataResource {
       final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
     checkPreconditions(itemId, metadataName, escidocUri, request);
 
-    final Item item = tryFindItemById(itemId, escidocUri, decodeHandle(encodedHandle));
-    final MetadataRecord mr = findMetadataByName(metadataName, item);
-    mr.setContent((Element) s.getNode().getFirstChild());
-
     try {
+
+      final Item item = findItem(itemId, escidocUri, encodedHandle);
+      final MetadataRecord mr = findMetadataByName(metadataName, item);
+      if (mr.getContent() == null) {
+        return Response.status(Status.NO_CONTENT).build();
+      }
+
+      mr.setContent((Element) s.getNode().getFirstChild());
       final Item updated = ir.update(item);
       Preconditions.checkNotNull(updated, "updated is null: %s", updated);
       // @formatter:off
@@ -274,18 +278,22 @@ public class ItemMetadataResource {
           .build();
   	   // @formatter:on
     } catch (final AuthorizationException e) {
-      return response401(ui, escidocUri);
+      return response401();
     } catch (final AuthenticationException e) {
-      return response401(ui, escidocUri);
+      return response401();
     } catch (final EscidocException e) {
       LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
-      return response401(ui, escidocUri);
+      return response401();
     } catch (final TransportException e) {
       LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
           + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final MalformedURLException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final URISyntaxException e) {
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
@@ -305,69 +313,13 @@ public class ItemMetadataResource {
     return Thread.currentThread().getContextClassLoader().getResourceAsStream(XSLT_FILE);
   }
 
-  private static Response response401(final UriInfo ui, final String escidocUri) {
+  private static Response response401() {
     return Response.status(Status.UNAUTHORIZED).header("WWW-Authenticate", "Basic realm=\"" + BASIC_REALM + "\"").type(
-        "text/plain").entity("Authentification credentials are required"
-
-    ).build();
-  }
-
-  private MetadataRecord tryFindMetadataByName(final String itemId, final String metadataName, final String escidocUri,
-      final String escidocCookie) throws InternalClientException, AuthenticationException {
-    MetadataRecord mr = null;
-    try {
-      final Item item = ir.find(itemId, new URI(escidocUri), escidocCookie);
-      if (item == null) {
-        throw new NotFoundException("Item," + itemId + ", not found");
-      }
-      mr = findMetadataByName(metadataName, item);
-    } catch (final AuthenticationException e) {
-      throw new AuthenticationException("", e);
-    } catch (final ResourceNotFoundException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      // FIXME add not found URI
-      throw new NotFoundException(e.getMessage());
-    } catch (final EscidocException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransportException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final MalformedURLException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final URISyntaxException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    }
-    return mr;
-  }
-
-  private Item tryFindItemById(final String itemId, final String escidocUri, final String token) {
-    try {
-      final Item item = ir.find(itemId, new URI(escidocUri), token);
-      Preconditions.checkNotNull(item, "item is null: %s", item);
-      return item;
-    } catch (final EscidocException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final InternalClientException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransportException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final MalformedURLException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final URISyntaxException e) {
-      LOG.error("Can not fetch item " + itemId + " cause: " + e.getMessage(), e);
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    }
+        "text/plain").entity("Authentification credentials are required").build();
   }
 
   private static String decodeHandle(final String handle) {
-    if (handle != null) {
+    if (has(handle)) {
       return Base64.base64Decode(handle);
     }
     return "";
