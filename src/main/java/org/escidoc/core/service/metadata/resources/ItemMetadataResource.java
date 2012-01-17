@@ -38,6 +38,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -56,7 +57,7 @@ import de.escidoc.core.resources.om.item.Item;
 @Path("items/{item-id}/metadata/{metadata-name}")
 public class ItemMetadataResource {
 
-  private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
   private static final String XSLT_FILE = "md-to-html-form.xsl";
   private static final String BASIC_REALM = "www.escidoc.org";
   private static final String AUTHORIZATION = "authorization";
@@ -76,14 +77,15 @@ public class ItemMetadataResource {
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
     checkPreconditions(itemId, metadataName, escidocUri, request);
-
+    final String msg = "HTTP GET request for item with the id: " + itemId + ", metadata name: " + metadataName
+        + ", server uri: " + escidocUri;
+    LOG.debug(msg);
     try {
       final Item item = findItem(itemId, escidocUri, encodedHandle);
       final MetadataRecord mr = findMetadataByName(metadataName, item);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
-
       // @formatter:off
       return Response
           .ok(new DOMSource(mr.getContent()))
@@ -91,17 +93,11 @@ public class ItemMetadataResource {
           .build();
 	   // @formatter:on
     } catch (final AuthenticationException e) {
-      LOG.debug("Cookie is not valid while accessing protected source. ");
+      LOG.debug("Auth. credentials is not valid while accessing protected source. ");
       return response401();
     } catch (final AuthorizationException e) {
-      LOG.debug("Cookie is not valid while accessing protected source. ");
+      LOG.debug("Auth. credentials is not valid while accessing protected source. ");
       return response401();
-    } catch (final ItemNotFoundException e) {
-      throw new NotFoundException("Item," + itemId + ", not found");
-    } catch (final EscidocException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
       if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
         // We assume here, the ijc can not unmarshall the HTML Login Form.
@@ -111,30 +107,37 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransportException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final MalformedURLException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final URISyntaxException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
 
+  /**
+   * Runtime Exceptions:
+   * 
+   * @throws AuthenticationException
+   * @throws AuthorizationException
+   */
   private Item findItem(final String itemId, final String escidocUri, final String encodedHandle)
-      throws AuthenticationException, TransportException, MalformedURLException, EscidocException,
-      InternalClientException, URISyntaxException {
-    final String decodedHandle = getHandleIfAny(escidocUri, encodedHandle);
-    final Item item = ir.find(itemId, new URI(escidocUri), decodedHandle);
-    if (item == null) {
+      throws AuthenticationException, AuthorizationException, InternalClientException {
+    try {
+      final String decodedHandle = getHandleIfAny(escidocUri, encodedHandle);
+      final Item item = ir.find(itemId, new URI(escidocUri), decodedHandle);
+      if (item == null) {
+        throw new NotFoundException("Item," + itemId + ", not found");
+      }
+      return item;
+    } catch (final AuthenticationException e) {
+      throw new AuthenticationException(e.getMessage(), e);
+    } catch (final ItemNotFoundException e) {
       throw new NotFoundException("Item," + itemId + ", not found");
+    } catch (final EscidocException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransportException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final MalformedURLException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final URISyntaxException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
-    return item;
   }
 
   private String getHandleIfAny(final String escidocUri, final String encodedHandle) throws AuthenticationException,
@@ -150,11 +153,103 @@ public class ItemMetadataResource {
     return "";
   }
 
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  public Response getAsHtml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    checkPreconditions(itemId, metadataName, escidocUri, request);
+    final String msg = "HTTP GET request for item with the id: " + itemId + ", metadata name: " + metadataName
+        + ", server uri: " + escidocUri;
+    LOG.debug(msg);
+
+    try {
+      final Item item = findItem(itemId, escidocUri, encodedHandle);
+      final MetadataRecord mr = findMetadataByName(metadataName, item);
+      if (mr.getContent() == null) {
+        return Response.status(Status.NO_CONTENT).build();
+      }
+      final StringWriter s = new StringWriter();
+      transformXml(mr, s);
+      // @formatter:off
+      return Response
+          .ok(s.toString(),MediaType.TEXT_HTML)
+          .tag(new EntityTag(computeDigest(s.toString().getBytes())))
+          .build();
+    //@formatter:on
+    } catch (final AuthenticationException e) {
+      return response401();
+    } catch (final AuthorizationException e) {
+      return response401();
+    } catch (final InternalClientException e) {
+      // We assume here, the ijc can not unmarshall the HTML Login Form.
+      if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
+        return response401();
+      }
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PUT
+  @Consumes("application/xml")
+  @Produces("application/xml")
+  public Response update(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    checkPreconditions(itemId, metadataName, escidocUri, request);
+    final String msg = "HTTP PUT request for item with the id: " + itemId + ", metadata name: " + metadataName
+        + ", server uri: " + escidocUri;
+    LOG.debug(msg);
+
+    try {
+      final Item item = findItem(itemId, escidocUri, encodedHandle);
+      final MetadataRecord mr = findMetadataByName(metadataName, item);
+      if (mr.getContent() == null) {
+        return Response.status(Status.NO_CONTENT).build();
+      }
+      mr.setContent((Element) s.getNode().getFirstChild());
+      final Item updated = ir.update(item);
+      Preconditions.checkNotNull(updated, "updated is null: %s", updated);
+      // @formatter:off
+      return Response
+          .ok()
+          .build();
+  	   // @formatter:on
+    } catch (final AuthorizationException e) {
+      return response401();
+    } catch (final AuthenticationException e) {
+      return response401();
+    } catch (final EscidocException e) {
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final InternalClientException e) {
+      return response401();
+    } catch (final TransportException e) {
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private static void transformXml(final MetadataRecord mr, final StringWriter s) {
+    try {
+      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(
+          new DOMSource(mr.getContent()), new StreamResult(s));
+    } catch (final TransformerConfigurationException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransformerException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransformerFactoryConfigurationError e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   private static String loginToEscidoc(final String escidocUri, final String[] creds) throws AuthenticationException,
       TransportException, MalformedURLException {
-    String decodedHandle;
-    decodedHandle = new Authentication(new URL(escidocUri), getUserName(creds), getPassword(creds)).getHandle();
-    return decodedHandle;
+    return new Authentication(new URL(escidocUri), getUserName(creds), getPassword(creds)).getHandle();
   }
 
   private static String getPassword(final String[] creds) {
@@ -181,123 +276,6 @@ public class ItemMetadataResource {
     return encodedHandle != null;
   }
 
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  public Response getAsHtml(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-
-    checkPreconditions(itemId, metadataName, escidocUri, request);
-
-    try {
-      final Item item = findItem(itemId, escidocUri, encodedHandle);
-      final MetadataRecord mr = findMetadataByName(metadataName, item);
-      if (mr.getContent() == null) {
-        return Response.status(Status.NO_CONTENT).build();
-      }
-
-      final StringWriter s = new StringWriter();
-      TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(
-          new DOMSource(mr.getContent()), new StreamResult(s));
-      // @formatter:off
-      return Response
-          .ok(s.toString(),MediaType.TEXT_HTML)
-          .tag(new EntityTag(computeDigest(s.toString().getBytes())))
-          .build();
-    //@formatter:on
-    } catch (final AuthenticationException e) {
-      LOG.debug("Cookie is not valid while accessing protected source. ");
-      return response401();
-    } catch (final AuthorizationException e) {
-      LOG.debug("Cookie is not valid while accessing protected source. ");
-      return response401();
-    }
-
-    catch (final ItemNotFoundException e) {
-      throw new NotFoundException("Item," + itemId + ", not found");
-    }
-
-    catch (final EscidocException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final InternalClientException e) {
-      if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
-        // We assume here, the ijc can not unmarshall the HTML Login Form.
-        LOG.debug("No auth token is provided or not valid while accessing protected source. ");
-        return response401();
-      }
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransportException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final MalformedURLException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final URISyntaxException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransformerConfigurationException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransformerException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  @PUT
-  @Consumes("application/xml")
-  @Produces("application/xml")
-  public Response update(@Context final UriInfo ui, @PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-    checkPreconditions(itemId, metadataName, escidocUri, request);
-
-    try {
-
-      final Item item = findItem(itemId, escidocUri, encodedHandle);
-      final MetadataRecord mr = findMetadataByName(metadataName, item);
-      if (mr.getContent() == null) {
-        return Response.status(Status.NO_CONTENT).build();
-      }
-
-      mr.setContent((Element) s.getNode().getFirstChild());
-      final Item updated = ir.update(item);
-      Preconditions.checkNotNull(updated, "updated is null: %s", updated);
-      // @formatter:off
-      return Response
-          .ok()
-          .build();
-  	   // @formatter:on
-    } catch (final AuthorizationException e) {
-      return response401();
-    } catch (final AuthenticationException e) {
-      return response401();
-    } catch (final EscidocException e) {
-      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final InternalClientException e) {
-      return response401();
-    } catch (final TransportException e) {
-      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final MalformedURLException e) {
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final URISyntaxException e) {
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    }
-  }
-
   private static String computeDigest(final byte[] content) {
     try {
       final MessageDigest md = MessageDigest.getInstance("SHA");
@@ -314,8 +292,14 @@ public class ItemMetadataResource {
   }
 
   private static Response response401() {
-    return Response.status(Status.UNAUTHORIZED).header("WWW-Authenticate", "Basic realm=\"" + BASIC_REALM + "\"").type(
-        "text/plain").entity("Authentification credentials are required").build();
+    // @formatter:off
+    return Response
+        .status(Status.UNAUTHORIZED)
+        .header("WWW-Authenticate", "Basic realm=\"" + BASIC_REALM + "\"")
+        .type("text/plain")
+        .entity("Authentification credentials are required")
+        .build();
+	   // @formatter:on
   }
 
   private static String decodeHandle(final String handle) {
@@ -332,9 +316,6 @@ public class ItemMetadataResource {
     Preconditions.checkNotNull(request, "request is null: %s", request);
     checkQueryParameter(escidocUri);
 
-    final String msg = "Get a request for item with the id: " + itemId + ", metadata name: " + metadataName
-        + ", server uri: " + escidocUri;
-    LOG.debug(msg);
   }
 
   private static MetadataRecord findMetadataByName(final String metadataName, final Item item) {

@@ -20,7 +20,8 @@ public class ItemRepositoryImpl implements ItemRepository {
   // TODO NOTE: it can throw Authentification or AuthorizationException
   @Override
   public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
-      InternalClientException, TransportException, MalformedURLException, AuthenticationException {
+      InternalClientException, TransportException, MalformedURLException, AuthenticationException,
+      AuthorizationException {
 
     c = new ItemHandlerClient(serviceUri.toURL());
     c.setHandle(token);
@@ -28,8 +29,8 @@ public class ItemRepositoryImpl implements ItemRepository {
   }
 
   @Override
-  public Item update(final Item item) throws AuthorizationException, EscidocException, InternalClientException,
-      TransportException {
+  public Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
+      InternalClientException, TransportException {
     return c.update(item);
   }
 }
