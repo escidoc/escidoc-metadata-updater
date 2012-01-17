@@ -77,7 +77,6 @@
                     }
                 </style>
                 <script type="text/javascript" src="/escidoc-metadata-updater/static/js/http-io.js"></script>
-                <script type="text/javascript" src="/escidoc-metadata-updater/static/js/bootstrap-alerts.js"></script>
             </head>
             <body>
             <div class="container">

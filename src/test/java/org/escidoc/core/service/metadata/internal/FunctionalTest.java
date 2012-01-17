@@ -60,13 +60,34 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
   @Test
   @Override
   public void shouldReturn404ForNonExistingItem() {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path(NON_EXISTING_ITEM_ID)
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML)
+        .get(ClientResponse.class);
+     // @formatter:on
+    assertEquals("response is not equals", 404, r.getStatus());
   }
 
   @Test
   @Override
   public void shouldReturn404ForNonExistingMetadata() {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path(ITEM_ID)
+        .path("metadata")
+        .path(NON_EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML)
+        .get(ClientResponse.class);
+     // @formatter:on
+
+    assertEquals("response is not equals", 404, r.getStatus());
   }
 
   @Test
@@ -90,19 +111,50 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
   @Test
   @Override
   public void shouldReturn400ForMissingServerParameter() {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path(EXISTING_ITEM_ID)
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .accept(MediaType.APPLICATION_XML)
+        .get(ClientResponse.class);
+     // @formatter:on
+    assertEquals("response is not equals", 400, r.getStatus());
   }
 
   @Test
   @Override
   public void shouldReturn200forHelloWorld() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    // @formatter:off
+    final ClientResponse response = resource
+        .path("helloworld")
+        .accept(MediaType.TEXT_PLAIN)
+        .get(ClientResponse.class);
+    
+     // @formatter:on
+    assertEquals("response is not equals", 200, response.getStatus());
+    final String entity = response.getEntity(String.class);
+    LOG.debug("Got: " + entity);
+    assertEquals("Entity is not equals. ", "OK", entity);
   }
 
   @Test
   @Override
   public void shouldReturnXmlForMetadata() {
-    throw new UnsupportedOperationException("not-yet-implemented.");
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path(ITEM_ID)
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML)
+        .get(ClientResponse.class);
+   // @formatter:on
+    assertEquals("response is not equals", 200, r.getStatus());
+
+    LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
   }
 
   @Test
@@ -125,7 +177,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
 
   @Test
   @Override
-  public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception {
+  public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidToken() throws Exception {
     final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
     // @formatter:off
     final ClientResponse r = resource
@@ -145,7 +197,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
 
   @Test
   @Override
-  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception {
+  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception {
 
     final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
     // @formatter:off
@@ -258,6 +310,22 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
     
     final ClientResponse r = builder.get(ClientResponse.class);
     assertEquals("response is not equals", 401, r.getStatus());
+  }
+  
+  @Test
+  public void shouldReturnNotModifiedIfTheLastModificationDateAndEtagSentAreEquals() throws Exception {
+    // @formatter:off
+    final ClientResponse r = resource
+        .path("items")
+        .path(ITEM_ID)
+        .path("metadata")
+        .path(EXISTING_METADATA_NAME)
+        .queryParam("eu", SERVICE_URL)
+        .accept(MediaType.APPLICATION_XML)
+        .get(ClientResponse.class);
+	   // @formatter:on
+    assertEquals("response is not equals", 304, r.getStatus());
 
+    LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
   }
 }

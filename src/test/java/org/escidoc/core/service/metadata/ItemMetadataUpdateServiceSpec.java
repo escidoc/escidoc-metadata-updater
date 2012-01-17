@@ -20,9 +20,9 @@ public interface ItemMetadataUpdateServiceSpec {
 
   void shouldNotUpdateMetadataIfInConfict() throws Exception;
 
-  void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidCookie() throws Exception;
+  void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidToken() throws Exception;
 
-  void shouldReturn200WhenTryingToUpdateMetadataGivenValidCookie() throws Exception;
+  void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception;
 
   void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception;
 
