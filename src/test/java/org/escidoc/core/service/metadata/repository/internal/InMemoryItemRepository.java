@@ -2,6 +2,7 @@ package org.escidoc.core.service.metadata.repository.internal;
 
 import org.escidoc.core.service.metadata.internal.Base;
 import org.escidoc.core.service.metadata.repository.ItemRepository;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class InMemoryItemRepository implements ItemRepository {
 
     addEmptyMetadata();
     addDefaultMetadata();
+    i.setLastModificationDate(new DateTime());
     i.setMetadataRecords(mrs);
 
     map.put("escidoc:test", i);
@@ -41,6 +43,7 @@ public class InMemoryItemRepository implements ItemRepository {
 
   private void addProtectedItem() {
     final Item i = new Item();
+    i.setLastModificationDate(new DateTime());
     map.put(Base.PROTECTED_ITEM_ID, i);
     i.setMetadataRecords(mrs);
 

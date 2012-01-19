@@ -61,7 +61,7 @@ public class ItemMetadataResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
   private static final String XSLT_FILE = "md-to-html-form.xsl";
-  private static final String BASIC_REALM = "www.escidoc.org";
+  private static final String BASIC_REALM = "eSciDoc Resources";
   private static final String AUTHORIZATION = "authorization";
   private static final String BASIC = "Basic";
 
