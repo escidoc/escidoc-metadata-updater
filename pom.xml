@@ -231,10 +231,15 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
+			<!-- <plugin> <groupId>org.mortbay.jetty</groupId> <artifactId>maven-jetty-plugin</artifactId> 
+				<version>6.1.26</version> <configuration> <stopPort>9986</stopPort> <stopKey>stop</stopKey> 
+				<scanIntervalSeconds>${jetty.scan.sec}</scanIntervalSeconds> <systemProperties> 
+				<systemProperty> <name>jetty.port</name> <value>${jetty.port}</value> </systemProperty> 
+				</systemProperties> </configuration> </plugin> -->
+
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.26</version>
+				<artifactId>jetty-maven-plugin</artifactId>
 				<configuration>
 					<stopPort>9986</stopPort>
 					<stopKey>stop</stopKey>
@@ -245,6 +250,9 @@
 							<value>${jetty.port}</value>
 						</systemProperty>
 					</systemProperties>
+					<webAppConfig>
+						<contextPath>/v2</contextPath>
+					</webAppConfig>
 				</configuration>
 			</plugin>
 			<plugin>

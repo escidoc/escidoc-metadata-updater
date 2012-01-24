@@ -141,14 +141,16 @@ public class ItemMetadataResource {
       if (metadata.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
-      final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(item), getEntityTag(metadata));
+
+      final String transformed = transformToHtml(metadata);
+      final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(item), getEntityTag(transformed));
       if (b != null) {
         return b.build();
       }
 
       // @formatter:off
       return Response
-          .ok(transformToHtml(metadata),MediaType.TEXT_HTML)
+          .ok(transformed,MediaType.TEXT_HTML)
           .lastModified(getLastModificationDate(item))
           .tag(getEntityTag(metadata))
           .build();
@@ -211,8 +213,12 @@ public class ItemMetadataResource {
     }
   }
 
+  private static EntityTag getEntityTag(final String mr) {
+    return new EntityTag(computeDigest(mr.getBytes()));
+  }
+
   private static EntityTag getEntityTag(final MetadataRecord mr) {
-    return new EntityTag(computeDigest(mr.getContent().toString().getBytes()));
+    return getEntityTag(mr.toString());
   }
 
   private static Date getLastModificationDate(final Item item) {

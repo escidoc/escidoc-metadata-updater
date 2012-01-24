@@ -24,7 +24,7 @@
                 <link
                   rel="stylesheet"
                   type="text/css"
-                  href="/escidoc-metadata-updater/static/css/bootstrap.min.css"/>
+                  href="/v2/static/css/bootstrap.min.css"/>
                 <style type="text/css">
                     /* Override some defaults */
                     html, body {
@@ -76,7 +76,7 @@
                       border: 0;
                     }
                 </style>
-                <script type="text/javascript" src="/escidoc-metadata-updater/static/js/http-io.js"></script>
+                <script type="text/javascript" src="/v2/static/js/http-io.js"></script>
             </head>
             <body>
             <div class="container">
