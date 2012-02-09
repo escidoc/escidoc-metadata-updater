@@ -12,6 +12,7 @@ import static org.escidoc.core.service.metadata.Utils.getLastModificationDate;
 import static org.escidoc.core.service.metadata.Utils.response401;
 import static org.escidoc.core.service.metadata.Utils.transformToHtml;
 
+import org.escidoc.core.service.metadata.AppConstant;
 import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
 
-@Path("items/{item-id}/metadata/{metadata-name}")
+@Path("items/{id}/metadata/{metadata-name}")
 public class ItemMetadataResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
@@ -66,9 +67,8 @@ public class ItemMetadataResource {
   // parameter
   @GET
   @Produces(MediaType.APPLICATION_XML)
-  public Response getAsXml(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+  public Response getAsXml(@PathParam(AppConstant.ID) final String itemId, @PathParam("metadata-name") final String metadataName,
+      @QueryParam("eu") final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
     checkPreconditions(itemId, metadataName, escidocUri, sr);
     final String msg = "HTTP GET request for item with the id: " + itemId + ", metadata name: " + metadataName
@@ -77,7 +77,6 @@ public class ItemMetadataResource {
 
     try {
       final Item item = find(itemId, escidocUri, encodedHandle);
-
       final MetadataRecord mr = findMetadataByName(metadataName, item);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
@@ -115,9 +114,8 @@ public class ItemMetadataResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getAsHtml(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+  public Response getAsHtml(@PathParam(AppConstant.ID) final String itemId, @PathParam("metadata-name") final String metadataName,
+      @QueryParam("eu") final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
     checkPreconditions(itemId, metadataName, escidocUri, sr);
     final String msg = "HTTP GET request for item with the id: " + itemId + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;
@@ -161,9 +159,9 @@ public class ItemMetadataResource {
   @PUT
   @Consumes("application/xml")
   @Produces("application/xml")
-  public Response update(@PathParam("item-id") final String itemId,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
-      final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+  public Response update(@PathParam(AppConstant.ID) final String itemId, @PathParam("metadata-name") final String metadataName,
+      @QueryParam("eu") final String escidocUri, final DOMSource s,
+      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
     checkPreconditions(itemId, metadataName, escidocUri, sr);
     final String msg = "HTTP PUT request for item with the id: " + itemId + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;

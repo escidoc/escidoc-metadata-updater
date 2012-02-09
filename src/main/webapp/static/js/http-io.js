@@ -12,7 +12,7 @@ function send() {
 				console.log('uri' + getUri());
 
 				var rXml = xhr.responseXML;
-				;
+
 				console.log(rXml);
 
 				console.log(document.getElementsByTagName('input'));
@@ -22,10 +22,14 @@ function send() {
 						function(li, index, nodeList) {
 							if (li.type !== 'button') {
 								if (li.defaultValue !== li.value) {
-									var found = rXml
-											.getElementsByTagName(li.name);
-									var input = found[0];
-									input.textContent = li.value;
+									if (li.name != null) {
+
+										console.log("li: " + li.name);
+										var found = rXml
+												.getElementsByTagName(li.name);
+										var input = found[0];
+										input.textContent = li.value;
+									}
 								}
 							}
 						});

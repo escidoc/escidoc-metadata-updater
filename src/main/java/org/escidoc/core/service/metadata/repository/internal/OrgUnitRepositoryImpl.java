@@ -1,5 +1,7 @@
 package org.escidoc.core.service.metadata.repository.internal;
 
+import com.google.common.base.Preconditions;
+
 import org.escidoc.core.service.metadata.repository.OrgUnitRepository;
 
 import java.net.MalformedURLException;
@@ -11,18 +13,20 @@ import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
+import de.escidoc.core.client.interfaces.OrganizationalUnitHandlerClientInterface;
 import de.escidoc.core.resources.GenericResource;
 import de.escidoc.core.resources.oum.OrganizationalUnit;
 
 public class OrgUnitRepositoryImpl implements OrgUnitRepository {
 
-  private OrganizationalUnitHandlerClient c;
+  private OrganizationalUnitHandlerClientInterface c;
 
-  // TODO NOTE: it can throw Authentification or AuthorizationException
   @Override
   public OrganizationalUnit find(final String id, final URI serviceUri, final String token) throws EscidocException,
       InternalClientException, TransportException, MalformedURLException, AuthenticationException,
       AuthorizationException {
+    Preconditions.checkNotNull(id, "id is null: %s", id);
+    Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
 
     c = new OrganizationalUnitHandlerClient(serviceUri.toURL());
     c.setHandle(token);
