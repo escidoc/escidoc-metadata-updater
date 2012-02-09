@@ -23,7 +23,7 @@ public class AppServletConfig extends GuiceServletContextListener {
         bind(ItemMetadataResource.class);
         bind(HelloResource.class);
         bind(ItemRepository.class).to(ItemRepositoryImpl.class);
-        serve("/rest/*").with(GuiceContainer.class);
+        serve("/v0.9/*").with(GuiceContainer.class);
       }
     });
   }

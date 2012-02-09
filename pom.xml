@@ -166,7 +166,6 @@
 		</profile>
 	</profiles>
 	<build>
-		<finalName>v2</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -251,7 +250,7 @@
 						</systemProperty>
 					</systemProperties>
 					<webAppConfig>
-						<contextPath>/v2</contextPath>
+						<contextPath>/rest</contextPath>
 					</webAppConfig>
 				</configuration>
 			</plugin>
