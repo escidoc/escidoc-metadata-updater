@@ -1,7 +1,15 @@
 package org.escidoc.core.service.metadata.internal;
 
+import com.google.inject.servlet.GuiceFilter;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.escidoc.core.service.metadata.guice.AppServletConfig;
+import org.junit.Before;
 
 public class Base {
 
@@ -29,21 +37,21 @@ public class Base {
 
   protected WebResource resource;
 
-  // protected static HttpServer server;
+  protected Server server;
 
-  // @BeforeClass
-  // public static void start() throws Exception {
-  // server = Server.start();
-  // }
-  //
-  // @AfterClass
-  // public static void shutdown() throws Exception {
-  // server.stop();
-  // }
-
-  // @Before
-  // public void setup() throws Exception {
-  // client = Client.create();
-  // resource = client.resource(Server.BASE_URI);
-  // }
+  @Before
+  public void setup() throws Exception {
+    server = new Server(8089);
+    final ServletContextHandler sch = new ServletContextHandler(server, "/");
+    sch.addEventListener(new AppServletConfig());
+    sch.addFilter(GuiceFilter.class, "/*", null);
+    sch.addServlet(DefaultServlet.class, "/");
+    server.start();
+    client = Client.create();
+    // @formatter:off
+    resource = client
+        .resource("http://localhost:8089")
+        .path("v0.9");
+	   // @formatter:on
+  }
 }

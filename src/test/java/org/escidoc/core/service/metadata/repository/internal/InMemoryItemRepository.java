@@ -1,5 +1,6 @@
 package org.escidoc.core.service.metadata.repository.internal;
 
+import org.escidoc.core.service.metadata.Utils;
 import org.escidoc.core.service.metadata.internal.Base;
 import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.joda.time.DateTime;

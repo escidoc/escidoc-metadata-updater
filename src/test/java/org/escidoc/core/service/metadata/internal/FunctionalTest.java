@@ -1,23 +1,14 @@
 package org.escidoc.core.service.metadata.internal;
 
-import com.google.inject.servlet.GuiceFilter;
-
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.Base64;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.escidoc.core.service.metadata.ItemMetadataUpdateServiceSpec;
-import org.escidoc.core.service.metadata.guice.AppServletConfig;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,24 +25,6 @@ import de.escidoc.core.client.Authentication;
 public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpec {
 
   private final static Logger LOG = LoggerFactory.getLogger(FunctionalTest.class);
-
-  private WebResource resource;
-
-  private Server server;
-
-  private Client client;
-
-  @Before
-  public void setup() throws Exception {
-    server = new Server(8089);
-    final ServletContextHandler sch = new ServletContextHandler(server, "/");
-    sch.addEventListener(new AppServletConfig());
-    sch.addFilter(GuiceFilter.class, "/*", null);
-    sch.addServlet(DefaultServlet.class, "/");
-    server.start();
-    client = Client.create();
-    resource = client.resource("http://localhost:8089").path("rest");
-  }
 
   @After
   public void stop() throws Exception {

@@ -6,7 +6,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({InMemory.class, FunctionalTest.class})
+// @formatter:off
+@Suite.SuiteClasses({InMemory.class, 
+                     FunctionalTest.class,
+                     OrgUnitMetadataFunctionalTest.class})
+ // @formatter:on
 public class AllTests {
   // running all tests
 }
