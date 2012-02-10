@@ -187,4 +187,16 @@ public class Utils {
     return sr.getHeader(AppConstant.AUTHORIZATION) != null;
   }
 
+  public static void transformXml(final MetadataRecord mr, final StringWriter s) {
+    try {
+      TransformerFactory.newInstance().newTransformer(new StreamSource(Utils.readXsl())).transform(
+          new DOMSource(mr.getContent()), new StreamResult(s));
+    } catch (final TransformerConfigurationException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransformerException e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransformerFactoryConfigurationError e) {
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

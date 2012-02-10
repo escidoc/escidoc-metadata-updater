@@ -10,14 +10,15 @@ import static org.escidoc.core.service.metadata.Utils.getEntityTag;
 import static org.escidoc.core.service.metadata.Utils.getHandleIfAny;
 import static org.escidoc.core.service.metadata.Utils.getLastModificationDate;
 import static org.escidoc.core.service.metadata.Utils.response401;
-import static org.escidoc.core.service.metadata.Utils.transformToHtml;
 
 import org.escidoc.core.service.metadata.AppConstant;
+import org.escidoc.core.service.metadata.Utils;
 import org.escidoc.core.service.metadata.repository.OrgUnitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -150,36 +151,39 @@ public class OrgUnitMetadataResource {
     }
   }
 
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  public Response getAsHtml(@PathParam(AppConstant.ID) final String itemId,
+  // @GET
+  // @Produces(MediaType.TEXT_HTML)
+  public Response getAsHtml(@PathParam(AppConstant.ID) final String id,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-    checkPreconditions(itemId, metadataName, escidocUri, sr);
-    final String msg = "HTTP GET request for item with the id: " + itemId + ", metadata name: " + metadataName
+
+    checkPreconditions(id, metadataName, escidocUri, sr);
+    final String msg = "HTTP GET request for item with the id: " + id + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;
     LOG.debug(msg);
 
     try {
-      final OrganizationalUnit item = find(itemId, escidocUri, encodedHandle);
-      final MetadataRecord metadata = findMetadataByName(metadataName, item);
-      if (metadata.getContent() == null) {
+      final OrganizationalUnit org = find(id, escidocUri, encodedHandle);
+      final MetadataRecord mr = findMetadataByName(metadataName, org);
+      if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
 
-      final String transformed = transformToHtml(metadata);
-      final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(item), getEntityTag(transformed));
+      final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(org), getEntityTag(mr));
       if (b != null) {
         return b.build();
       }
 
+      final StringWriter s = new StringWriter();
+      Utils.transformXml(mr, s);
+
       // @formatter:off
-      return Response
-          .ok(transformed,MediaType.TEXT_HTML)
-          .lastModified(getLastModificationDate(item))
-          .tag(getEntityTag(metadata))
-          .build();
-    //@formatter:on
+     return Response
+         .ok(s.toString(),MediaType.TEXT_HTML)
+         .lastModified(getLastModificationDate(org))
+         .tag(getEntityTag(mr))
+         .build();
+   //@formatter:on
     } catch (final AuthenticationException e) {
       return response401();
     } catch (final AuthorizationException e) {
@@ -189,7 +193,7 @@ public class OrgUnitMetadataResource {
       if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
         return response401();
       }
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
@@ -198,23 +202,23 @@ public class OrgUnitMetadataResource {
   @PUT
   @Consumes("application/xml")
   @Produces("application/xml")
-  public Response update(@PathParam(AppConstant.ID) final String itemId,
+  public Response update(@PathParam(AppConstant.ID) final String id,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-    checkPreconditions(itemId, metadataName, escidocUri, sr);
-    final String msg = "HTTP PUT request for item with the id: " + itemId + ", metadata name: " + metadataName
+    checkPreconditions(id, metadataName, escidocUri, sr);
+    final String msg = "HTTP PUT request for item with the id: " + id + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;
     LOG.debug(msg);
 
     try {
-      final OrganizationalUnit item = find(itemId, escidocUri, encodedHandle);
-      final MetadataRecord mr = findMetadataByName(metadataName, item);
+      final OrganizationalUnit org = find(id, escidocUri, encodedHandle);
+      final MetadataRecord mr = findMetadataByName(metadataName, org);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
 
       mr.setContent((Element) s.getNode().getFirstChild());
-      final GenericResource updated = repo.update(item);
+      final GenericResource updated = repo.update(org);
       Preconditions.checkNotNull(updated, "updated is null: %s", updated);
       // @formatter:off
       return Response
@@ -226,13 +230,13 @@ public class OrgUnitMetadataResource {
     } catch (final AuthenticationException e) {
       return response401();
     } catch (final EscidocException e) {
-      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
       return response401();
     } catch (final TransportException e) {
-      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + itemId + ", reason: "
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }

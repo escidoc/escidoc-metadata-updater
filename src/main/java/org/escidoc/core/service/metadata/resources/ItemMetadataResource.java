@@ -38,13 +38,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
@@ -120,25 +114,12 @@ public class ItemMetadataResource {
     }
   }
 
-  private static void transformXml(final MetadataRecord mr, final StringWriter s) {
-    try {
-      TransformerFactory.newInstance().newTransformer(new StreamSource(Utils.readXsl())).transform(
-          new DOMSource(mr.getContent()), new StreamResult(s));
-    } catch (final TransformerConfigurationException e) {
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransformerException e) {
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransformerFactoryConfigurationError e) {
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    }
-  }
-
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getAsHtml(@PathParam(AppConstant.ID) final String id,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-    // checkPreconditions(id, metadataName, escidocUri, request);
+    checkPreconditions(id, metadataName, escidocUri, sr);
     final String msg = "HTTP GET request for item with the id: " + id + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;
     LOG.debug(msg);
@@ -156,7 +137,7 @@ public class ItemMetadataResource {
       }
 
       final StringWriter s = new StringWriter();
-      transformXml(mr, s);
+      Utils.transformXml(mr, s);
 
       // @formatter:off
       return Response
@@ -179,56 +160,6 @@ public class ItemMetadataResource {
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
-
-  // @GET
-  // @Produces(MediaType.TEXT_HTML)
-  // public Response getAsHtml(@PathParam(AppConstant.ID) final String id,
-  // @PathParam("metadata-name") final String metadataName, @QueryParam("eu")
-  // final String escidocUri,
-  // @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-  // checkPreconditions(id, metadataName, escidocUri, sr);
-  // final String msg = "HTTP GET request for item with the id: " + id +
-  // ", metadata name: " + metadataName
-  // + ", server uri: " + escidocUri;
-  // LOG.debug(msg);
-  //
-  // try {
-  // final Item item = find(id, escidocUri, encodedHandle);
-  // final MetadataRecord metadata = findMetadataByName(metadataName, item);
-  // if (metadata.getContent() == null) {
-  // return Response.status(Status.NO_CONTENT).build();
-  // }
-  //
-  // final ResponseBuilder b =
-  // r.evaluatePreconditions(getLastModificationDate(item),
-  // getEntityTag(metadata));
-  // if (b != null) {
-  // return b.build();
-  // }
-  // final StringWriter s = new StringWriter();
-  // transformXml(metadata, s);
-//      // @formatter:off
-//      return Response
-//          .ok(s.toString(),MediaType.TEXT_HTML)
-////          .lastModified(getLastModificationDate(item))
-////          .tag(getEntityTag(metadata))
-//          .build();
-//    //@formatter:on
-  // } catch (final AuthenticationException e) {
-  // return response401();
-  // } catch (final AuthorizationException e) {
-  // return response401();
-  // } catch (final InternalClientException e) {
-  // // We assume here, the ijc can not unmarshall the HTML Login Form.
-  // if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
-  // return response401();
-  // }
-  // LOG.error("Can not fetch metadata with the name, " + metadataName +
-  // ", from item, " + id + ", reason: "
-  // + e.getMessage());
-  // throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-  // }
-  // }
 
   @PUT
   @Consumes("application/xml")
