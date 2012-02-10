@@ -33,7 +33,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -136,8 +135,9 @@ public class ItemMetadataResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getAsHtml(@PathParam("id") final String id, @PathParam("metadata-name") final String metadataName,
-      @QueryParam("eu") final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+  public Response getAsHtml(@PathParam(AppConstant.ID) final String id,
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
     // checkPreconditions(id, metadataName, escidocUri, request);
     final String msg = "HTTP GET request for item with the id: " + id + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;
@@ -161,7 +161,8 @@ public class ItemMetadataResource {
       // @formatter:off
       return Response
           .ok(s.toString(),MediaType.TEXT_HTML)
-          .tag(new EntityTag(Utils.computeDigest(s.toString().getBytes())))
+          .lastModified(getLastModificationDate(item))
+          .tag(getEntityTag(mr))
           .build();
     //@formatter:on
     } catch (final AuthenticationException e) {
