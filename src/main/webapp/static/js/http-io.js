@@ -18,21 +18,27 @@ function send() {
 				console.log(document.getElementsByTagName('input'));
 				var list = document.getElementsByTagName('input');
 
-				Array.prototype.forEach.call(list,
-						function(li, index, nodeList) {
-							if (li.type !== 'button') {
-								if (li.defaultValue !== li.value) {
-									if (li.name != null) {
-
-										console.log("li: " + li.name);
-										var found = rXml
-												.getElementsByTagName(li.name);
-										var input = found[0];
-										input.textContent = li.value;
+				Array.prototype.forEach
+						.call(
+								list,
+								function(li, index, nodeList) {
+									if (li.type !== 'button') {
+										if (li.defaultValue !== li.value) {
+											if (li.name != null) {
+												console.log("li: " + li.name);
+												if (rXml != null) {
+													var found = rXml
+															.getElementsByTagName(li.name);
+													if (found != null
+															&& found.length > 0) {
+														var input = found[0];
+														input.textContent = li.value;
+													}
+												}
+											}
+										}
 									}
-								}
-							}
-						});
+								});
 				put(rXml);
 			} else {
 				console.log("status: ", xhr2.statusText);

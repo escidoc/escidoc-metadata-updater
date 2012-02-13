@@ -69,8 +69,9 @@ public class OrgUnitMetadataResource {
   // parameter
   @GET
   @Produces(MediaType.APPLICATION_XML)
-  public Response getAsXml(@PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-      @QueryParam("eu") final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+  public Response getAsXml(@PathParam(AppConstant.ID) final String id,
+      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
     checkPreconditions(id, metadataName, escidocUri, sr);
     final String msg = "HTTP GET request for org unit with the id: " + id + ", metadata name: " + metadataName
@@ -151,8 +152,8 @@ public class OrgUnitMetadataResource {
     }
   }
 
-  // @GET
-  // @Produces(MediaType.TEXT_HTML)
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   public Response getAsHtml(@PathParam(AppConstant.ID) final String id,
       @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
@@ -183,7 +184,7 @@ public class OrgUnitMetadataResource {
          .lastModified(getLastModificationDate(org))
          .tag(getEntityTag(mr))
          .build();
-   //@formatter:on
+     //@formatter:on
     } catch (final AuthenticationException e) {
       return response401();
     } catch (final AuthorizationException e) {
