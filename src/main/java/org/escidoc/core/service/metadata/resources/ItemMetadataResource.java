@@ -78,12 +78,12 @@ public class ItemMetadataResource {
     LOG.debug(msg);
 
     try {
-      final Item item = find(id, escidocUri, encodedHandle);
-      final MetadataRecord mr = findMetadataByName(metadataName, item);
+      final Item resource = find(id, escidocUri, encodedHandle);
+      final MetadataRecord mr = findMetadataByName(metadataName, resource);
       if (mr.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
-      final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(item), getEntityTag(mr));
+      final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(mr));
       if (b != null) {
         return b.build();
       }
@@ -91,7 +91,7 @@ public class ItemMetadataResource {
       // @formatter:off
       return Response
           .ok(new DOMSource(mr.getContent()))
-          .lastModified(getLastModificationDate(item))
+          .lastModified(getLastModificationDate(resource))
           .tag(getEntityTag(mr))
           .build();
 	   // @formatter:on

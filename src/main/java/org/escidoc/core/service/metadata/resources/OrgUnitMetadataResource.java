@@ -51,7 +51,7 @@ import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.oum.OrganizationalUnit;
 
-@Path("organisations/{id}/metadata/{metadata-name}")
+@Path("organizations/{id}/metadata/{metadata-name}")
 public class OrgUnitMetadataResource {
 
   private final static Logger LOG = LoggerFactory.getLogger(OrgUnitMetadataResource.class);
@@ -69,7 +69,7 @@ public class OrgUnitMetadataResource {
   // parameter
   @GET
   @Produces(MediaType.APPLICATION_XML)
-  public Response getAsXml(@PathParam("id") final String id, @PathParam("metadata-name") final String metadataName,
+  public Response getAsXml(@PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
       @QueryParam("eu") final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
     checkPreconditions(id, metadataName, escidocUri, sr);
