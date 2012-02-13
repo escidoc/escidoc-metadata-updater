@@ -181,7 +181,7 @@ public class OrgUnitMetadataResource {
       // @formatter:off
      return Response
          .ok(s.toString(),MediaType.TEXT_HTML)
-         .lastModified(getLastModificationDate(org))
+//         .lastModified(getLastModificationDate(org))
          .tag(getEntityTag(mr))
          .build();
      //@formatter:on

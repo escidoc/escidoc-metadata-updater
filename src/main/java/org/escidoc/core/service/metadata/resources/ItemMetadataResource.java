@@ -142,7 +142,7 @@ public class ItemMetadataResource {
       // @formatter:off
       return Response
           .ok(s.toString(),MediaType.TEXT_HTML)
-          .lastModified(getLastModificationDate(item))
+//          .lastModified(getLastModificationDate(item))
           .tag(getEntityTag(mr))
           .build();
     //@formatter:on
