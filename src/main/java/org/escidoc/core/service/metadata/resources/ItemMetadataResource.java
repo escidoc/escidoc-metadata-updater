@@ -52,7 +52,6 @@ import de.escidoc.core.resources.om.item.Item;
 
 @Path("items/{id}/metadata/{metadata-name}")
 public class ItemMetadataResource {
-
   private static final Logger LOG = LoggerFactory.getLogger(ItemMetadataResource.class);
 
   @Context
@@ -69,7 +68,7 @@ public class ItemMetadataResource {
   @GET
   @Produces(MediaType.APPLICATION_XML)
   public Response getAsXml(@PathParam(AppConstant.ID) final String id,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @PathParam("metadata-name") final String metadataName, @QueryParam(AppConstant.EU) final String escidocUri,
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
     checkPreconditions(id, metadataName, escidocUri, sr);
@@ -117,7 +116,7 @@ public class ItemMetadataResource {
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getAsHtml(@PathParam(AppConstant.ID) final String id,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @PathParam("metadata-name") final String metadataName, @QueryParam(AppConstant.EU) final String escidocUri,
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
     checkPreconditions(id, metadataName, escidocUri, sr);
     final String msg = "HTTP GET request for item with the id: " + id + ", metadata name: " + metadataName
@@ -165,7 +164,7 @@ public class ItemMetadataResource {
   @Consumes("application/xml")
   @Produces("application/xml")
   public Response update(@PathParam(AppConstant.ID) final String id,
-      @PathParam("metadata-name") final String metadataName, @QueryParam("eu") final String escidocUri,
+      @PathParam("metadata-name") final String metadataName, @QueryParam(AppConstant.EU) final String escidocUri,
       final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
     checkPreconditions(id, metadataName, escidocUri, sr);
     final String msg = "HTTP PUT request for item with the id: " + id + ", metadata name: " + metadataName

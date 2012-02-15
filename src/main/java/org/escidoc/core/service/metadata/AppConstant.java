@@ -8,4 +8,5 @@ public class AppConstant {
   public static final String BASIC = "Basic";
   public static final String DC_URI = "http://purl.org/dc/elements/1.1/";
   public static final String ID = "id";
+  public static final String EU = "escidocurl";
 }
