@@ -38,24 +38,28 @@ import de.escidoc.core.client.exceptions.application.security.AuthenticationExce
 import de.escidoc.core.resources.GenericResource;
 import de.escidoc.core.resources.common.MetadataRecord;
 
-public class Utils {
+public final class Utils {
+
+  private Utils() {
+    // Utility classes
+  }
 
   public static Element buildSimpleMetadata() throws ParserConfigurationException {
     final Document doc = createNewDocument();
-    final Element e = doc.createElementNS(AppConstant.DC_URI, "dc");
-    final Element t = doc.createElementNS(AppConstant.DC_URI, "title");
-    t.setPrefix("dc");
-    t.setTextContent("test title");
-    e.appendChild(t);
-    return e;
+    final Element dc = doc.createElementNS(AppConstant.DC_URI, "dc");
+    final Element titleElement = doc.createElementNS(AppConstant.DC_URI, "title");
+    titleElement.setPrefix("dc");
+    titleElement.setTextContent("test title");
+    dc.appendChild(titleElement);
+    return dc;
   }
 
   public static Document createNewDocument() throws ParserConfigurationException {
     return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
   }
 
-  public static String asString(final MetadataRecord mr) {
-    final Element node = mr.getContent();
+  public static String asString(final MetadataRecord metadata) {
+    final Element node = metadata.getContent();
     try {
       final Transformer transformer = TransformerFactory.newInstance().newTransformer();
       final StringWriter sw = new StringWriter();
@@ -69,12 +73,12 @@ public class Utils {
     }
   }
 
-  // extracted from ItemMetadataResource
-  public static String transformToHtml(final MetadataRecord mr) {
+  public static String transformToHtml(final MetadataRecord metadata) {
+    Preconditions.checkNotNull(metadata, "mr is null: %s", metadata);
     try {
       final StringWriter s = new StringWriter();
       TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(
-          new DOMSource(mr.getContent()), new StreamResult(s));
+          new DOMSource(metadata.getContent()), new StreamResult(s));
       return s.toString();
     } catch (final TransformerConfigurationException e) {
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -87,26 +91,33 @@ public class Utils {
 
   public static String loginToEscidoc(final String escidocUri, final String[] creds) throws AuthenticationException,
       TransportException, MalformedURLException {
+    Preconditions.checkNotNull(escidocUri, "escidocUri is null: %s", escidocUri);
+    Preconditions.checkArgument(creds.length > 0);
     return new Authentication(new URL(escidocUri), getUserName(creds), getPassword(creds)).getHandle();
   }
 
-  public static String getPassword(final String[] creds) {
-    return decodeHandle(creds[1]).split(":")[1];
+  private static String getPassword(final String[] creds) {
+    final String decoded = decodeHandle(creds[1]);
+    final String[] arrays = decoded.split(":");
+    if (arrays.length == 1) {
+      return "";
+    }
+    return arrays[1];
   }
 
-  public static String getUserName(final String[] creds) {
+  private static String getUserName(final String[] creds) {
     return decodeHandle(creds[1]).split(":")[0];
   }
 
-  public static boolean notEmpty(final String[] creds) {
+  private static boolean notEmpty(final String[] creds) {
     return decodeHandle(creds[1]).split(":").length > 0;
   }
 
-  public static boolean useHttpBasicAuth(final String[] creds) {
+  private static boolean useHttpBasicAuth(final String[] creds) {
     return creds[0].contains(AppConstant.BASIC);
   }
 
-  public static boolean has(final String encodedHandle) {
+  private static boolean has(final String encodedHandle) {
     return encodedHandle != null;
   }
 
@@ -114,8 +125,7 @@ public class Utils {
     try {
       final MessageDigest md = MessageDigest.getInstance("SHA");
       final byte[] digest = md.digest(content);
-      final BigInteger bi = new BigInteger(digest);
-      return bi.toString(16);
+      return new BigInteger(digest).toString(16);
     } catch (final Exception e) {
       return "";
     }
@@ -136,7 +146,7 @@ public class Utils {
      // @formatter:on
   }
 
-  public static String decodeHandle(final String handle) {
+  private static String decodeHandle(final String handle) {
     if (has(handle)) {
       return Base64.base64Decode(handle);
     }
