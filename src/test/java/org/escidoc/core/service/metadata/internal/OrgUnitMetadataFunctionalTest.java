@@ -1,19 +1,18 @@
-package org.escidoc.core.service.metadata;
+package org.escidoc.core.service.metadata.internal;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource.Builder;
 
 import static org.junit.Assert.assertEquals;
 
-import org.escidoc.core.service.metadata.internal.Base;
+import org.escidoc.core.service.metadata.AppConstant;
+import org.escidoc.core.service.metadata.OrgUnitMetadataUpdateServiceSpec;
 import org.junit.After;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
 
 public class OrgUnitMetadataFunctionalTest extends Base implements OrgUnitMetadataUpdateServiceSpec {
-
-  private static final String EU_PARAM = "eu";
 
   private static final String METADATA = "metadata";
 
@@ -35,7 +34,7 @@ public class OrgUnitMetadataFunctionalTest extends Base implements OrgUnitMetada
         .path(ORG_UNIT_ID)
         .path(METADATA)
         .path(EXISTING_METADATA_NAME)
-        .queryParam(EU_PARAM, SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML);
     assertEquals("response is not equals", 200, builder.get(ClientResponse.class).getStatus());
   }

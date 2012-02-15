@@ -7,6 +7,7 @@ import com.sun.jersey.core.util.Base64;
 
 import static org.junit.Assert.assertEquals;
 
+import org.escidoc.core.service.metadata.AppConstant;
 import org.escidoc.core.service.metadata.ItemMetadataUpdateServiceSpec;
 import org.junit.After;
 import org.junit.Test;
@@ -22,9 +23,9 @@ import javax.xml.transform.dom.DOMSource;
 
 import de.escidoc.core.client.Authentication;
 
-public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpec {
+public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpdateServiceSpec {
 
-  private final static Logger LOG = LoggerFactory.getLogger(FunctionalTest.class);
+  private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataFunctionalTest.class);
 
   @After
   public void stop() throws Exception {
@@ -41,7 +42,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path("escidoc:93")
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML);
     
     final ClientResponse r = builder.get(ClientResponse.class);
@@ -56,7 +57,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path(NON_EXISTING_ITEM_ID)
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
      // @formatter:on
@@ -72,7 +73,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path(ITEM_ID)
         .path("metadata")
         .path(NON_EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
      // @formatter:on
@@ -138,7 +139,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path("escidoc:93")
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML);
     
     final ClientResponse r = builder.get(ClientResponse.class);
@@ -155,7 +156,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path(ITEM_ID)
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
    // @formatter:on
@@ -173,7 +174,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path(ITEM_ID)
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
 	   // @formatter:on
@@ -192,7 +193,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path("escidoc:93")
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .cookie(new Cookie("escidocCookie",token)) 
         .get(ClientResponse.class);
@@ -213,7 +214,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path("escidoc:93")
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .cookie(new Cookie("escidocCookie",token));
     
@@ -245,7 +246,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path("escidoc:93")
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML);
     
     final DOMSource e = builder
@@ -267,7 +268,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path(ITEM_ID)
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class).getEntityTag();
     
@@ -276,7 +277,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path(ITEM_ID)
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .accept(MediaType.APPLICATION_XML)
         .header("If-None-Match", et)
         .get(ClientResponse.class);
@@ -295,7 +296,7 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
         .path("escidoc:93")
         .path("metadata")
         .path(EXISTING_METADATA_NAME)
-        .queryParam("eu", SERVICE_URL)
+        .queryParam(AppConstant.EU, SERVICE_URL)
         .queryParam("eSciDocUserHandle", new String(Base64.encode(token)))
         .accept(MediaType.APPLICATION_XML);
     
@@ -309,4 +310,5 @@ public class FunctionalTest extends Base implements ItemMetadataUpdateServiceSpe
     LOG.debug("Entity: " + r.getEntity(String.class));
     assertEquals("response is not equals", 200, r.getStatus());
   }
+
 }
