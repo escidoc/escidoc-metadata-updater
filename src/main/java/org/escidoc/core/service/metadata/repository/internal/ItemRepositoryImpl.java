@@ -14,6 +14,7 @@ import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.client.interfaces.ItemHandlerClientInterface;
+import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.om.item.Item;
 
 public class ItemRepositoryImpl implements ItemRepository {
@@ -37,5 +38,13 @@ public class ItemRepositoryImpl implements ItemRepository {
       InternalClientException, TransportException {
     Preconditions.checkNotNull(item, "item is null: %s", item);
     return c.update(item);
+  }
+
+  @Override
+  public MetadataRecord findMetadataByName(final String itemId, final String metadataName) throws EscidocException,
+      InternalClientException, TransportException {
+    Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
+    Preconditions.checkNotNull(metadataName, "metadataName is null: %s", metadataName);
+    return c.retrieveMdRecord(itemId, metadataName);
   }
 }

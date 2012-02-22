@@ -48,7 +48,6 @@ import de.escidoc.core.client.exceptions.application.security.AuthenticationExce
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.GenericResource;
 import de.escidoc.core.resources.common.MetadataRecord;
-import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.oum.OrganizationalUnit;
 
 @Path("organizations/{id}/metadata/{metadata-name}")
@@ -112,20 +111,15 @@ public class OrgUnitMetadataResource {
       LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final EscidocException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransportException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  private static MetadataRecord findMetadataByName(final String metadataName, final OrganizationalUnit ou) {
-    final MetadataRecords mrList = ou.getMetadataRecords();
-    if (mrList == null || mrList.isEmpty()) {
-      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
-    }
-
-    final MetadataRecord mr = mrList.get(metadataName);
-    if (mr == null) {
-      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
-    }
-    return mr;
   }
 
   private OrganizationalUnit find(final String id, final String escidocUri, final String encodedHandle)
@@ -197,6 +191,15 @@ public class OrgUnitMetadataResource {
       LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+
+    } catch (final EscidocException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    } catch (final TransportException e) {
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
+          + e.getMessage());
+      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -243,4 +246,13 @@ public class OrgUnitMetadataResource {
     }
   }
 
+  private MetadataRecord findMetadataByName(final String metadataName, final OrganizationalUnit orgUnit)
+      throws EscidocException, InternalClientException, TransportException {
+
+    final MetadataRecord mr = repo.findMetadataByName(orgUnit.getObjid(), metadataName);
+    if (mr == null) {
+      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
+    }
+    return mr;
+  }
 }

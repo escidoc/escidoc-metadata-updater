@@ -81,4 +81,10 @@ public class InMemoryItemRepository implements ItemRepository {
   public Item update(final Item item) throws EscidocException, InternalClientException, TransportException {
     return item;
   }
+
+  @Override
+  public MetadataRecord findMetadataByName(final String itemId, final String metadataName) throws EscidocException,
+      InternalClientException, TransportException {
+    return map.get(itemId).getMetadataRecords().get(metadataName);
+  }
 }

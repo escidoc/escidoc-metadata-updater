@@ -8,6 +8,7 @@ import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
+import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.om.item.Item;
 
 public interface ItemRepository {
@@ -16,5 +17,8 @@ public interface ItemRepository {
       EscidocException, InternalClientException, TransportException, MalformedURLException;
 
   Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
+      InternalClientException, TransportException;
+
+  MetadataRecord findMetadataByName(final String itemId, final String metadataName) throws EscidocException,
       InternalClientException, TransportException;
 }
