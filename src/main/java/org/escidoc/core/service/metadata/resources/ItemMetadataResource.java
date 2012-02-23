@@ -47,6 +47,7 @@ import de.escidoc.core.client.exceptions.application.notfound.ItemNotFoundExcept
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.common.MetadataRecord;
+import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
 
 @Path("items/{id}/metadata/{metadata-name}")
@@ -109,14 +110,6 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final EscidocException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final TransportException e) {
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-          + e.getMessage());
-      throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -164,14 +157,7 @@ public class ItemMetadataResource {
       LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    } catch (final EscidocException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (final TransportException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     }
-    return null;
   }
 
   @PUT
@@ -247,9 +233,14 @@ public class ItemMetadataResource {
     }
   }
 
-  private MetadataRecord findMetadataByName(final String metadataName, final Item item) throws EscidocException,
-      InternalClientException, TransportException {
-    final MetadataRecord mr = ir.findMetadataByName(item.getObjid(), metadataName);
+  public static MetadataRecord findMetadataByName(final String metadataName, final Item item) {
+
+    final MetadataRecords mrList = item.getMetadataRecords();
+    if (mrList == null || mrList.isEmpty()) {
+      throw new NotFoundException("Metadata, " + metadataName + ", is not found");
+    }
+
+    final MetadataRecord mr = mrList.get(metadataName);
     if (mr == null) {
       throw new NotFoundException("Metadata, " + metadataName + ", is not found");
     }

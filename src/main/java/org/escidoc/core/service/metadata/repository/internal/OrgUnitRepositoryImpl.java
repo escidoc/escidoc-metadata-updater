@@ -15,7 +15,6 @@ import de.escidoc.core.client.exceptions.application.security.AuthenticationExce
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.client.interfaces.OrganizationalUnitHandlerClientInterface;
 import de.escidoc.core.resources.GenericResource;
-import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.oum.OrganizationalUnit;
 
 public class OrgUnitRepositoryImpl implements OrgUnitRepository {
@@ -38,11 +37,5 @@ public class OrgUnitRepositoryImpl implements OrgUnitRepository {
   public GenericResource update(final OrganizationalUnit ou) throws AuthenticationException, AuthorizationException,
       EscidocException, InternalClientException, TransportException {
     return c.update(ou);
-  }
-
-  @Override
-  public MetadataRecord findMetadataByName(final String objid, final String metadataName)
-      throws InternalClientException, TransportException, EscidocException {
-    return c.retrieveMdRecord(objid, metadataName);
   }
 }
