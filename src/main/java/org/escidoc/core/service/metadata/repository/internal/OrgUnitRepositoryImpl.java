@@ -34,8 +34,8 @@ public class OrgUnitRepositoryImpl implements OrgUnitRepository {
   }
 
   @Override
-  public GenericResource update(final OrganizationalUnit ou) throws AuthenticationException, AuthorizationException,
+  public GenericResource update(final OrganizationalUnit resource) throws AuthenticationException, AuthorizationException,
       EscidocException, InternalClientException, TransportException {
-    return c.update(ou);
+    return c.update(resource);
   }
 }

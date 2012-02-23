@@ -8,7 +8,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.escidoc.core.service.metadata.guice.AppServletConfig;
+import org.escidoc.core.service.metadata.servlet.AppServletConfig;
 import org.junit.Before;
 
 public class Base {

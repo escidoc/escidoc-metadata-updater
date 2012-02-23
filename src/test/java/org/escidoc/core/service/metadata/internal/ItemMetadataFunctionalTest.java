@@ -48,6 +48,7 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     final ClientResponse r = builder.get(ClientResponse.class);
     assertEquals("response is not equals", 401, r.getStatus());
   }
+  
   @Test
   @Override
   public void shouldReturn404ForNonExistingItem() {
