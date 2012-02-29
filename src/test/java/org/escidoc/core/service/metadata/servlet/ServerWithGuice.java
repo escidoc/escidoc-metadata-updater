@@ -1,11 +1,11 @@
-package org.escidoc.core.service.metadata;
+package org.escidoc.core.service.metadata.servlet;
 
 import com.google.inject.servlet.GuiceFilter;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.escidoc.core.service.metadata.guice.AppServletConfig;
+import org.escidoc.core.service.metadata.servlet.AppServletConfig;
 
 public class ServerWithGuice {
 

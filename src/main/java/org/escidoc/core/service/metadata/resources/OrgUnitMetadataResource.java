@@ -43,7 +43,7 @@ import javax.xml.transform.dom.DOMSource;
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
-import de.escidoc.core.client.exceptions.application.notfound.ItemNotFoundException;
+import de.escidoc.core.client.exceptions.application.notfound.OrganizationalUnitNotFoundException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.GenericResource;
@@ -53,6 +53,8 @@ import de.escidoc.core.resources.oum.OrganizationalUnit;
 
 @Path("organizations/{id}/metadata/{metadata-name}")
 public class OrgUnitMetadataResource {
+
+  private static final String ORGANIZATION_UNIT = "organization unit";
 
   private final static Logger LOG = LoggerFactory.getLogger(OrgUnitMetadataResource.class);
 
@@ -74,9 +76,7 @@ public class OrgUnitMetadataResource {
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
     checkPreconditions(id, metadataName, escidocUri, sr);
-    final String msg = "HTTP GET request for org unit with the id: " + id + ", metadata name: " + metadataName
-        + ", server uri: " + escidocUri;
-    LOG.debug(msg);
+    debug(id, metadataName, escidocUri);
 
     try {
       final OrganizationalUnit resource = find(id, escidocUri, encodedHandle);
@@ -109,10 +109,23 @@ public class OrgUnitMetadataResource {
         LOG.debug("No auth token is provided or not valid while accessing protected source. ");
         return response401();
       }
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from org unit, " + id + ", reason: "
           + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static void debug(final String id, final String metadataName, final String escidocUri) {
+    final StringBuilder builder = new StringBuilder();
+    builder.append("GET request for ");
+    builder.append(ORGANIZATION_UNIT);
+    builder.append(" with the id: ");
+    builder.append(id);
+    builder.append(", metadata name: ");
+    builder.append(metadataName);
+    builder.append(", server uri: ");
+    builder.append(escidocUri);
+    LOG.debug(builder.toString());
   }
 
   private static MetadataRecord findMetadataByName(final String metadataName, final OrganizationalUnit ou) {
@@ -132,14 +145,14 @@ public class OrgUnitMetadataResource {
       throws AuthenticationException, AuthorizationException, InternalClientException {
     try {
       final String decodedHandle = getHandleIfAny(sr, escidocUri, encodedHandle);
-      final OrganizationalUnit item = repo.find(id, new URI(escidocUri), decodedHandle);
-      if (item == null) {
+      final OrganizationalUnit resource = repo.find(id, new URI(escidocUri), decodedHandle);
+      if (resource == null) {
         throw new NotFoundException("Organisation," + id + ", not found");
       }
-      return item;
+      return resource;
     } catch (final AuthenticationException e) {
       throw new AuthenticationException(e.getMessage(), e);
-    } catch (final ItemNotFoundException e) {
+    } catch (final OrganizationalUnitNotFoundException e) {
       throw new NotFoundException("Organisation," + id + ", not found");
     } catch (final EscidocException e) {
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -159,7 +172,7 @@ public class OrgUnitMetadataResource {
       @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
     checkPreconditions(id, metadataName, escidocUri, sr);
-    final String msg = "HTTP GET request for item with the id: " + id + ", metadata name: " + metadataName
+    final String msg = "HTTP GET request for with the id: " + id + ", metadata name: " + metadataName
         + ", server uri: " + escidocUri;
     LOG.debug(msg);
 
@@ -194,31 +207,30 @@ public class OrgUnitMetadataResource {
       if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
         return response401();
       }
-      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-          + e.getMessage());
+      LOG.error("Can not fetch metadata with the name, " + metadataName + ", from organizational unit, " + id
+          + ", reason: " + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
   }
 
   @PUT
-  @Consumes("application/xml")
-  @Produces("application/xml")
+  @Consumes(MediaType.APPLICATION_XML)
+  @Produces(MediaType.APPLICATION_XML)
   public Response update(@PathParam(AppConstant.ID) final String id,
       @PathParam("metadata-name") final String metadataName, @QueryParam(AppConstant.EU) final String escidocUri,
       final DOMSource s, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+
     checkPreconditions(id, metadataName, escidocUri, sr);
-    final String msg = "HTTP PUT request for item with the id: " + id + ", metadata name: " + metadataName
-        + ", server uri: " + escidocUri;
-    LOG.debug(msg);
+    debugPut(id, metadataName, escidocUri);
 
     try {
       final OrganizationalUnit org = find(id, escidocUri, encodedHandle);
-      final MetadataRecord mr = findMetadataByName(metadataName, org);
-      if (mr.getContent() == null) {
+      final MetadataRecord metadata = findMetadataByName(metadataName, org);
+      if (metadata.getContent() == null) {
         return Response.status(Status.NO_CONTENT).build();
       }
 
-      mr.setContent((Element) s.getNode().getFirstChild());
+      metadata.setContent((Element) s.getNode().getFirstChild());
       final GenericResource updated = repo.update(org);
       Preconditions.checkNotNull(updated, "updated is null: %s", updated);
       // @formatter:off
@@ -231,16 +243,22 @@ public class OrgUnitMetadataResource {
     } catch (final AuthenticationException e) {
       return response401();
     } catch (final EscidocException e) {
-      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-          + e.getMessage());
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from organizational unit, " + id
+          + ", reason: " + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     } catch (final InternalClientException e) {
       return response401();
     } catch (final TransportException e) {
-      LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-          + e.getMessage());
+      LOG.error("Can not update metadata with the name, " + metadataName + ", from organizational unit, " + id
+          + ", reason: " + e.getMessage());
       throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private void debugPut(final String id, final String metadataName, final String escidocUri) {
+    final String msg = "HTTP PUT request for organizational unit with the id: " + id + ", metadata name: "
+        + metadataName + ", server uri: " + escidocUri;
+    LOG.debug(msg);
   }
 
 }

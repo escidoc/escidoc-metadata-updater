@@ -13,8 +13,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.escidoc.core.service.metadata.AppConstant;
-import org.escidoc.core.service.metadata.InMemoryServletConfig;
 import org.escidoc.core.service.metadata.ItemMetadataUpdateServiceSpec;
+import org.escidoc.core.service.metadata.servlet.InMemoryServletConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.MediaType;
 import javax.xml.transform.dom.DOMSource;
 
-public class InMemory extends Base implements ItemMetadataUpdateServiceSpec {
+public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceSpec {
 
-  private final static Logger LOG = LoggerFactory.getLogger(InMemory.class);
+  private final static Logger LOG = LoggerFactory.getLogger(ItemInMemoryTest.class);
   private Server server;
   private Client client;
 

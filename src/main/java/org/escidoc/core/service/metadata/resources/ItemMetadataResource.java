@@ -213,11 +213,11 @@ public class ItemMetadataResource {
       throws AuthenticationException, AuthorizationException, InternalClientException {
     try {
       final String decodedHandle = getHandleIfAny(sr, escidocUri, encodedHandle);
-      final Item item = ir.find(id, new URI(escidocUri), decodedHandle);
-      if (item == null) {
+      final Item resource = ir.find(id, new URI(escidocUri), decodedHandle);
+      if (resource == null) {
         throw new NotFoundException("Item," + id + ", not found");
       }
-      return item;
+      return resource;
     } catch (final AuthenticationException e) {
       throw new AuthenticationException(e.getMessage(), e);
     } catch (final ItemNotFoundException e) {

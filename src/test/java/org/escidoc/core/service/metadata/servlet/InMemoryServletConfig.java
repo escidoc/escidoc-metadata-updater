@@ -1,4 +1,4 @@
-package org.escidoc.core.service.metadata;
+package org.escidoc.core.service.metadata.servlet;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
