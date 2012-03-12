@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>org.escidoc.core</groupId>
 			<artifactId>escidoc-ijc</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
