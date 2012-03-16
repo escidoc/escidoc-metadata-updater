@@ -25,7 +25,7 @@ function getXMLHttpRequest() {
 }
 function getDescriptor() {
     var xhr = getXMLHttpRequest();
-    xhr.open('GET', 'http://localhost:8082/rest/pubman-admin-descriptor.xml', false);
+    xhr.open('GET', 'pubman-admin-descriptor.xml', false);
     xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
     xhr.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
     xhr.send(null);
@@ -35,8 +35,7 @@ function getDescriptor() {
 
 function put(xml) {
     var xhr2 = new XMLHttpRequest();
-    var serverUri='';
-    xhr2.open('PUT', 'http://localhost:8082/rest/pubman-admin-descriptor.xml', false);
+    xhr2.open('PUT', 'pubman-admin-descriptor.xml', false);
     xhr2.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
     xhr2.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
     xhr2.send(null);
