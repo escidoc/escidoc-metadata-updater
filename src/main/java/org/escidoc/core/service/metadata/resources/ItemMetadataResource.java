@@ -95,9 +95,11 @@ public class ItemMetadataResource {
     // parameter
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public Response getAsXml(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    public Response getAsXml(@PathParam(AppConstant.ID)
+    final String id, @PathParam("metadata-name")
+    final String metadataName, @QueryParam(AppConstant.EU)
+    final String escidocUri, @QueryParam("eSciDocUserHandle")
+    final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         final String msg =
@@ -117,12 +119,9 @@ public class ItemMetadataResource {
             }
 
             // @formatter:off
-      return Response
-          .ok(new DOMSource(mr.getContent()))
-          .lastModified(getLastModificationDate(resource))
-          .tag(getEntityTag(mr))
-          .build();
-	   // @formatter:on
+            return Response.ok(new DOMSource(mr.getContent())).lastModified(getLastModificationDate(resource)).tag(
+                getEntityTag(mr)).build();
+            // @formatter:on
 
         }
         catch (final AuthenticationException e) {
@@ -147,9 +146,11 @@ public class ItemMetadataResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getAsHtml(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    public Response getAsHtml(@PathParam(AppConstant.ID)
+    final String id, @PathParam("metadata-name")
+    final String metadataName, @QueryParam(AppConstant.EU)
+    final String escidocUri, @QueryParam("eSciDocUserHandle")
+    final String encodedHandle) {
         checkPreconditions(id, metadataName, escidocUri, sr);
         final String msg =
             "HTTP GET request for item with the id: " + id + ", metadata name: " + metadataName + ", server uri: "
@@ -172,12 +173,10 @@ public class ItemMetadataResource {
             Utils.transformXml(mr, s);
 
             // @formatter:off
-      return Response
-          .ok(s.toString(),MediaType.TEXT_HTML)
-//          .lastModified(getLastModificationDate(item))
-          .tag(getEntityTag(mr))
-          .build();
-    //@formatter:on
+            return Response.ok(s.toString(), MediaType.TEXT_HTML)
+            //          .lastModified(getLastModificationDate(item))
+            .tag(getEntityTag(mr)).build();
+            //@formatter:on
         }
         catch (final AuthenticationException e) {
             return response401();
@@ -199,10 +198,11 @@ public class ItemMetadataResource {
     @PUT
     @Consumes("application/xml")
     @Produces("application/xml")
-    public Response update(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource s,
-        @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    public Response update(@PathParam(AppConstant.ID)
+    final String id, @PathParam("metadata-name")
+    final String metadataName, @QueryParam(AppConstant.EU)
+    final String escidocUri, final DOMSource s, @QueryParam("eSciDocUserHandle")
+    final String encodedHandle) {
         checkPreconditions(id, metadataName, escidocUri, sr);
         final String msg =
             "HTTP PUT request for item with the id: " + id + ", metadata name: " + metadataName + ", server uri: "
@@ -220,10 +220,8 @@ public class ItemMetadataResource {
             final Item updated = ir.update(item);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
-      return Response
-          .ok()
-          .build();
-  	   // @formatter:on
+            return Response.ok().build();
+            // @formatter:on
         }
         catch (final AuthorizationException e) {
             return response401();

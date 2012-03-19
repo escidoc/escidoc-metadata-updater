@@ -39,7 +39,7 @@ import javax.ws.rs.core.Response;
 public class HelloResource {
 
     @GET
-    @Produces({ "text/plain", "text/html" })
+    @Produces( { "text/plain", "text/html" })
     public Response getAsTextOrHtmlOrXml() {
         return Response.ok("OK").build();
     }
@@ -48,10 +48,8 @@ public class HelloResource {
     @Produces("application/xml")
     public Response getAsXml() {
         // @formatter:off
-    return Response
-        .ok("<OK/>")
-        .build();
-    //@formatter:on
+        return Response.ok("<OK/>").build();
+        //@formatter:on
     }
 
     @PUT

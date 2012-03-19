@@ -77,9 +77,7 @@ public class Base {
         server.start();
         client = Client.create();
         // @formatter:off
-    resource = client
-        .resource("http://localhost:8089")
-        .path("v0.9");
-	   // @formatter:on
+        resource = client.resource("http://localhost:8089").path("v0.9");
+        // @formatter:on
     }
 }

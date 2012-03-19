@@ -37,12 +37,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 // @formatter:off
-@Suite.SuiteClasses({ItemInMemoryTest.class, 
-                     ItemMetadataFunctionalTest.class,
-                     OrgUnitMetadataFunctionalTest.class,
-                     ContextMetadataFunctionalTest.class
-                     })
- // @formatter:on
+@Suite.SuiteClasses( { ItemInMemoryTest.class, ItemMetadataFunctionalTest.class, OrgUnitMetadataFunctionalTest.class,
+    ContextMetadataFunctionalTest.class })
+// @formatter:on
 public class AllTests {
     // running all tests
 }

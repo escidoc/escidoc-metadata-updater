@@ -1,30 +1,28 @@
 /**
  * CDDL HEADER START
- *
- * The contents of this file are subject to the terms of the
- * Common Development and Distribution License, Version 1.0 only
- * (the "License").  You may not use this file except in compliance
- * with the License.
- *
- * You can obtain a copy of the license at license/ESCIDOC.LICENSE
- * or https://www.escidoc.org/license/ESCIDOC.LICENSE .
- * See the License for the specific language governing permissions
- * and limitations under the License.
- *
- * When distributing Covered Code, include this CDDL HEADER in each
- * file and include the License file at license/ESCIDOC.LICENSE.
- * If applicable, add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your own identifying
- * information: Portions Copyright [yyyy] [name of copyright owner]
- *
+ * 
+ * The contents of this file are subject to the terms of the Common Development
+ * and Distribution License, Version 1.0 only (the "License"). You may not use
+ * this file except in compliance with the License.
+ * 
+ * You can obtain a copy of the license at license/ESCIDOC.LICENSE or
+ * https://www.escidoc.org/license/ESCIDOC.LICENSE . See the License for the
+ * specific language governing permissions and limitations under the License.
+ * 
+ * When distributing Covered Code, include this CDDL HEADER in each file and
+ * include the License file at license/ESCIDOC.LICENSE. If applicable, add the
+ * following below this CDDL HEADER, with the fields enclosed by brackets "[]"
+ * replaced with your own identifying information: Portions Copyright [yyyy]
+ * [name of copyright owner]
+ * 
  * CDDL HEADER END
- *
- *
- *
- * Copyright 2012 Fachinformationszentrum Karlsruhe Gesellschaft
- * fuer wissenschaftlich-technische Information mbH and Max-Planck-
- * Gesellschaft zur Foerderung der Wissenschaft e.V.
- * All rights reserved.  Use is subject to license terms.
+ * 
+ * 
+ * 
+ * Copyright 2012 Fachinformationszentrum Karlsruhe Gesellschaft fuer
+ * wissenschaftlich-technische Information mbH and Max-Planck- Gesellschaft zur
+ * Foerderung der Wissenschaft e.V. All rights reserved. Use is subject to
+ * license terms.
  */
 package org.escidoc.core.service.metadata;
 
@@ -108,9 +106,8 @@ public final class Utils {
         Preconditions.checkNotNull(metadata, "mr is null: %s", metadata);
         try {
             final StringWriter s = new StringWriter();
-            TransformerFactory
-                .newInstance().newTransformer(new StreamSource(readXsl()))
-                .transform(new DOMSource(metadata.getContent()), new StreamResult(s));
+            TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(
+                new DOMSource(metadata.getContent()), new StreamResult(s));
             return s.toString();
         }
         catch (final TransformerConfigurationException e) {
@@ -173,13 +170,10 @@ public final class Utils {
 
     public static Response response401() {
         // @formatter:off
-    return Response
-        .status(Status.UNAUTHORIZED)
-        .header("WWW-Authenticate", "Basic realm=\"" + AppConstant.BASIC_REALM + "\"")
-        .type("text/plain")
-        .entity("Authentification credentials are required")
-        .build();
-     // @formatter:on
+        return Response.status(Status.UNAUTHORIZED).header("WWW-Authenticate",
+            "Basic realm=\"" + AppConstant.BASIC_REALM + "\"").type("text/plain").entity(
+            "Authentification credentials are required").build();
+        // @formatter:on
     }
 
     private static String decodeHandle(final String handle) {
@@ -240,9 +234,8 @@ public final class Utils {
 
     public static void transformXml(final MetadataRecord mr, final StringWriter s) {
         try {
-            TransformerFactory
-                .newInstance().newTransformer(new StreamSource(Utils.readXsl()))
-                .transform(new DOMSource(mr.getContent()), new StreamResult(s));
+            TransformerFactory.newInstance().newTransformer(new StreamSource(Utils.readXsl())).transform(
+                new DOMSource(mr.getContent()), new StreamResult(s));
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -257,9 +250,8 @@ public final class Utils {
 
     public static void transformXml(final AdminDescriptor mr, final StringWriter s) {
         try {
-            TransformerFactory
-                .newInstance().newTransformer(new StreamSource(Utils.readXsl()))
-                .transform(new DOMSource(mr.getContent()), new StreamResult(s));
+            TransformerFactory.newInstance().newTransformer(new StreamSource(Utils.readXsl())).transform(
+                new DOMSource(mr.getContent()), new StreamResult(s));
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);

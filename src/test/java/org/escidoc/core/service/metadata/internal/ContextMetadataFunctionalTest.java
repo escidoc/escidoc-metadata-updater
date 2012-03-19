@@ -67,40 +67,30 @@ public class ContextMetadataFunctionalTest extends Base implements ContextMetada
     @Override
     public void shouldReturn200ForExistingContextAndMetadata() throws Exception {
         // @formatter:off
-    final Builder builder = resource
-        .path(AppConstant.CONTEXTS)
-        .path(CONTEXT_ID)
-        .path(METADATA)
-        .path(CONTEXT_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML);
-    assertEquals("response is not equals", 200, builder.get(ClientResponse.class).getStatus());
-    final String responseMessage=  builder.get(ClientResponse.class).getEntity(String.class);
-    LOG.debug("Entity as String: "+responseMessage);
+        final Builder builder =
+            resource.path(AppConstant.CONTEXTS).path(CONTEXT_ID).path(METADATA).path(CONTEXT_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML);
+        assertEquals("response is not equals", 200, builder.get(ClientResponse.class).getStatus());
+        final String responseMessage = builder.get(ClientResponse.class).getEntity(String.class);
+        LOG.debug("Entity as String: " + responseMessage);
 
-  }
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception  {
+    @Test
+    @Override
+    public void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception {
 
-    final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
-    // @formatter:off
-    final Builder builder = resource
-        .path(AppConstant.CONTEXTS)
-        .path(CONTEXT_ID)
-        .path(METADATA)
-        .path(CONTEXT_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .cookie(new Cookie("escidocCookie",token));
-    
-    final DOMSource e = builder
-        .get(ClientResponse.class)
-        .getEntity(DOMSource.class);
-    
-    final ClientResponse r = builder.put(ClientResponse.class,e);
-   // @formatter:on
+        final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
+        // @formatter:off
+        final Builder builder =
+            resource.path(AppConstant.CONTEXTS).path(CONTEXT_ID).path(METADATA).path(CONTEXT_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).cookie(
+                new Cookie("escidocCookie", token));
+
+        final DOMSource e = builder.get(ClientResponse.class).getEntity(DOMSource.class);
+
+        final ClientResponse r = builder.put(ClientResponse.class, e);
+        // @formatter:on
 
         LOG.debug("Entity: " + r.getEntity(String.class));
         assertEquals("response is not equals", 200, r.getStatus());

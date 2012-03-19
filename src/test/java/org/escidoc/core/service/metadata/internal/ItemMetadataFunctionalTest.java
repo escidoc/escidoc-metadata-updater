@@ -65,31 +65,22 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         client.addFilter(new HTTPBasicAuthFilter("", ""));
 
         // @formatter:off
-    final Builder builder = resource
-        .path("items")
-        .path("escidoc:93")
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML);
-    
-    final ClientResponse r = builder.get(ClientResponse.class);
-    assertEquals("response is not equals", 401, r.getStatus());
-  }
-  
-  @Test
-  @Override
-  public void shouldReturn404ForNonExistingItem() {
-    // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(NON_EXISTING_ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-     // @formatter:on
+        final Builder builder =
+            resource.path("items").path("escidoc:93").path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML);
+
+        final ClientResponse r = builder.get(ClientResponse.class);
+        assertEquals("response is not equals", 401, r.getStatus());
+    }
+
+    @Test
+    @Override
+    public void shouldReturn404ForNonExistingItem() {
+        // @formatter:off
+        final ClientResponse r =
+            resource.path("items").path(NON_EXISTING_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 404, r.getStatus());
     }
 
@@ -97,15 +88,10 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     @Override
     public void shouldReturn404ForNonExistingMetadata() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(ITEM_ID)
-        .path("metadata")
-        .path(NON_EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-     // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(ITEM_ID).path("metadata").path(NON_EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
 
         assertEquals("response is not equals", 404, r.getStatus());
     }
@@ -132,14 +118,10 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     @Override
     public void shouldReturn400ForMissingServerParameter() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(EXISTING_ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-     // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).accept(
+                MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 400, r.getStatus());
     }
 
@@ -147,12 +129,10 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     @Override
     public void shouldReturn200forHelloWorld() throws Exception {
         // @formatter:off
-    final ClientResponse response = resource
-        .path("helloworld")
-        .accept(MediaType.TEXT_PLAIN)
-        .get(ClientResponse.class);
-    
-     // @formatter:on
+        final ClientResponse response =
+            resource.path("helloworld").accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+
+        // @formatter:on
         assertEquals("response is not equals", 200, response.getStatus());
         final String entity = response.getEntity(String.class);
         LOG.debug("Got: " + entity);
@@ -163,16 +143,12 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     @Override
     public void shouldReturn401WhenNoValidCookie() throws Exception {
         // @formatter:off
-    final Builder builder = resource
-        .path("items")
-        .path("escidoc:93")
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML);
-    
-    final ClientResponse r = builder.get(ClientResponse.class);
-   // @formatter:on
+        final Builder builder =
+            resource.path("items").path("escidoc:93").path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML);
+
+        final ClientResponse r = builder.get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 401, r.getStatus());
     }
 
@@ -180,15 +156,10 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     @Override
     public void shouldReturnXmlForMetadata() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 200, r.getStatus());
 
         LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
@@ -198,15 +169,10 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     @Override
     public void shouldReturn200ForExistingItemAndMetadata() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 200, r.getStatus());
 
         LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
@@ -217,16 +183,11 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidToken() throws Exception {
         final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path("escidoc:93")
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .cookie(new Cookie("escidocCookie",token)) 
-        .get(ClientResponse.class);
-   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path("escidoc:93").path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).cookie(
+                new Cookie("escidocCookie", token)).get(ClientResponse.class);
+        // @formatter:on
 
         LOG.debug("Entity: " + r.getEntity(String.class));
         assertEquals("response is not equals", 200, r.getStatus());
@@ -238,21 +199,15 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
 
         final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
         // @formatter:off
-    final Builder builder = resource
-        .path("items")
-        .path("escidoc:93")
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .cookie(new Cookie("escidocCookie",token));
-    
-    final DOMSource e = builder
-        .get(ClientResponse.class)
-        .getEntity(DOMSource.class);
-    
-    final ClientResponse r = builder.put(ClientResponse.class,e);
-   // @formatter:on
+        final Builder builder =
+            resource.path("items").path("escidoc:93").path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).cookie(
+                new Cookie("escidocCookie", token));
+
+        final DOMSource e = builder.get(ClientResponse.class).getEntity(DOMSource.class);
+
+        final ClientResponse r = builder.put(ClientResponse.class, e);
+        // @formatter:on
 
         LOG.debug("Entity: " + r.getEntity(String.class));
         assertEquals("response is not equals", 200, r.getStatus());
@@ -270,20 +225,14 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         client.addFilter(new HTTPBasicAuthFilter("sysadmin", "eSciDoc"));
 
         // @formatter:off
-    final Builder builder = resource
-        .path("items")
-        .path("escidoc:93")
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML);
-    
-    final DOMSource e = builder
-        .get(ClientResponse.class)
-        .getEntity(DOMSource.class);
-    
-    final ClientResponse r = builder.put(ClientResponse.class,e);
-   // @formatter:on
+        final Builder builder =
+            resource.path("items").path("escidoc:93").path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML);
+
+        final DOMSource e = builder.get(ClientResponse.class).getEntity(DOMSource.class);
+
+        final ClientResponse r = builder.put(ClientResponse.class, e);
+        // @formatter:on
 
         LOG.debug("Entity: " + r.getEntity(String.class));
         assertEquals("response is not equals", 200, r.getStatus());
@@ -292,25 +241,15 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     @Test
     public void shouldReturnNotModifiedIfTheLastModificationDateAndEtagSentAreEquals() throws Exception {
         // @formatter:off
-    final EntityTag et = resource
-        .path("items")
-        .path(ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class).getEntityTag();
-    
-    final ClientResponse r = resource
-        .path("items")
-        .path(ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .header("If-None-Match", et)
-        .get(ClientResponse.class);
-	   // @formatter:on
+        final EntityTag et =
+            resource.path("items").path(ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class).getEntityTag();
+
+        final ClientResponse r =
+            resource.path("items").path(ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).header("If-None-Match", et).get(
+                ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 304, r.getStatus());
     }
 
@@ -320,21 +259,15 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
 
         final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
         // @formatter:off
-    final Builder builder = resource
-        .path("items")
-        .path("escidoc:93")
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .queryParam("eSciDocUserHandle", new String(Base64.encode(token)))
-        .accept(MediaType.APPLICATION_XML);
-    
-    final DOMSource e = builder
-        .get(ClientResponse.class)
-        .getEntity(DOMSource.class);
-    
-    final ClientResponse r = builder.put(ClientResponse.class,e);
-   // @formatter:on
+        final Builder builder =
+            resource.path("items").path("escidoc:93").path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).queryParam("eSciDocUserHandle", new String(Base64.encode(token))).accept(
+                MediaType.APPLICATION_XML);
+
+        final DOMSource e = builder.get(ClientResponse.class).getEntity(DOMSource.class);
+
+        final ClientResponse r = builder.put(ClientResponse.class, e);
+        // @formatter:on
 
         LOG.debug("Entity: " + r.getEntity(String.class));
         assertEquals("response is not equals", 200, r.getStatus());

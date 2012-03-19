@@ -82,12 +82,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturn200forHelloWorld() throws Exception {
         // @formatter:off
-    final ClientResponse response = resource
-        .path("helloworld")
-        .accept(MediaType.TEXT_PLAIN)
-        .get(ClientResponse.class);
-    
-	   // @formatter:on
+        final ClientResponse response =
+            resource.path("helloworld").accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+
+        // @formatter:on
         assertEquals("response is not equals", 200, response.getStatus());
         final String entity = response.getEntity(String.class);
         LOG.debug("Got: " + entity);
@@ -98,11 +96,9 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturn200forHelloWorldXml() throws Exception {
         //@formatter:off
-    final ClientResponse response = resource
-        .path("helloworld")
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-    //@formatter:on
+        final ClientResponse response =
+            resource.path("helloworld").accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        //@formatter:on
         assertEquals("response is not equals", 200, response.getStatus());
         final String entity = response.getEntity(String.class);
         LOG.debug("Got: " + entity);
@@ -113,15 +109,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturn404ForNonExistingItem() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(NON_EXISTING_ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(NON_EXISTING_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 404, r.getStatus());
     }
 
@@ -129,15 +120,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturn404ForNonExistingMetadata() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(EXISTING_ITEM_ID)
-        .path("metadata")
-        .path(NON_EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(NON_EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
 
         assertEquals("response is not equals", 404, r.getStatus());
     }
@@ -146,15 +132,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturn204ForMetadataWithNoContent() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(EXISTING_ITEM_ID)
-        .path("metadata")
-        .path(EMPTY_METADATA)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(EMPTY_METADATA).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 204, r.getStatus());
     }
 
@@ -162,14 +143,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturn400ForMissingServerParameter() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(EXISTING_ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).accept(
+                MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 400, r.getStatus());
     }
 
@@ -177,15 +154,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturn200ForExistingItemAndMetadata() {
         // @formatter:off
-    final ClientResponse r = resource
-        .path("items")
-        .path(EXISTING_ITEM_ID)
-        .path("metadata")
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML)
-        .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
 
         assertEquals("response is not equals", 200, r.getStatus());
     }
@@ -194,15 +166,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldReturnXmlForMetadata() {
         // @formatter:off
-	    final ClientResponse r = resource
-	        .path("items")
-	        .path(EXISTING_ITEM_ID)
-	        .path("metadata")
-	        .path(EXISTING_METADATA_NAME)
-          .queryParam(AppConstant.EU, SERVICE_URL)
-          .accept(MediaType.APPLICATION_XML)
-          .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
         assertEquals("response is not equals", 200, r.getStatus());
 
         LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
@@ -212,20 +179,14 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     @Override
     public void shouldUpdateEscidocMetadata() {
         // @formatter:off
-	   final Builder builder = resource
-	        .path("items")
-	        .path(EXISTING_ITEM_ID)
-	        .path("metadata")
-	        .path(EXISTING_METADATA_NAME)
-          .queryParam(AppConstant.EU, SERVICE_URL)
-          .accept(MediaType.APPLICATION_XML);
-	   
-    final DOMSource e = builder
-        .get(ClientResponse.class)
-        .getEntity(DOMSource.class);
-    
-    final ClientResponse r = builder.put(ClientResponse.class,e);
-	   // @formatter:on
+        final Builder builder =
+            resource.path("items").path(EXISTING_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML);
+
+        final DOMSource e = builder.get(ClientResponse.class).getEntity(DOMSource.class);
+
+        final ClientResponse r = builder.put(ClientResponse.class, e);
+        // @formatter:on
 
         assertEquals("response is not equals", 200, r.getStatus());
     }
@@ -259,15 +220,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
     public void shouldReturn401WhenNoValidCookie() throws Exception {
 
         // @formatter:off
-	    final ClientResponse r = resource
-	        .path("items")
-	        .path(PROTECTED_ITEM_ID)
-	        .path("metadata")
-	        .path(EXISTING_METADATA_NAME)
-          .queryParam(AppConstant.EU, SERVICE_URL)
-          .accept(MediaType.APPLICATION_XML)
-          .get(ClientResponse.class);
-	   // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(PROTECTED_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
 
         LOG.debug("Error message: " + r.getEntity(String.class));
         assertEquals("response is not equals", 401, r.getStatus());
@@ -279,15 +235,10 @@ public class ItemInMemoryTest extends Base implements ItemMetadataUpdateServiceS
         client.addFilter(new HTTPBasicAuthFilter("sysadmin", "eSciDoc"));
 
         // @formatter:off
-      final ClientResponse r = resource
-          .path("items")
-          .path(PROTECTED_ITEM_ID)
-          .path("metadata")
-          .path(EXISTING_METADATA_NAME)
-          .queryParam(AppConstant.EU, SERVICE_URL)
-          .accept(MediaType.APPLICATION_XML)
-          .get(ClientResponse.class);
-     // @formatter:on
+        final ClientResponse r =
+            resource.path("items").path(PROTECTED_ITEM_ID).path("metadata").path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        // @formatter:on
 
         LOG.debug("Error message: " + r.getEntity(String.class));
         assertEquals("response is not equals", 200, r.getStatus());

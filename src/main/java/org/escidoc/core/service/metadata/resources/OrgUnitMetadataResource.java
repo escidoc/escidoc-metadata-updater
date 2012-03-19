@@ -99,9 +99,11 @@ public class OrgUnitMetadataResource {
     // parameter
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public Response getAsXml(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    public Response getAsXml(@PathParam(AppConstant.ID)
+    final String id, @PathParam("metadata-name")
+    final String metadataName, @QueryParam(AppConstant.EU)
+    final String escidocUri, @QueryParam("eSciDocUserHandle")
+    final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         debug(id, metadataName, escidocUri);
@@ -118,12 +120,9 @@ public class OrgUnitMetadataResource {
             }
 
             // @formatter:off
-      return Response
-          .ok(new DOMSource(mr.getContent()))
-          .lastModified(getLastModificationDate(resource))
-          .tag(getEntityTag(mr))
-          .build();
-     // @formatter:on
+            return Response.ok(new DOMSource(mr.getContent())).lastModified(getLastModificationDate(resource)).tag(
+                getEntityTag(mr)).build();
+            // @formatter:on
 
         }
         catch (final AuthenticationException e) {
@@ -204,9 +203,11 @@ public class OrgUnitMetadataResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getAsHtml(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    public Response getAsHtml(@PathParam(AppConstant.ID)
+    final String id, @PathParam("metadata-name")
+    final String metadataName, @QueryParam(AppConstant.EU)
+    final String escidocUri, @QueryParam("eSciDocUserHandle")
+    final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         final String msg =
@@ -231,10 +232,8 @@ public class OrgUnitMetadataResource {
 
             if (isMpdlProfileFound(content)) {
                 //@formatter:off
-                 return Response
-                     .ok("MPDL Organization Profile is found.",MediaType.TEXT_HTML)
-                     .tag(getEntityTag(mr))
-                     .build();
+                return Response
+                    .ok("MPDL Organization Profile is found.", MediaType.TEXT_HTML).tag(getEntityTag(mr)).build();
                 //@formatter:on
             }
 
@@ -243,12 +242,10 @@ public class OrgUnitMetadataResource {
             Utils.transformXml(mr, s);
 
             // @formatter:off
-     return Response
-         .ok(s.toString(),MediaType.TEXT_HTML)
-//         .lastModified(getLastModificationDate(org))
-         .tag(getEntityTag(mr))
-         .build();
-     //@formatter:on
+            return Response.ok(s.toString(), MediaType.TEXT_HTML)
+            //         .lastModified(getLastModificationDate(org))
+            .tag(getEntityTag(mr)).build();
+            //@formatter:on
         }
         catch (final AuthenticationException e) {
             return response401();
@@ -275,10 +272,11 @@ public class OrgUnitMetadataResource {
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response update(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource s,
-        @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+    public Response update(@PathParam(AppConstant.ID)
+    final String id, @PathParam("metadata-name")
+    final String metadataName, @QueryParam(AppConstant.EU)
+    final String escidocUri, final DOMSource s, @QueryParam("eSciDocUserHandle")
+    final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         debugPut(id, metadataName, escidocUri);
@@ -294,10 +292,8 @@ public class OrgUnitMetadataResource {
             final GenericResource updated = repo.update(org);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
-      return Response
-          .ok()
-          .build();
-  	   // @formatter:on
+            return Response.ok().build();
+            // @formatter:on
         }
         catch (final AuthorizationException e) {
             return response401();

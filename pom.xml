@@ -303,6 +303,14 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+        <artifactId>maven-java-formatter-plugin</artifactId>
+        <version>0.3.1</version>
+        <configuration>
+          <configFile>${project.basedir}/etc/eSciDoc_codestyle.xml</configFile>
+        </configuration>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>

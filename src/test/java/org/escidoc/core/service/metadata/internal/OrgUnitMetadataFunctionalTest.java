@@ -57,13 +57,9 @@ public class OrgUnitMetadataFunctionalTest extends Base implements OrgUnitMetada
     @Override
     public void shouldReturn200ForExistingOrgUnitAndMetadata() throws Exception {
         // @formatter:off
-    final Builder builder = resource
-        .path(ORGANIZATIONS)
-        .path(ORG_UNIT_ID)
-        .path(METADATA)
-        .path(EXISTING_METADATA_NAME)
-        .queryParam(AppConstant.EU, SERVICE_URL)
-        .accept(MediaType.APPLICATION_XML);
-    assertEquals("response is not equals", 200, builder.get(ClientResponse.class).getStatus());
-  }
+        final Builder builder =
+            resource.path(ORGANIZATIONS).path(ORG_UNIT_ID).path(METADATA).path(EXISTING_METADATA_NAME).queryParam(
+                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML);
+        assertEquals("response is not equals", 200, builder.get(ClientResponse.class).getStatus());
+    }
 }
