@@ -37,24 +37,26 @@ import org.escidoc.core.service.metadata.servlet.AppServletConfig;
 
 public class ServerWithGuice {
 
-  public static final String HOST = "http://localhost/";
-  public static final int PORT_NUMBER = 9997;
-  private final Server server;
+    public static final String HOST = "http://localhost/";
 
-  public ServerWithGuice() {
-    server = new Server(PORT_NUMBER);
-    final ServletContextHandler sch = new ServletContextHandler(server, "/");
-    sch.addEventListener(new AppServletConfig());
-    sch.addFilter(GuiceFilter.class, "/*", null);
-    sch.addServlet(DefaultServlet.class, "/");
-  }
+    public static final int PORT_NUMBER = 9997;
 
-  public void start() throws Exception {
-    server.start();
-    server.join();
-  }
+    private final Server server;
 
-  public void stop() throws Exception {
-    server.stop();
-  }
+    public ServerWithGuice() {
+        server = new Server(PORT_NUMBER);
+        final ServletContextHandler sch = new ServletContextHandler(server, "/");
+        sch.addEventListener(new AppServletConfig());
+        sch.addFilter(GuiceFilter.class, "/*", null);
+        sch.addServlet(DefaultServlet.class, "/");
+    }
+
+    public void start() throws Exception {
+        server.start();
+        server.join();
+    }
+
+    public void stop() throws Exception {
+        server.stop();
+    }
 }

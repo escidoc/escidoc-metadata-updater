@@ -44,5 +44,5 @@ import org.junit.runners.Suite;
                      })
  // @formatter:on
 public class AllTests {
-  // running all tests
+    // running all tests
 }

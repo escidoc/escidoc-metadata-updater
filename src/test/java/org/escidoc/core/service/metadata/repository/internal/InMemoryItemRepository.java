@@ -52,61 +52,64 @@ import de.escidoc.core.resources.om.item.Item;
 
 public class InMemoryItemRepository implements ItemRepository {
 
-  private final static Logger LOG = LoggerFactory.getLogger(InMemoryItemRepository.class);
+    private final static Logger LOG = LoggerFactory.getLogger(InMemoryItemRepository.class);
 
-  private final MetadataRecords mrs = new MetadataRecords();
-  private final Item i = new Item();
-  private final Map<String, Item> map = new HashMap<String, Item>();
+    private final MetadataRecords mrs = new MetadataRecords();
 
-  public InMemoryItemRepository() {
+    private final Item i = new Item();
 
-    addEmptyMetadata();
-    addDefaultMetadata();
-    i.setLastModificationDate(new DateTime());
-    i.setMetadataRecords(mrs);
+    private final Map<String, Item> map = new HashMap<String, Item>();
 
-    map.put("escidoc:test", i);
+    public InMemoryItemRepository() {
 
-    addProtectedItem();
-  }
+        addEmptyMetadata();
+        addDefaultMetadata();
+        i.setLastModificationDate(new DateTime());
+        i.setMetadataRecords(mrs);
 
-  private void addProtectedItem() {
-    final Item i = new Item();
-    i.setLastModificationDate(new DateTime());
-    map.put(Base.PROTECTED_ITEM_ID, i);
-    i.setMetadataRecords(mrs);
+        map.put("escidoc:test", i);
 
-  }
-
-  private void addDefaultMetadata() {
-    final MetadataRecord mr = new MetadataRecord("escidoc");
-    try {
-      mr.setContent(Utils.buildSimpleMetadata());
-    } catch (final ParserConfigurationException e) {
-      LOG.error("can not add metadata content:  " + e.getMessage(), e);
+        addProtectedItem();
     }
-    mrs.add(mr);
-  }
 
-  private void addEmptyMetadata() {
-    mrs.add(new MetadataRecord("empty"));
-  }
+    private void addProtectedItem() {
+        final Item i = new Item();
+        i.setLastModificationDate(new DateTime());
+        map.put(Base.PROTECTED_ITEM_ID, i);
+        i.setMetadataRecords(mrs);
 
-  @Override
-  public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
-      InternalClientException, TransportException, MalformedURLException {
-    if (itemId.equals(Base.PROTECTED_ITEM_ID) && notEscidoc(token)) {
-      throw new AuthenticationException("Item, " + itemId + ", is a protected resource", new Exception());
     }
-    return map.get(itemId);
-  }
 
-  private static boolean notEscidoc(final String token) {
-    return token == null || !token.startsWith("ESCIDOC");
-  }
+    private void addDefaultMetadata() {
+        final MetadataRecord mr = new MetadataRecord("escidoc");
+        try {
+            mr.setContent(Utils.buildSimpleMetadata());
+        }
+        catch (final ParserConfigurationException e) {
+            LOG.error("can not add metadata content:  " + e.getMessage(), e);
+        }
+        mrs.add(mr);
+    }
 
-  @Override
-  public Item update(final Item item) throws EscidocException, InternalClientException, TransportException {
-    return item;
-  }
+    private void addEmptyMetadata() {
+        mrs.add(new MetadataRecord("empty"));
+    }
+
+    @Override
+    public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
+        InternalClientException, TransportException, MalformedURLException {
+        if (itemId.equals(Base.PROTECTED_ITEM_ID) && notEscidoc(token)) {
+            throw new AuthenticationException("Item, " + itemId + ", is a protected resource", new Exception());
+        }
+        return map.get(itemId);
+    }
+
+    private static boolean notEscidoc(final String token) {
+        return token == null || !token.startsWith("ESCIDOC");
+    }
+
+    @Override
+    public Item update(final Item item) throws EscidocException, InternalClientException, TransportException {
+        return item;
+    }
 }

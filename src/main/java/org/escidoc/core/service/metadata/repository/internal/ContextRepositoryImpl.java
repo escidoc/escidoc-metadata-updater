@@ -45,23 +45,23 @@ import de.escidoc.core.resources.om.context.Context;
 
 public class ContextRepositoryImpl implements ContextRepository {
 
-  private ContextHandlerClientInterface c;
+    private ContextHandlerClientInterface c;
 
-  @Override
-  public de.escidoc.core.resources.om.context.Context find(final String id, final URI serviceUri, final String token)
-      throws MalformedURLException, InternalClientException, EscidocException, TransportException {
+    @Override
+    public de.escidoc.core.resources.om.context.Context find(final String id, final URI serviceUri, final String token)
+        throws MalformedURLException, InternalClientException, EscidocException, TransportException {
 
-    Preconditions.checkNotNull(id, "id is null: %s", id);
-    Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
+        Preconditions.checkNotNull(id, "id is null: %s", id);
+        Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
 
-    c = new ContextHandlerClient(serviceUri.toURL());
-    c.setHandle(token);
-    return c.retrieve(id);
-  }
+        c = new ContextHandlerClient(serviceUri.toURL());
+        c.setHandle(token);
+        return c.retrieve(id);
+    }
 
-  @Override
-  public GenericResource update(final Context resource) throws EscidocException, InternalClientException,
-      TransportException {
-    return c.update(resource);
-  }
+    @Override
+    public GenericResource update(final Context resource) throws EscidocException, InternalClientException,
+        TransportException {
+        return c.update(resource);
+    }
 }

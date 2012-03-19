@@ -53,18 +53,18 @@ import de.escidoc.core.client.Authentication;
 
 public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpdateServiceSpec {
 
-  private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataFunctionalTest.class);
+    private final static Logger LOG = LoggerFactory.getLogger(ItemMetadataFunctionalTest.class);
 
-  @After
-  public void stop() throws Exception {
-    server.stop();
-  }
+    @After
+    public void stop() throws Exception {
+        server.stop();
+    }
 
-  @Test
-  public void shouldRechallangeIfUsernameAndPasswordIsEmpty() {
-    client.addFilter(new HTTPBasicAuthFilter("", ""));
+    @Test
+    public void shouldRechallangeIfUsernameAndPasswordIsEmpty() {
+        client.addFilter(new HTTPBasicAuthFilter("", ""));
 
-    // @formatter:off
+        // @formatter:off
     final Builder builder = resource
         .path("items")
         .path("escidoc:93")
@@ -90,13 +90,13 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
      // @formatter:on
-    assertEquals("response is not equals", 404, r.getStatus());
-  }
+        assertEquals("response is not equals", 404, r.getStatus());
+    }
 
-  @Test
-  @Override
-  public void shouldReturn404ForNonExistingMetadata() {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn404ForNonExistingMetadata() {
+        // @formatter:off
     final ClientResponse r = resource
         .path("items")
         .path(ITEM_ID)
@@ -107,31 +107,31 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         .get(ClientResponse.class);
      // @formatter:on
 
-    assertEquals("response is not equals", 404, r.getStatus());
-  }
+        assertEquals("response is not equals", 404, r.getStatus());
+    }
 
-  @Test
-  @Override
-  public void shouldUpdateEscidocMetadata() {
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
+    @Test
+    @Override
+    public void shouldUpdateEscidocMetadata() {
+        throw new UnsupportedOperationException("not-yet-implemented.");
+    }
 
-  @Test
-  @Override
-  public void shouldNotUpdateMetadataIfInConfict() {
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
+    @Test
+    @Override
+    public void shouldNotUpdateMetadataIfInConfict() {
+        throw new UnsupportedOperationException("not-yet-implemented.");
+    }
 
-  @Test
-  @Override
-  public void shouldReturn204ForMetadataWithNoContent() {
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
+    @Test
+    @Override
+    public void shouldReturn204ForMetadataWithNoContent() {
+        throw new UnsupportedOperationException("not-yet-implemented.");
+    }
 
-  @Test
-  @Override
-  public void shouldReturn400ForMissingServerParameter() {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn400ForMissingServerParameter() {
+        // @formatter:off
     final ClientResponse r = resource
         .path("items")
         .path(EXISTING_ITEM_ID)
@@ -140,29 +140,29 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
      // @formatter:on
-    assertEquals("response is not equals", 400, r.getStatus());
-  }
+        assertEquals("response is not equals", 400, r.getStatus());
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200forHelloWorld() throws Exception {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn200forHelloWorld() throws Exception {
+        // @formatter:off
     final ClientResponse response = resource
         .path("helloworld")
         .accept(MediaType.TEXT_PLAIN)
         .get(ClientResponse.class);
     
      // @formatter:on
-    assertEquals("response is not equals", 200, response.getStatus());
-    final String entity = response.getEntity(String.class);
-    LOG.debug("Got: " + entity);
-    assertEquals("Entity is not equals. ", "OK", entity);
-  }
+        assertEquals("response is not equals", 200, response.getStatus());
+        final String entity = response.getEntity(String.class);
+        LOG.debug("Got: " + entity);
+        assertEquals("Entity is not equals. ", "OK", entity);
+    }
 
-  @Test
-  @Override
-  public void shouldReturn401WhenNoValidCookie() throws Exception {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn401WhenNoValidCookie() throws Exception {
+        // @formatter:off
     final Builder builder = resource
         .path("items")
         .path("escidoc:93")
@@ -173,13 +173,13 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     
     final ClientResponse r = builder.get(ClientResponse.class);
    // @formatter:on
-    assertEquals("response is not equals", 401, r.getStatus());
-  }
+        assertEquals("response is not equals", 401, r.getStatus());
+    }
 
-  @Test
-  @Override
-  public void shouldReturnXmlForMetadata() {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturnXmlForMetadata() {
+        // @formatter:off
     final ClientResponse r = resource
         .path("items")
         .path(ITEM_ID)
@@ -189,15 +189,15 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
    // @formatter:on
-    assertEquals("response is not equals", 200, r.getStatus());
+        assertEquals("response is not equals", 200, r.getStatus());
 
-    LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
-  }
+        LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200ForExistingItemAndMetadata() {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn200ForExistingItemAndMetadata() {
+        // @formatter:off
     final ClientResponse r = resource
         .path("items")
         .path(ITEM_ID)
@@ -207,16 +207,16 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         .accept(MediaType.APPLICATION_XML)
         .get(ClientResponse.class);
 	   // @formatter:on
-    assertEquals("response is not equals", 200, r.getStatus());
+        assertEquals("response is not equals", 200, r.getStatus());
 
-    LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
-  }
+        LOG.debug("Get metadata as XML : " + r.getEntity(String.class));
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidToken() throws Exception {
-    final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidToken() throws Exception {
+        final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
+        // @formatter:off
     final ClientResponse r = resource
         .path("items")
         .path("escidoc:93")
@@ -228,16 +228,16 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         .get(ClientResponse.class);
    // @formatter:on
 
-    LOG.debug("Entity: " + r.getEntity(String.class));
-    assertEquals("response is not equals", 200, r.getStatus());
-  }
+        LOG.debug("Entity: " + r.getEntity(String.class));
+        assertEquals("response is not equals", 200, r.getStatus());
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception {
+    @Test
+    @Override
+    public void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception {
 
-    final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
-    // @formatter:off
+        final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
+        // @formatter:off
     final Builder builder = resource
         .path("items")
         .path("escidoc:93")
@@ -254,22 +254,22 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     final ClientResponse r = builder.put(ClientResponse.class,e);
    // @formatter:on
 
-    LOG.debug("Entity: " + r.getEntity(String.class));
-    assertEquals("response is not equals", 200, r.getStatus());
-  }
+        LOG.debug("Entity: " + r.getEntity(String.class));
+        assertEquals("response is not equals", 200, r.getStatus());
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200forHelloWorldXml() throws Exception {
-    throw new UnsupportedOperationException("not-yet-implemented.");
-  }
+    @Test
+    @Override
+    public void shouldReturn200forHelloWorldXml() throws Exception {
+        throw new UnsupportedOperationException("not-yet-implemented.");
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception {
-    client.addFilter(new HTTPBasicAuthFilter("sysadmin", "eSciDoc"));
+    @Test
+    @Override
+    public void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception {
+        client.addFilter(new HTTPBasicAuthFilter("sysadmin", "eSciDoc"));
 
-    // @formatter:off
+        // @formatter:off
     final Builder builder = resource
         .path("items")
         .path("escidoc:93")
@@ -285,13 +285,13 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     final ClientResponse r = builder.put(ClientResponse.class,e);
    // @formatter:on
 
-    LOG.debug("Entity: " + r.getEntity(String.class));
-    assertEquals("response is not equals", 200, r.getStatus());
-  }
+        LOG.debug("Entity: " + r.getEntity(String.class));
+        assertEquals("response is not equals", 200, r.getStatus());
+    }
 
-  @Test
-  public void shouldReturnNotModifiedIfTheLastModificationDateAndEtagSentAreEquals() throws Exception {
-    // @formatter:off
+    @Test
+    public void shouldReturnNotModifiedIfTheLastModificationDateAndEtagSentAreEquals() throws Exception {
+        // @formatter:off
     final EntityTag et = resource
         .path("items")
         .path(ITEM_ID)
@@ -311,15 +311,15 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
         .header("If-None-Match", et)
         .get(ClientResponse.class);
 	   // @formatter:on
-    assertEquals("response is not equals", 304, r.getStatus());
-  }
+        assertEquals("response is not equals", 304, r.getStatus());
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception {
+    @Test
+    @Override
+    public void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception {
 
-    final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
-    // @formatter:off
+        final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
+        // @formatter:off
     final Builder builder = resource
         .path("items")
         .path("escidoc:93")
@@ -336,8 +336,8 @@ public class ItemMetadataFunctionalTest extends Base implements ItemMetadataUpda
     final ClientResponse r = builder.put(ClientResponse.class,e);
    // @formatter:on
 
-    LOG.debug("Entity: " + r.getEntity(String.class));
-    assertEquals("response is not equals", 200, r.getStatus());
-  }
+        LOG.debug("Entity: " + r.getEntity(String.class));
+        assertEquals("response is not equals", 200, r.getStatus());
+    }
 
 }

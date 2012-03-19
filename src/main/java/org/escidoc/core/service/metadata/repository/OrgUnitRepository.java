@@ -41,10 +41,10 @@ import de.escidoc.core.resources.oum.OrganizationalUnit;
 
 public interface OrgUnitRepository {
 
-  OrganizationalUnit find(String id, URI serviceUri, String token) throws AuthenticationException,
-      AuthorizationException, EscidocException, InternalClientException, TransportException, MalformedURLException;
+    OrganizationalUnit find(String id, URI serviceUri, String token) throws AuthenticationException,
+        AuthorizationException, EscidocException, InternalClientException, TransportException, MalformedURLException;
 
-  GenericResource update(OrganizationalUnit ou) throws AuthenticationException, AuthorizationException,
-      EscidocException, InternalClientException, TransportException;
+    GenericResource update(OrganizationalUnit ou) throws AuthenticationException, AuthorizationException,
+        EscidocException, InternalClientException, TransportException;
 
 }

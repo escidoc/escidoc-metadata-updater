@@ -42,21 +42,21 @@ import javax.ws.rs.core.MediaType;
 
 public class OrgUnitMetadataFunctionalTest extends Base implements OrgUnitMetadataUpdateServiceSpec {
 
-  private static final String METADATA = "metadata";
+    private static final String METADATA = "metadata";
 
-  private static final String ORGANIZATIONS = "organizations";
+    private static final String ORGANIZATIONS = "organizations";
 
-  private static final String ORG_UNIT_ID = "escidoc:1507";
+    private static final String ORG_UNIT_ID = "escidoc:1507";
 
-  @After
-  public void stop() throws Exception {
-    server.stop();
-  }
+    @After
+    public void stop() throws Exception {
+        server.stop();
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200ForExistingOrgUnitAndMetadata() throws Exception {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn200ForExistingOrgUnitAndMetadata() throws Exception {
+        // @formatter:off
     final Builder builder = resource
         .path(ORGANIZATIONS)
         .path(ORG_UNIT_ID)

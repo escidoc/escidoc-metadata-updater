@@ -30,33 +30,33 @@ package org.escidoc.core.service.metadata;
 
 public interface ItemMetadataUpdateServiceSpec {
 
-  void shouldReturn200forHelloWorld() throws Exception;
+    void shouldReturn200forHelloWorld() throws Exception;
 
-  void shouldReturn404ForNonExistingItem() throws Exception;
+    void shouldReturn404ForNonExistingItem() throws Exception;
 
-  void shouldReturn404ForNonExistingMetadata() throws Exception;
+    void shouldReturn404ForNonExistingMetadata() throws Exception;
 
-  void shouldReturn200ForExistingItemAndMetadata() throws Exception;
+    void shouldReturn200ForExistingItemAndMetadata() throws Exception;
 
-  void shouldReturn204ForMetadataWithNoContent() throws Exception;
+    void shouldReturn204ForMetadataWithNoContent() throws Exception;
 
-  void shouldReturn400ForMissingServerParameter() throws Exception;
+    void shouldReturn400ForMissingServerParameter() throws Exception;
 
-  void shouldReturnXmlForMetadata() throws Exception;
+    void shouldReturnXmlForMetadata() throws Exception;
 
-  void shouldUpdateEscidocMetadata() throws Exception;
+    void shouldUpdateEscidocMetadata() throws Exception;
 
-  void shouldNotUpdateMetadataIfInConfict() throws Exception;
+    void shouldNotUpdateMetadataIfInConfict() throws Exception;
 
-  void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidToken() throws Exception;
+    void shouldReturn200WhenTryingToFetchUnreleasedItemGivenAValidToken() throws Exception;
 
-  void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception;
+    void shouldReturn200WhenTryingToUpdateMetadataGivenValidToken() throws Exception;
 
-  void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception;
+    void shouldReturn200WhenTryingToUpdateMetadataGivenValidHandleInUriParam() throws Exception;
 
-  void shouldReturn200forHelloWorldXml() throws Exception;
+    void shouldReturn200forHelloWorldXml() throws Exception;
 
-  void shouldReturn401WhenNoValidCookie() throws Exception;
+    void shouldReturn401WhenNoValidCookie() throws Exception;
 
-  void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception;
+    void shouldReturn200WhenTryingToAccessProctedResourceGivenBasicAuth() throws Exception;
 }

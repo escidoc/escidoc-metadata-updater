@@ -40,9 +40,9 @@ import de.escidoc.core.resources.om.item.Item;
 
 public interface ItemRepository {
 
-  Item find(String itemId, URI serviceUri, String token) throws AuthenticationException, AuthorizationException,
-      EscidocException, InternalClientException, TransportException, MalformedURLException;
+    Item find(String itemId, URI serviceUri, String token) throws AuthenticationException, AuthorizationException,
+        EscidocException, InternalClientException, TransportException, MalformedURLException;
 
-  Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
-      InternalClientException, TransportException;
+    Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
+        InternalClientException, TransportException;
 }

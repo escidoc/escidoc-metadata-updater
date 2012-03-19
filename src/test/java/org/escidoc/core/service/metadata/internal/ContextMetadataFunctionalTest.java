@@ -50,23 +50,23 @@ import de.escidoc.core.client.Authentication;
 
 public class ContextMetadataFunctionalTest extends Base implements ContextMetadataUpdateServiceSpec {
 
-  private final static Logger LOG = LoggerFactory.getLogger(ContextMetadataFunctionalTest.class);
+    private final static Logger LOG = LoggerFactory.getLogger(ContextMetadataFunctionalTest.class);
 
-  private static final String CONTEXT_NAME = "descriptor_for_book";
+    private static final String CONTEXT_NAME = "descriptor_for_book";
 
-  private static final String METADATA = "metadata";
+    private static final String METADATA = "metadata";
 
-  private static final String CONTEXT_ID = "escidoc:3829";
+    private static final String CONTEXT_ID = "escidoc:3829";
 
-  @After
-  public void stop() throws Exception {
-    server.stop();
-  }
+    @After
+    public void stop() throws Exception {
+        server.stop();
+    }
 
-  @Test
-  @Override
-  public void shouldReturn200ForExistingContextAndMetadata() throws Exception {
-    // @formatter:off
+    @Test
+    @Override
+    public void shouldReturn200ForExistingContextAndMetadata() throws Exception {
+        // @formatter:off
     final Builder builder = resource
         .path(AppConstant.CONTEXTS)
         .path(CONTEXT_ID)
@@ -102,7 +102,7 @@ public class ContextMetadataFunctionalTest extends Base implements ContextMetada
     final ClientResponse r = builder.put(ClientResponse.class,e);
    // @formatter:on
 
-    LOG.debug("Entity: " + r.getEntity(String.class));
-    assertEquals("response is not equals", 200, r.getStatus());
-  }
+        LOG.debug("Entity: " + r.getEntity(String.class));
+        assertEquals("response is not equals", 200, r.getStatus());
+    }
 }

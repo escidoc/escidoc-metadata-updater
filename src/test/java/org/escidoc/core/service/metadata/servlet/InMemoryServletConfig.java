@@ -42,17 +42,17 @@ import org.escidoc.core.service.metadata.resources.ItemMetadataResource;
 
 public class InMemoryServletConfig extends GuiceServletContextListener {
 
-  @Override
-  protected Injector getInjector() {
-    return Guice.createInjector(new JerseyServletModule() {
-      @Override
-      protected void configureServlets() {
-        super.configureServlets();
-        bind(ItemMetadataResource.class);
-        bind(HelloResource.class);
-        bind(ItemRepository.class).to(InMemoryItemRepository.class);
-        serve("/rest/*").with(GuiceContainer.class);
-      }
-    });
-  }
+    @Override
+    protected Injector getInjector() {
+        return Guice.createInjector(new JerseyServletModule() {
+            @Override
+            protected void configureServlets() {
+                super.configureServlets();
+                bind(ItemMetadataResource.class);
+                bind(HelloResource.class);
+                bind(ItemRepository.class).to(InMemoryItemRepository.class);
+                serve("/rest/*").with(GuiceContainer.class);
+            }
+        });
+    }
 }

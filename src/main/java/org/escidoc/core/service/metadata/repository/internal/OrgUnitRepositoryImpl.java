@@ -47,23 +47,23 @@ import de.escidoc.core.resources.oum.OrganizationalUnit;
 
 public class OrgUnitRepositoryImpl implements OrgUnitRepository {
 
-  private OrganizationalUnitHandlerClientInterface c;
+    private OrganizationalUnitHandlerClientInterface c;
 
-  @Override
-  public OrganizationalUnit find(final String id, final URI serviceUri, final String token) throws EscidocException,
-      InternalClientException, TransportException, MalformedURLException, AuthenticationException,
-      AuthorizationException {
-    Preconditions.checkNotNull(id, "id is null: %s", id);
-    Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
+    @Override
+    public OrganizationalUnit find(final String id, final URI serviceUri, final String token) throws EscidocException,
+        InternalClientException, TransportException, MalformedURLException, AuthenticationException,
+        AuthorizationException {
+        Preconditions.checkNotNull(id, "id is null: %s", id);
+        Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
 
-    c = new OrganizationalUnitHandlerClient(serviceUri.toURL());
-    c.setHandle(token);
-    return c.retrieve(id);
-  }
+        c = new OrganizationalUnitHandlerClient(serviceUri.toURL());
+        c.setHandle(token);
+        return c.retrieve(id);
+    }
 
-  @Override
-  public GenericResource update(final OrganizationalUnit resource) throws AuthenticationException, AuthorizationException,
-      EscidocException, InternalClientException, TransportException {
-    return c.update(resource);
-  }
+    @Override
+    public GenericResource update(final OrganizationalUnit resource) throws AuthenticationException,
+        AuthorizationException, EscidocException, InternalClientException, TransportException {
+        return c.update(resource);
+    }
 }

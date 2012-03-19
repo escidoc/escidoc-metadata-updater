@@ -48,25 +48,25 @@ import org.escidoc.core.service.metadata.resources.OrgUnitMetadataResource;
 
 public class AppServletConfig extends GuiceServletContextListener {
 
-  @Override
-  protected Injector getInjector() {
-    return Guice.createInjector(new JerseyServletModule() {
-      @Override
-      protected void configureServlets() {
-        super.configureServlets();
+    @Override
+    protected Injector getInjector() {
+        return Guice.createInjector(new JerseyServletModule() {
+            @Override
+            protected void configureServlets() {
+                super.configureServlets();
 
-        bind(HelloResource.class);
+                bind(HelloResource.class);
 
-        bind(ItemMetadataResource.class);
-        bind(OrgUnitMetadataResource.class);
-        bind(ContextMetadataResource.class);
+                bind(ItemMetadataResource.class);
+                bind(OrgUnitMetadataResource.class);
+                bind(ContextMetadataResource.class);
 
-        bind(ItemRepository.class).to(ItemRepositoryImpl.class);
-        bind(OrgUnitRepository.class).to(OrgUnitRepositoryImpl.class);
-        bind(ContextRepository.class).to(ContextRepositoryImpl.class);
+                bind(ItemRepository.class).to(ItemRepositoryImpl.class);
+                bind(OrgUnitRepository.class).to(OrgUnitRepositoryImpl.class);
+                bind(ContextRepository.class).to(ContextRepositoryImpl.class);
 
-        serve("/v0.9/*").with(GuiceContainer.class);
-      }
-    });
-  }
+                serve("/v0.9/*").with(GuiceContainer.class);
+            }
+        });
+    }
 }

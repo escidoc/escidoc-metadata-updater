@@ -40,10 +40,10 @@ import de.escidoc.core.resources.GenericResource;
 
 public interface ContextRepository {
 
-  de.escidoc.core.resources.om.context.Context find(String id, URI uri, String decodedHandle)
-      throws AuthenticationException, AuthorizationException, EscidocException, InternalClientException,
-      TransportException, MalformedURLException;
+    de.escidoc.core.resources.om.context.Context find(String id, URI uri, String decodedHandle)
+        throws AuthenticationException, AuthorizationException, EscidocException, InternalClientException,
+        TransportException, MalformedURLException;
 
-  GenericResource update(de.escidoc.core.resources.om.context.Context resource) throws EscidocException,
-      InternalClientException, TransportException;
+    GenericResource update(de.escidoc.core.resources.om.context.Context resource) throws EscidocException,
+        InternalClientException, TransportException;
 }

@@ -45,25 +45,25 @@ import de.escidoc.core.client.interfaces.ItemHandlerClientInterface;
 import de.escidoc.core.resources.om.item.Item;
 
 public class ItemRepositoryImpl implements ItemRepository {
-  private ItemHandlerClientInterface c;
+    private ItemHandlerClientInterface c;
 
-  // TODO NOTE: it can throw Authentification or AuthorizationException
-  @Override
-  public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
-      InternalClientException, TransportException, MalformedURLException, AuthenticationException,
-      AuthorizationException {
-    Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
-    Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
+    // TODO NOTE: it can throw Authentification or AuthorizationException
+    @Override
+    public Item find(final String itemId, final URI serviceUri, final String token) throws EscidocException,
+        InternalClientException, TransportException, MalformedURLException, AuthenticationException,
+        AuthorizationException {
+        Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
+        Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
 
-    c = new ItemHandlerClient(serviceUri.toURL());
-    c.setHandle(token);
-    return c.retrieve(itemId);
-  }
+        c = new ItemHandlerClient(serviceUri.toURL());
+        c.setHandle(token);
+        return c.retrieve(itemId);
+    }
 
-  @Override
-  public Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
-      InternalClientException, TransportException {
-    Preconditions.checkNotNull(item, "item is null: %s", item);
-    return c.update(item);
-  }
+    @Override
+    public Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
+        InternalClientException, TransportException {
+        Preconditions.checkNotNull(item, "item is null: %s", item);
+        return c.update(item);
+    }
 }
