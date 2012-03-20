@@ -102,24 +102,25 @@ public final class Utils {
         }
     }
 
-    public static String transformToHtml(final MetadataRecord metadata) {
-        Preconditions.checkNotNull(metadata, "mr is null: %s", metadata);
-        try {
-            final StringWriter s = new StringWriter();
-            TransformerFactory.newInstance().newTransformer(new StreamSource(readXsl())).transform(
-                new DOMSource(metadata.getContent()), new StreamResult(s));
-            return s.toString();
-        }
-        catch (final TransformerConfigurationException e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-        catch (final TransformerException e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-        catch (final TransformerFactoryConfigurationError e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // public static String transformToHtml(final MetadataRecord metadata) {
+    // Preconditions.checkNotNull(metadata, "mr is null: %s", metadata);
+    // try {
+    // final StringWriter s = new StringWriter();
+    // TransformerFactory
+    // .newInstance().newTransformer(new StreamSource(readXsl()))
+    // .transform(new DOMSource(metadata.getContent()), new StreamResult(s));
+    // return s.toString();
+    // }
+    // catch (final TransformerConfigurationException e) {
+    // throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    // }
+    // catch (final TransformerException e) {
+    // throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    // }
+    // catch (final TransformerFactoryConfigurationError e) {
+    // throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+    // }
+    // }
 
     public static String loginToEscidoc(final String escidocUri, final String[] creds) throws AuthenticationException,
         TransportException, MalformedURLException {
@@ -164,8 +165,8 @@ public final class Utils {
         }
     }
 
-    public static InputStream readXsl() {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream(AppConstant.XSLT_FILE);
+    private static InputStream readXsl(final String xsltFile) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(xsltFile);
     }
 
     public static Response response401() {
@@ -232,10 +233,11 @@ public final class Utils {
         return sr.getHeader(AppConstant.AUTHORIZATION) != null;
     }
 
-    public static void transformXml(final MetadataRecord mr, final StringWriter s) {
+    public static void transformXml(final MetadataRecord mr, final String xsltFile, final StringWriter writer) {
         try {
-            TransformerFactory.newInstance().newTransformer(new StreamSource(Utils.readXsl())).transform(
-                new DOMSource(mr.getContent()), new StreamResult(s));
+            TransformerFactory
+                .newInstance().newTransformer(new StreamSource(Utils.readXsl(xsltFile)))
+                .transform(new DOMSource(mr.getContent()), new StreamResult(writer));
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -248,10 +250,11 @@ public final class Utils {
         }
     }
 
-    public static void transformXml(final AdminDescriptor mr, final StringWriter s) {
+    public static void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter s) {
         try {
-            TransformerFactory.newInstance().newTransformer(new StreamSource(Utils.readXsl())).transform(
-                new DOMSource(mr.getContent()), new StreamResult(s));
+            TransformerFactory
+                .newInstance().newTransformer(new StreamSource(Utils.readXsl(xsltFile)))
+                .transform(new DOMSource(mr.getContent()), new StreamResult(s));
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -262,5 +265,17 @@ public final class Utils {
         catch (final TransformerFactoryConfigurationError e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public static void buildRawXmlEditor(final MetadataRecord md, final StringWriter writer) {
+        transformXml(md, AppConstant.XML_TO_RAW_EDITOR_XSLT, writer);
+    }
+
+    public static void buildRawXmlEditor(final AdminDescriptor md, final StringWriter writer) {
+        transformXml(md, AppConstant.XML_TO_RAW_EDITOR_XSLT, writer);
+    }
+
+    public static void buildPubmanOrganizationEditor(final MetadataRecord md, final StringWriter writer) {
+        transformXml(md, AppConstant.XML_TO_PUBMAN_ORGANIZATION_EDITOR_XSLT, writer);
     }
 }

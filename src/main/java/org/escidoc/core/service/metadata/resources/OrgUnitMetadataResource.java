@@ -99,11 +99,9 @@ public class OrgUnitMetadataResource {
     // parameter
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public Response getAsXml(@PathParam(AppConstant.ID)
-    final String id, @PathParam("metadata-name")
-    final String metadataName, @QueryParam(AppConstant.EU)
-    final String escidocUri, @QueryParam("eSciDocUserHandle")
-    final String encodedHandle) {
+    public Response getAsXml(
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         debug(id, metadataName, escidocUri);
@@ -203,11 +201,9 @@ public class OrgUnitMetadataResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getAsHtml(@PathParam(AppConstant.ID)
-    final String id, @PathParam("metadata-name")
-    final String metadataName, @QueryParam(AppConstant.EU)
-    final String escidocUri, @QueryParam("eSciDocUserHandle")
-    final String encodedHandle) {
+    public Response getAsHtml(
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         final String msg =
@@ -230,19 +226,16 @@ public class OrgUnitMetadataResource {
             final Element content = mr.getContent();
             LOG.debug("The XML Content is: " + content);
 
-            if (isMpdlProfileFound(content)) {
-                //@formatter:off
-                return Response
-                    .ok("MPDL Organization Profile is found.", MediaType.TEXT_HTML).tag(getEntityTag(mr)).build();
-                //@formatter:on
+            final StringWriter writer = new StringWriter();
+            if (isPubmanProfileFound(content)) {
+                Utils.buildPubmanOrganizationEditor(mr, writer);
+            }
+            else {
+                Utils.buildRawXmlEditor(mr, writer);
             }
 
-            final StringWriter s = new StringWriter();
-            // TODO otherwise open the content in "Raw XML Editor"
-            Utils.transformXml(mr, s);
-
             // @formatter:off
-            return Response.ok(s.toString(), MediaType.TEXT_HTML)
+            return Response.ok(writer.toString(), MediaType.TEXT_HTML)
             //         .lastModified(getLastModificationDate(org))
             .tag(getEntityTag(mr)).build();
             //@formatter:on
@@ -264,7 +257,7 @@ public class OrgUnitMetadataResource {
         }
     }
 
-    private static boolean isMpdlProfileFound(final Element content) {
+    private static boolean isPubmanProfileFound(final Element content) {
         return content.getNamespaceURI() != null
             && content.getNamespaceURI().equals("http://purl.org/escidoc/metadata/profiles/0.1/organizationalunit");
     }
@@ -272,11 +265,10 @@ public class OrgUnitMetadataResource {
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response update(@PathParam(AppConstant.ID)
-    final String id, @PathParam("metadata-name")
-    final String metadataName, @QueryParam(AppConstant.EU)
-    final String escidocUri, final DOMSource s, @QueryParam("eSciDocUserHandle")
-    final String encodedHandle) {
+    public Response update(
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource s,
+        @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         debugPut(id, metadataName, escidocUri);
