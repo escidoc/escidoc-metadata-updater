@@ -119,14 +119,16 @@ function putRawXml(uri, xml){
   xhr2.send(xml);
 }
 
-function sendPubManXml (xml) {
+function sendPubManXml () {
   console.log('sending pubman organization metadata...');
-  console.log(xml);
 
   var TEST_URI='http://localhost:8082/rest/v0.9/organizations/escidoc:14/metadata/escidoc?escidocurl=http://esfedrep1.fiz-karlsruhe.de:8080';
   var uri=TEST_URI;
 
   //TODO fetch the xml from the uri. => var serverXml;
+  $.get(uri, function(data){
+    console.log('got data: '+data);
+  });
   //TODO in the form, find values that are changed by the user.=> var modifiedKeysArray
   //TODO replace that changed values in the xml. => 
   // for each key in modifiedKeysArray do {
