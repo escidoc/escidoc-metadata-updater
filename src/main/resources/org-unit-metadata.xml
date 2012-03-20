@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="md-to-html-form.xsl" ?>
 <mdou:organizational-unit
-	xmlns:mdou="http://purl.org/escidoc/metadata/profiles/0.1/organizationalunit">
-	<dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">External Organizational Units</dc:title>
-	<dcterms:alternative xmlns:dcterms="http://purl.org/dc/terms/">ValueExt
-	</dcterms:alternative>
-	<dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/">ValuePubman:ext</dc:identifier>
-	<eterms:organization-type xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">Institute
-	</eterms:organization-type>
-	<eterms:country xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/"></eterms:country>
-	<eterms:city xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/"></eterms:city>
-	<kml:coordinates xmlns:kml="http://www.opengis.net/kml/2.2"></kml:coordinates>
-	<eterms:start-date xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">2010-01-01T00:00:01.111Z
-	</eterms:start-date>
+  xmlns:mdou="http://purl.org/escidoc/metadata/profiles/0.1/organizationalunit">
+  <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">External Organizational Units</dc:title>
+  <dcterms:alternative xmlns:dcterms="http://purl.org/dc/terms/">ValueExt
+  </dcterms:alternative>
+  <dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/">ValuePubman:ext</dc:identifier>
+  <eterms:organization-type xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">Institute
+  </eterms:organization-type>
+  <eterms:country xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/"></eterms:country>
+  <eterms:city xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/"></eterms:city>
+  <kml:coordinates xmlns:kml="http://www.opengis.net/kml/2.2"></kml:coordinates>
+  <eterms:start-date xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">2010-01-01T00:00:01.111Z
+  </eterms:start-date>
 </mdou:organizational-unit>

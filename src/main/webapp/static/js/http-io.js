@@ -85,7 +85,6 @@ function sendRawXml() {
   console.log('User input: '+userInput);
 
   var uri = getUri();
-  //'http://localhost:8082/rest/v0.9/organizations/escidoc:1/metadata/github?escidocurl=http://esfedrep1.fiz-karlsruhe.de:8080';
   console.log('will be sent to '+uri);
 
   putRawXml(getUri(), userInput);
@@ -118,6 +117,24 @@ function putRawXml(uri, xml){
     }
   };
   xhr2.send(xml);
+}
+
+function sendPubManXml (xml) {
+  console.log('sending pubman organization metadata...');
+  console.log(xml);
+
+  var TEST_URI='http://localhost:8082/rest/v0.9/organizations/escidoc:14/metadata/escidoc?escidocurl=http://esfedrep1.fiz-karlsruhe.de:8080';
+  var uri=TEST_URI;
+
+  //TODO fetch the xml from the uri. => var serverXml;
+  //TODO in the form, find values that are changed by the user.=> var modifiedKeysArray
+  //TODO replace that changed values in the xml. => 
+  // for each key in modifiedKeysArray do {
+  //    findIn(serverXml, key).value = form.key.value;
+  // }
+  // TODO send modifiedServerXml back to the uri
+  // TODO show notification of the server reaction, success or error
+  alert('not yet implemented');
 }
 
 function foo(){
