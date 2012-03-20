@@ -278,4 +278,9 @@ public final class Utils {
     public static void buildPubmanOrganizationEditor(final MetadataRecord md, final StringWriter writer) {
         transformXml(md, AppConstant.XML_TO_PUBMAN_ORGANIZATION_EDITOR_XSLT, writer);
     }
+
+    public static void buildPubmanContextMetadataEditor(final AdminDescriptor metadata, final StringWriter writer) {
+        // FIXME replace with the real xslt
+        transformXml(metadata, AppConstant.XML_TO_RAW_EDITOR_XSLT, writer);
+    }
 }
