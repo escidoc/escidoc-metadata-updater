@@ -96,7 +96,7 @@
 													id="city"
 													name="city"
 													type="text"
-													placeholder="Munich" />
+													placeholder="Munich"/>
 											</div>
 										</div>
 										<div class="clearfix">
@@ -108,7 +108,7 @@
 													id="country"
 													name="country"
 													type="text"
-													placeholder="Germany" />
+													placeholder="Germany"/>
 											</div>
 										</div>
 										<div class="clearfix">
@@ -119,7 +119,7 @@
 													id="coordinates"
 													name="coordinates"
 													type="text"
-													placeholder="48°21′14″N 011°47′10″E" />
+													placeholder="48°21′14″N 011°47′10″E"/>
 											</div>
 										</div>
 										<div class="clearfix">
@@ -132,7 +132,7 @@
 													id="start-date"
 													name="start-date"
 													type="date"
-													placeholder="2012-03-30" />
+													placeholder="2012-03-30"/>
 											</div>
 										</div>
 										<div class="clearfix">
@@ -142,14 +142,14 @@
 													class="span6"
 													id="end-date"
 													name="end-date"
-													type="date" />
+													type="date"/>
 											</div>
 										</div>
 										<div class="actions">
 											<input
 												type="submit"
 												class="btn primary"
-												value="Save changes" />
+												value="Save changes"/>
 											<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
 											<button
 												type="reset"
@@ -170,8 +170,5 @@
 					src="/rest/static/js/http-io.js"></script>
 			</body>
 		</html>
-	</xsl:template>
-
-	<xsl:template match="/">
 	</xsl:template>
 </xsl:stylesheet>
