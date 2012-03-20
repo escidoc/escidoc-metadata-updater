@@ -38,8 +38,8 @@
         </form>
        </div>
       </div><!-- end row -->
-     </div><!-- end contain -->
-    </div><!--/container -->
+     </div><!-- end content -->
+    </div><!--end container -->
     <script type="text/javascript" src="/rest/static/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
    </body>
