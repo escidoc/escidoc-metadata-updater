@@ -99,11 +99,9 @@ public class ContextMetadataResource {
     // 3. using inheritance
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public Response getAsXml(@PathParam(AppConstant.ID)
-    final String id, @PathParam("metadata-name")
-    final String metadataName, @QueryParam(AppConstant.EU)
-    final String escidocUri, @QueryParam("eSciDocUserHandle")
-    final String encodedHandle) {
+    public Response getAsXml(
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         debug(id, metadataName, escidocUri);
@@ -149,11 +147,10 @@ public class ContextMetadataResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
-    public Response update(@PathParam(AppConstant.ID)
-    final String id, @PathParam("metadata-name")
-    final String metadataName, @QueryParam(AppConstant.EU)
-    final String escidocUri, final DOMSource s, @QueryParam("eSciDocUserHandle")
-    final String encodedHandle) {
+    public Response update(
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource s,
+        @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         debugPut(id, metadataName, escidocUri);
@@ -196,11 +193,9 @@ public class ContextMetadataResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getAsHtml(@PathParam(AppConstant.ID)
-    final String id, @PathParam("metadata-name")
-    final String metadataName, @QueryParam(AppConstant.EU)
-    final String escidocUri, @QueryParam("eSciDocUserHandle")
-    final String encodedHandle) {
+    public Response getAsHtml(
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
         final String msg =
@@ -222,7 +217,7 @@ public class ContextMetadataResource {
             }
 
             final StringWriter s = new StringWriter();
-            Utils.transformXml(metadata, s);
+            Utils.buildRawXmlEditor(metadata, s);
 
             // @formatter:off
             return Response.ok(s.toString(), MediaType.TEXT_HTML)

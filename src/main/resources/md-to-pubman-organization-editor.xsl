@@ -6,9 +6,10 @@
   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
   <html>
    <head>
-    <title>eSciDoc Metadata Editor</title>
-    <meta name="description" content="eSciDoc Metadata Editor" />
-    <meta name="keywords" content="escidoc, metadata editor" />
+    <title>Pubman Organization Metadata Editor</title>
+    <meta name="description" content="Editor for Pubman Organization Metadata Profile" />
+    <meta name="keywords"
+     content="escidoc, organization, pubman, metadata, metadata editor" />
     <link rel="stylesheet" type="text/css"
      href="/rest/static/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css"
@@ -16,35 +17,30 @@
    </head>
    <body>
     <div class="container">
-     <div class="alert"></div>
      <div class="content">
       <div class="page-header">
        <h1>Metadata Editor</h1>
       </div>
       <div class="row">
        <div class="span12">
-        <form id="metadata-editor" onSubmit="return sendRawXml();">
+        <form id="pubman-organization-metadata-editor">
          <fieldset>
+          <legend>PubMan Organization Metadata Editor</legend>
           <div class="clearfix">
-           <label for="content">Content</label>
+           <label for="title">Organization Name</label>
            <div class="input">
-            <textarea class="input-xlarge" id="content" rows="10">
-             <xsl:copy-of select="." />
-            </textarea>
+            <input class="span6" id="title" name="title" type="text"
+             placeholder="Name of your organization">
+            </input>
            </div>
-          </div> <!--/clearfix -->
-          <div class="actions">
-           <input type="submit" class="btn primary" value="Save changes" />
-           <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-           <button type="reset" class="btn">Cancel</button>
           </div>
          </fieldset>
         </form>
        </div>
-      </div>
-     </div>
-     <footer></footer>
-    </div><!--/container -->
+      </div><!-- end row -->
+     </div><!-- end content -->
+    </div><!--end container -->
+    <script type="text/javascript" src="/rest/static/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
    </body>
   </html>

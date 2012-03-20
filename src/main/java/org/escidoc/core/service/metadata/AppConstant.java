@@ -31,7 +31,7 @@ package org.escidoc.core.service.metadata;
 public class AppConstant {
 
     // public static final String XSLT_FILE = "md-to-html-form.xsl";
-    public static final String XSLT_FILE = "md-to-raw-xml-editor.xsl";
+    public static final String XML_TO_RAW_EDITOR_XSLT = "md-to-raw-xml-editor.xsl";
 
     public static final String BASIC_REALM = "eSciDoc Resources";
 
@@ -46,4 +46,6 @@ public class AppConstant {
     public static final String EU = "escidocurl";
 
     public static final String CONTEXTS = "contexts";
+
+    public static final String XML_TO_PUBMAN_ORGANIZATION_EDITOR_XSLT = "md-to-pubman-organization-editor.xsl";
 }
