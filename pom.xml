@@ -1,6 +1,4 @@
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.escidoc.core.service</groupId>
@@ -8,24 +6,21 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>eSciDoc Metadata Updater Web Service</name>
   <packaging>war</packaging>
-
   <properties>
     <compiler.level>1.6</compiler.level>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jetty.version>7.4.1.v20110513</jetty.version>
-    <jersey.version>1.11</jersey.version>
+    <jersey.version>1.12</jersey.version>
     <guice.verion>3.0</guice.verion>
     <jetty.port>8082</jetty.port>
     <jetty.scan.sec>0</jetty.scan.sec>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>1.12</version>
+      <version>${jersey.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
@@ -33,35 +28,30 @@
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-grizzly2</artifactId>
-      <version>1.12</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>1.12</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey.contribs</groupId>
-      <artifactId>jersey-multipart</artifactId>
-      <version>1.12</version>
+      <version>${jersey.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-jrebel</artifactId>
-      <version>${jersey.version}</version>
+      <version>1.11</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-guice</artifactId>
       <version>${jersey.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.escidoc.core</groupId>
       <artifactId>escidoc-ijc</artifactId>
       <version>1.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -73,13 +63,11 @@
       <artifactId>guice</artifactId>
       <version>3.0</version>
     </dependency>
-
     <!-- Logger -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.6.4</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -87,7 +75,6 @@
       <version>1.6.4</version>
       <scope>runtime</scope>
     </dependency>
-
     <!-- Tests -->
     <dependency>
       <groupId>junit</groupId>
@@ -104,8 +91,6 @@
     </dependency>
   </dependencies>
   <profiles>
-    <!-- To use this profile, must first build Jersey source with "mvn clean
-      install -Dcobertura" -->
     <profile>
       <id>cobertura</id>
       <activation>
@@ -306,10 +291,9 @@
       <plugin>
         <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
         <artifactId>maven-java-formatter-plugin</artifactId>
-        <version>0.3.1</version>
+        <!-- <version>0.4.0.e371sr1</version> -->
         <configuration>
           <configFile>${project.basedir}/etc/eSciDoc_codestyle.xml</configFile>
-          <overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
         </configuration>
         <executions>
           <execution>
@@ -322,7 +306,7 @@
     </plugins>
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -333,14 +317,11 @@
               <pluginExecutions>
                 <pluginExecution>
                   <pluginExecutionFilter>
-                    <groupId>
-                      org.zeroturnaround
+                    <groupId> org.zeroturnaround 
                     </groupId>
-                    <artifactId>
-                      jrebel-maven-plugin
+                    <artifactId> jrebel-maven-plugin 
                     </artifactId>
-                    <versionRange>
-                      [1.0.7,)
+                    <versionRange> [1.0.7,) 
                     </versionRange>
                     <goals>
                       <goal>generate</goal>
@@ -351,21 +332,19 @@
                   </action>
                 </pluginExecution>
                 <pluginExecution>
-                	<pluginExecutionFilter>
-                		<groupId>
-                			com.googlecode.maven-java-formatter-plugin
-                		</groupId>
-                		<artifactId>
-                			maven-java-formatter-plugin
-                		</artifactId>
-                		<versionRange>[0.3.1,)</versionRange>
-                		<goals>
-                			<goal>format</goal>
-                		</goals>
-                	</pluginExecutionFilter>
-                	<action>
-                		<ignore></ignore>
-                	</action>
+                  <pluginExecutionFilter>
+                    <groupId> com.googlecode.maven-java-formatter-plugin 
+                    </groupId>
+                    <artifactId> maven-java-formatter-plugin 
+                    </artifactId>
+                    <versionRange>[0.3.1,)</versionRange>
+                    <goals>
+                      <goal>format</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
                 </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
@@ -374,7 +353,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
   <inceptionYear>2012</inceptionYear>
   <organization>
     <name>FIZ Karlsruhe</name>
@@ -427,7 +405,6 @@
       </archive>
     </mailingList>
   </mailingLists>
-
   <repositories>
     <repository>
       <id>org.escidoc.core</id>
@@ -437,7 +414,6 @@
       </snapshots>
     </repository>
   </repositories>
-
   <pluginRepositories>
     <pluginRepository>
       <id>codehaus-snapshots</id>
@@ -449,6 +425,10 @@
         <enabled>false</enabled>
       </releases>
     </pluginRepository>
+    <pluginRepository>
+      <id>maven-java-formatter-plugin</id>
+      <name>Maven2 Java Formatter Plugin repository</name>
+      <url>https://raw.github.com/benalexau/maven-java-formatter-plugin/master/releases/</url>
+    </pluginRepository>
   </pluginRepositories>
-
 </project>

@@ -235,9 +235,8 @@ public class OrgUnitMetadataResource {
             }
 
             // @formatter:off
-            return Response.ok(writer.toString(), MediaType.TEXT_HTML)
-            //         .lastModified(getLastModificationDate(org))
-            .tag(getEntityTag(mr)).build();
+            return Response.ok(writer.toString(), MediaType.TEXT_HTML).lastModified(getLastModificationDate(org)).tag(
+                getEntityTag(mr)).build();
             //@formatter:on
         }
         catch (final AuthenticationException e) {
@@ -308,11 +307,10 @@ public class OrgUnitMetadataResource {
         }
     }
 
-    private void debugPut(final String id, final String metadataName, final String escidocUri) {
+    private static void debugPut(final String id, final String metadataName, final String escidocUri) {
         final String msg =
             "HTTP PUT request for organizational unit with the id: " + id + ", metadata name: " + metadataName
                 + ", server uri: " + escidocUri;
         LOG.debug(msg);
     }
-
 }

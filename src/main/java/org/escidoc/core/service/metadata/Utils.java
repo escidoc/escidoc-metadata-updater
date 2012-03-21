@@ -30,10 +30,15 @@ import com.google.common.base.Preconditions;
 
 import com.sun.jersey.core.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -66,6 +71,8 @@ import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.om.context.AdminDescriptor;
 
 public final class Utils {
+
+    private final static Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     private Utils() {
         // Utility classes
@@ -235,9 +242,17 @@ public final class Utils {
 
     public static void transformXml(final MetadataRecord mr, final String xsltFile, final StringWriter writer) {
         try {
-            TransformerFactory
-                .newInstance().newTransformer(new StreamSource(Utils.readXsl(xsltFile)))
-                .transform(new DOMSource(mr.getContent()), new StreamResult(writer));
+            LOG.debug("Loading XSLT file: " + xsltFile);
+
+            final String value = readAsString(xsltFile);
+            LOG.debug("as Stream is: " + value);
+
+            final InputStream stream = Utils.readXsl(xsltFile);
+
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(stream));
+            LOG.debug("transform class is: " + transformer.getClass().getCanonicalName());
+
+            transformer.transform(new DOMSource(mr.getContent()), new StreamResult(writer));
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -248,6 +263,27 @@ public final class Utils {
         catch (final TransformerFactoryConfigurationError e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
+        catch (final IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private static String readAsString(final String xsltFile) throws IOException {
+        final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(xsltFile);
+        final char[] buffer = new char[0x10000];
+        final StringBuilder out = new StringBuilder();
+        final Reader in = new InputStreamReader(is, "UTF-8");
+        int read;
+        do {
+            read = in.read(buffer, 0, buffer.length);
+            if (read > 0) {
+                out.append(buffer, 0, read);
+            }
+        }
+        while (read >= 0);
+        final String result = out.toString();
+        return result;
+
     }
 
     public static void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter s) {

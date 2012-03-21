@@ -45,6 +45,7 @@
      </div>
      <footer></footer>
     </div><!--/container -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
    </body>
   </html>
