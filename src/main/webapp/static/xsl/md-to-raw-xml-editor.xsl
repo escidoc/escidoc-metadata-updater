@@ -2,15 +2,17 @@
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
  <xsl:output encoding="utf-8" indent="yes" method="html" />
- <xsl:template match="*">
+ <xsl:template match="/">
   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
   <html>
    <head>
     <title>eSciDoc Metadata Editor</title>
     <meta name="description" content="eSciDoc Metadata Editor" />
     <meta name="keywords" content="escidoc, metadata editor" />
-    <link rel="stylesheet" type="text/css" href="/rest/static/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="/rest/static/css/override-bootstrap.css" />
+    <link rel="stylesheet" type="text/css"
+     href="/rest/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"
+     href="/rest/static/css/override-bootstrap.css" />
    </head>
    <body>
     <div class="container">

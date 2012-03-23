@@ -46,12 +46,6 @@
       <groupId>org.escidoc.core</groupId>
       <artifactId>escidoc-ijc</artifactId>
       <version>1.4</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -63,6 +57,7 @@
       <artifactId>guice</artifactId>
       <version>3.0</version>
     </dependency>
+
     <!-- Logger -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -73,7 +68,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.6.4</version>
-      <scope>runtime</scope>
     </dependency>
     <!-- Tests -->
     <dependency>
@@ -288,10 +282,12 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Does not work as advertised -->
+      <!-- 
       <plugin>
         <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
         <artifactId>maven-java-formatter-plugin</artifactId>
-        <!-- <version>0.4.0.e371sr1</version> -->
+        <<version>0.4.0.e371sr1</version>
         <configuration>
           <configFile>${project.basedir}/etc/eSciDoc_codestyle.xml</configFile>
         </configuration>
@@ -303,6 +299,7 @@
           </execution>
         </executions>
       </plugin>
+       -->
     </plugins>
     <pluginManagement>
       <plugins>
@@ -317,11 +314,11 @@
               <pluginExecutions>
                 <pluginExecution>
                   <pluginExecutionFilter>
-                    <groupId> org.zeroturnaround 
+                    <groupId> org.zeroturnaround
                     </groupId>
-                    <artifactId> jrebel-maven-plugin 
+                    <artifactId> jrebel-maven-plugin
                     </artifactId>
-                    <versionRange> [1.0.7,) 
+                    <versionRange> [1.0.7,)
                     </versionRange>
                     <goals>
                       <goal>generate</goal>
@@ -333,9 +330,9 @@
                 </pluginExecution>
                 <pluginExecution>
                   <pluginExecutionFilter>
-                    <groupId> com.googlecode.maven-java-formatter-plugin 
+                    <groupId> com.googlecode.maven-java-formatter-plugin
                     </groupId>
-                    <artifactId> maven-java-formatter-plugin 
+                    <artifactId> maven-java-formatter-plugin
                     </artifactId>
                     <versionRange>[0.3.1,)</versionRange>
                     <goals>
@@ -425,10 +422,12 @@
         <enabled>false</enabled>
       </releases>
     </pluginRepository>
+    <!--
     <pluginRepository>
       <id>maven-java-formatter-plugin</id>
       <name>Maven2 Java Formatter Plugin repository</name>
       <url>https://raw.github.com/benalexau/maven-java-formatter-plugin/master/releases/</url>
     </pluginRepository>
+    -->
   </pluginRepositories>
 </project>

@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +52,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -109,26 +111,6 @@ public final class Utils {
         }
     }
 
-    // public static String transformToHtml(final MetadataRecord metadata) {
-    // Preconditions.checkNotNull(metadata, "mr is null: %s", metadata);
-    // try {
-    // final StringWriter s = new StringWriter();
-    // TransformerFactory
-    // .newInstance().newTransformer(new StreamSource(readXsl()))
-    // .transform(new DOMSource(metadata.getContent()), new StreamResult(s));
-    // return s.toString();
-    // }
-    // catch (final TransformerConfigurationException e) {
-    // throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    // }
-    // catch (final TransformerException e) {
-    // throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    // }
-    // catch (final TransformerFactoryConfigurationError e) {
-    // throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-    // }
-    // }
-
     public static String loginToEscidoc(final String escidocUri, final String[] creds) throws AuthenticationException,
         TransportException, MalformedURLException {
         Preconditions.checkNotNull(escidocUri, "escidocUri is null: %s", escidocUri);
@@ -178,9 +160,13 @@ public final class Utils {
 
     public static Response response401() {
         // @formatter:off
-        return Response.status(Status.UNAUTHORIZED).header("WWW-Authenticate",
-            "Basic realm=\"" + AppConstant.BASIC_REALM + "\"").type("text/plain").entity(
-            "Authentification credentials are required").build();
+        return Response
+            .status(Status.UNAUTHORIZED)
+            .header("WWW-Authenticate",
+            "Basic realm=\"" + AppConstant.BASIC_REALM + "\"")
+            .type("text/plain")
+            .entity("Authentification credentials are required")
+            .build();
         // @formatter:on
     }
 
@@ -197,7 +183,6 @@ public final class Utils {
         Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
         Preconditions.checkNotNull(request, "request is null: %s", request);
         checkQueryParameter(escidocUri);
-
     }
 
     public static void checkQueryParameter(final String escidocUri) {
@@ -242,14 +227,17 @@ public final class Utils {
 
     public static void transformXml(final MetadataRecord mr, final String xsltFile, final StringWriter writer) {
         try {
-            LOG.debug("Loading XSLT file: " + xsltFile);
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setValidating(false);
+            final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
-            final String value = readAsString(xsltFile);
-            LOG.debug("as Stream is: " + value);
+            DEBUG(xsltFile);
 
             final InputStream stream = Utils.readXsl(xsltFile);
+            Document xsltDoc = docBuilder.parse(stream);
 
-            final Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(stream));
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer(new DOMSource(xsltDoc));
             LOG.debug("transform class is: " + transformer.getClass().getCanonicalName());
 
             transformer.transform(new DOMSource(mr.getContent()), new StreamResult(writer));
@@ -266,6 +254,18 @@ public final class Utils {
         catch (final IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
+        catch (final ParserConfigurationException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (SAXException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private static void DEBUG(final String xsltFile) throws IOException {
+        LOG.debug("Loading XSLT file: " + xsltFile);
+        final String value = readAsString(xsltFile);
+        LOG.debug("as Stream is: " + value);
     }
 
     private static String readAsString(final String xsltFile) throws IOException {
