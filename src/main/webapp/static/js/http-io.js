@@ -1,3 +1,5 @@
+"use strict";
+
 function send() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', getUri(), false);
@@ -175,4 +177,11 @@ function foo(){
         }
       }
     });
+<<<<<<< HEAD
 }
+=======
+
+    return map;
+  }
+});
+>>>>>>> 96eeccd... Add "use strict" in JavaScript File.

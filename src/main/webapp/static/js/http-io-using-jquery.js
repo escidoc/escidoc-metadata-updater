@@ -1,4 +1,6 @@
 $(function() {
+  "use strict";
+
   $('#pubman-organization-metadata-editor').submit(function(e) {
     e.preventDefault();
 
