@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdou:organizational-unit
+  xmlns:mdou="http://purl.org/escidoc/metadata/profiles/0.1/organizationalunit">
+  <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">TITLE
+  </dc:title>
+  <dcterms:alternative xmlns:dcterms="http://purl.org/dc/terms/">
+    ALTERNATIVE_TITLE
+  </dcterms:alternative>
+  <dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/">IDENTIFIER
+  </dc:identifier>
+  <dc:description xmlns:dc="http://purl.org/dc/elements/1.1/">DESCRIPTION
+  </dc:description>
+  <eterms:organization-type
+    xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">ORGANIZATION_TYPE
+  </eterms:organization-type>
+  <eterms:country xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">COUNTRY
+  </eterms:country>
+  <eterms:city xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">CITY
+  </eterms:city>
+  <kml:coordinates xmlns:kml="http://www.opengis.net/kml/2.2">COORDINATES
+  </kml:coordinates>
+  <eterms:start-date xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">0000-01-01
+  </eterms:start-date>
+  <eterms:end-date xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/">9999-12-31
+  </eterms:end-date>
+</mdou:organizational-unit>

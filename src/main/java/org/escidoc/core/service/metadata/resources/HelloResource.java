@@ -39,7 +39,7 @@ import javax.ws.rs.core.Response;
 public class HelloResource {
 
     @GET
-    @Produces( { "text/plain", "text/html" })
+    @Produces({ "text/plain", "text/html" })
     public Response getAsTextOrHtmlOrXml() {
         return Response.ok("OK").build();
     }

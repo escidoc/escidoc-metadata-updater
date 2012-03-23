@@ -17,27 +17,23 @@ function send() {
         console.log(document.getElementsByTagName('input'));
         var list = document.getElementsByTagName('input');
 
-        Array.prototype.forEach
-        .call(
-          list,
-          function(li, index, nodeList) {
-            if (li.type !== 'button') {
-              if (li.defaultValue !== li.value) {
-                if (li.name != null) {
-                  console.log("li: " + li.name);
-                  if (rXml != null) {
-                    var found = rXml.getElementsByTagName(li.name);
-                    if (found != null
-                        && found.length > 0) {
-                          var input = found[0];
-                          input.textContent = li.value;
-                        }
+        Array.prototype.forEach.call(list, function(li, index, nodeList) {
+          if (li.type !== 'button') {
+            if (li.defaultValue !== li.value) {
+              if (li.name != null) {
+                console.log("li: " + li.name);
+                if (rXml != null) {
+                  var found = rXml.getElementsByTagName(li.name);
+                  if (found != null && found.length > 0) {
+                    var input = found[0];
+                    input.textContent = li.value;
                   }
                 }
               }
             }
-          });
-          put(rXml);
+          }
+        });
+        put(rXml);
       } else {
         console.log("status: ", xhr2.statusText);
       }
@@ -60,16 +56,15 @@ function put(xml) {
         var r = xhr2.responseXML;
         console.log("Successfully update the metadata.");
         console.log(r);
-        alert('The response was: ' + xhr2.status + ', '
-              + xhr2.responseText);
+        alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
       } else if (xhr2.status === 303) {
         alert('redirect');
       } else if (xhr2.status === 0) {
         alert('zero...');
       } else {
         console.log("status: ", xhr2.statusText);
-        alert('Snap, something went wrong: ' + xhr2.status
-              + ', reason: ' + xhr2.responseText);
+        alert('Snap, something went wrong: ' + xhr2.status + ', reason: '
+            + xhr2.responseText);
       }
     }
   };
@@ -82,16 +77,16 @@ function getUri() {
 
 function sendRawXml() {
   var userInput = document.getElementById('content').value;
-  console.log('User input: '+userInput);
+  console.log('User input: ' + userInput);
 
   var uri = getUri();
-  console.log('will be sent to '+uri);
+  console.log('will be sent to ' + uri);
 
   putRawXml(getUri(), userInput);
   return false;
 }
 
-function putRawXml(uri, xml){
+function putRawXml(uri, xml) {
   var xhr2 = new XMLHttpRequest();
   xhr2.open('PUT', uri, false);
   xhr2.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
@@ -103,16 +98,17 @@ function putRawXml(uri, xml){
         var r = xhr2.responseXML;
         console.log("Successfully update the metadata.");
         console.log(r);
-        alert('The response was: ' + xhr2.status + ', '
-              + xhr2.responseText);
+        alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
       } else if (xhr2.status === 303) {
         alert('redirect');
       } else if (xhr2.status === 0) {
         alert('zero...');
       } else {
         console.log("status: ", xhr2.statusText);
-        alert('Snap, something went wrong: ' + xhr2.status
-              + ', reason: ' + xhr2.responseText);
+        link
+//        alert('Snap, something went wrong: ' + xhr2.status + ', reason: '
+//            + xhr2.responseText);
+        $(".alert").alert();
       }
     }
   };
@@ -153,26 +149,49 @@ $(function () {
   });
 });
 
-function foo(){
-  Array.prototype.forEach
-  .call(
-    list,
-    function(li, index, nodeList) {
-      if (li.type !== 'button') {
-        if (li.defaultValue !== li.value) {
-          if (li.name != null) {
-            console.log("li: " + li.name);
-            if (rXml != null) {
-              var found = rXml
-              .getElementsByTagName(li.name);
-              if (found != null
-                  && found.length > 0) {
-                    var input = found[0];
-                    input.textContent = li.value;
-                  }
-            }
-          }
-        }
-      }
+$(function() {
+  $('#pubman-organization-metadata-editor').submit(
+      function(e) {
+        e.preventDefault();
+        console.log('sending pubman organization metadata...');
+
+        // read user input from the form
+        var map = $.serializeForm();
+
+        // build PubMan Metadata XML
+        $.get('/rest/pubman-organization-metadata-template.xml').success(
+            function(template) {
+              console.log('got template: ' + template);
+
+              var payload = template;
+
+              for (key in map) {
+                console.log('key: ' + key + ' = ' + map[key]);
+
+                var xmlTagName = $(payload).find(key);
+                console.log('xml tag: ' + xmlTagName.text());
+
+                $(payload).find(key).text(map[key]);
+              }
+
+              putRawXml(getUri(), payload);
+            }).error(function(data) {
+          // TODO implement notification
+          console.log('error: ' + data);
+        })
+        return false;
+      });
+});
+
+jQuery.extend({
+  serializeForm : function() {
+    var fields = $(":input").serializeArray();
+    
+    var map = {};
+    $.each(fields, function(index, field) {
+      map[field.name] = field.value;
     });
-}
+
+    return map;
+  }
+});

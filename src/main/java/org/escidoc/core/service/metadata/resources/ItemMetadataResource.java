@@ -169,9 +169,8 @@ public class ItemMetadataResource {
             Utils.buildRawXmlEditor(mr, writer);
 
             // @formatter:off
-            return Response.ok(writer.toString(), MediaType.TEXT_HTML)
-            //          .lastModified(getLastModificationDate(item))
-            .tag(getEntityTag(mr)).build();
+            return Response.ok(writer.toString(), MediaType.TEXT_HTML).lastModified(getLastModificationDate(item)).tag(
+                getEntityTag(mr)).build();
             //@formatter:on
         }
         catch (final AuthenticationException e) {
