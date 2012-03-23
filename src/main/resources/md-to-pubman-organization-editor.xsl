@@ -5,7 +5,7 @@
   xmlns:eterms="http://purl.org/escidoc/metadata/terms/0.1/" xmlns:kml="http://www.opengis.net/kml/2.2"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output encoding="utf-8" indent="yes" method="html" />
-  <xsl:template match="/mdou:organizational-unit">
+  <xsl:template match="mdou:organizational-unit">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
     <html>
       <head>
