@@ -1,3 +1,5 @@
+"use strict";
+
 function send() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', getUri(), false);
