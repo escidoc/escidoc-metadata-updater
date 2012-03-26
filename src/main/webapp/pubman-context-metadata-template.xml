@@ -1,0 +1,15 @@
+<pubman-admin-descriptor>
+
+  <allowed-genres>
+  </allowed-genres>
+
+  <allowed-subject-classifications>
+  </allowed-subject-classifications>
+
+  <validation-schema>VALIDATION_SCHEMA</validation-schema>
+  <workflow>WORKFLOW</workflow>
+  <contact-email>FOO@EXAMPLE.ORG</contact-email>
+
+  <!-- These tag could be empty-->
+  <template-item/>
+</pubman-admin-descriptor>
