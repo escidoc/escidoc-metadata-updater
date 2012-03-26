@@ -104,37 +104,68 @@
                       </div>
                     </div><!-- end clearfix -->
 
-                    <!-- FIXME after reading the XML file, mark option as selected -->
                     <div class="clearfix">
                       <label>Workflow</label>
                       <div class="input">
-                        <select id="workflow" name="workflow">
-                          <option value="standard">Standard</option>
-                          <option value="simple" selected="selected">Simple</option>
-
-                          <!--
-                          <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
-                          -->
-
-                        </select>
+                        <xsl:template match="workflow">
+                          <select id="workflow" name="workflow">
+                            <option value="standard">
+                              <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
+                              Standard
+                            </option>
+                            <option value="simple">
+                              <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
+                              Simple
+                            </option>
+                          </select>
+                        </xsl:template>
                       </div>
                     </div><!-- end clearfix -->
 
-                    <!-- FIXME select option -->
-                    <!-- FIXME after reading the XML file, mark option as selected -->
                     <div class="clearfix">
                       <label>Validation Schema</label>
                       <div class="input">
-                        <select id="validation-schema"
-                          name="validation-schema">
-                          <xsl:attribute name="selected"><xsl:value-of select="validation-schema" /></xsl:attribute>
-                          <option value="publication">Publication</option>
-                          <option value="greymaterial">Grey Material</option>
-                          <option value="jus">JUS</option>
-                          <option value="externalgreymaterial">External Grey Material</option>
-                          <option value="simple">Simple</option>
-                          <option value="yearbook">Year Book</option>
-                        </select>
+                        <xsl:template match="validation-schema">
+                          <select id="validation-schema" name="validation-schema">
+                            <option value="publication">
+                              <xsl:if test="validation-schema = 'publication'">
+                                <xsl:attribute name="selected">selected</xsl:attribute>
+                              </xsl:if>
+                              Publication
+                            </option>
+                            <option value="greymaterial">
+                              <xsl:if test="validation-schema = 'greymaterial'">
+                                <xsl:attribute name="selected">selected</xsl:attribute>
+                              </xsl:if>
+                              Grey Material
+                            </option>
+                            <option value="jus">
+                              <xsl:if test="validation-schema = 'jus'">
+                                <xsl:attribute name="selected">selected</xsl:attribute>
+                              </xsl:if>
+                              JUS
+                            </option>
+                            <option value="externalgreymaterial">
+                              <xsl:if test="validation-schema = 'externalgreymaterial'">
+                                <xsl:attribute name="selected">selected</xsl:attribute>
+                              </xsl:if>
+                              External Grey Material
+                            </option>
+                            <option value="simple">
+                              <xsl:if test="validation-schema = 'simple'">
+                                <xsl:attribute name="selected">selected</xsl:attribute>
+                              </xsl:if>
+                              Simple
+                            </option>
+                            <option value="yearbook">
+                              <xsl:if test="validation-schema = 'yearbook'">
+                                <xsl:attribute name="selected">selected</xsl:attribute>
+                              </xsl:if>
+                              Year Book
+                            </option>
+                          </select>
+
+                        </xsl:template>
                       </div>
                     </div><!-- end clearfix -->
 
@@ -148,8 +179,8 @@
                     </div><!-- end clearfix -->
 
                     <div class="actions">
-                      <button onclick="getDescriptor()" class="btn primary">get XML</button>
-                      <button onclick="updateDescriptor()" class="btn primary">put XML</button>
+                      <input type="submit" class="btn primary" value="Save changes" />
+                      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                       <button class="btn" type="reset">Cancel</button>
                     </div><!-- end actions -->
 
@@ -162,7 +193,6 @@
         <script type="text/javascript"
           src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="/rest/static/js/app.js"></script>
-        <script type="text/javascript" src="/rest/static/js/readAdminDescriptor.js"></script>
         <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
         <script type="text/javascript" src="/rest/static/js/bootstrap-alert.js"></script>
       </body>

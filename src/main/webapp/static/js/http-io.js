@@ -167,7 +167,7 @@ $(function() {
 
               var payload = template;
 
-              for (key in map) {
+              for (var key in map) {
                 console.log('key: ' + key + ' = ' + map[key]);
 
                 var xmlTagName = $(payload).find(key);
@@ -196,4 +196,58 @@ jQuery.extend({
 
     return map;
   }
+});
+
+function serializePubmanContextForm(){
+  var map={};
+  map['genres']= $('input[name="genresList"]:checked');
+  map['subject']=$('input[name="subjectList"]:checked');
+  map['workflow']=$('input[name="workflow"]:selected');
+  map['validation-schema']=$('input[name="validation-schema"]:selected');
+  map['contact-email']=$('input[name="contact-email"]');
+  return map;
+}
+
+$(function() {
+  $('#pubman-context-metadata-editor').submit(
+      function(e) {
+        e.preventDefault();
+        console.log('sending pubman context metadata...');
+
+        var map = serializePubmanContextForm();
+        $.get('/rest/pubman-context-metadata-template.xml').success(
+            function(template) {
+              console.log('got template: ' + template);
+              var payload = template;
+
+              var allowedGenres = $(payload).find('allowed-genre');
+              if(map['genres'].length > 0){
+                for(var key in map['genres']) {
+                  allowedGenres.append('<allowed-genre>'+ key.value +'</allowed-genre>');
+                }
+              }
+
+              var sc = $(payload).find('allowed-subject-classifications');
+              if(map['subject'].length > 0){
+                for(var c in map['subject']) {
+                  sc.append('<allowed-subject-classification>'+ c.value +'</allowed-subject-classification>');
+                }
+              }
+              
+              var validationSchema= $(payload).find('validation-schema');
+              validationSchema.text(map['validation-schema']);
+
+              var workflow= $(payload).find('workflow');
+              workflow.text(map['workflow']);
+
+              var contactEmail= $(payload).find('contact-email');
+              contactEmail.text(map['contact-email']);
+
+               putRawXml(getUri(), payload);
+            }).error(function(data) {
+          // TODO implement notification
+          console.log('error: ' + data);
+        })
+        return false;
+      });
 });
