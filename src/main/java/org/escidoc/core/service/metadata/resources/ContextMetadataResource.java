@@ -225,9 +225,11 @@ public class ContextMetadataResource {
             }
 
             // @formatter:off
-            return Response.ok(writer.toString(), MediaType.TEXT_HTML)
-            //         .lastModified(getLastModificationDate(org))
-            .tag(getEntityTag(metadata)).build();
+            return Response
+                .ok(writer.toString(), MediaType.TEXT_HTML)
+                .lastModified(getLastModificationDate(resource))
+                .tag(getEntityTag(metadata))
+                .build();
             //@formatter:on
         }
         catch (final AuthenticationException e) {

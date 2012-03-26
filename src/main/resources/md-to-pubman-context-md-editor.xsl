@@ -36,17 +36,39 @@
               <div class="span12">
                 <form id="pubman-context-metadata-editor">
                   <fieldset>
-                    <legend>PubMan context Metadata</legend>
-                    
-                    <xsl:apply-templates/>
-                    
+                    <legend>PubMan Context Metadata/Admin Descriptor</legend>
+
+                    <div class="clearfix">
+                      <label>Validation Schema</label>
+                      <div class="input">
+                        <select id="validation-schema"
+                          name="validation-schema">
+                          <xsl:attribute name="selected"><xsl:value-of select="validation-schema" /></xsl:attribute>
+                          <option value="publication">Publication</option>
+                          <option value="greymaterial">Grey Material</option>
+                          <option value="jus">JUS</option>
+                          <option value="externalgreymaterial">External Grey Material</option>
+                          <option value="simple">Simple</option>
+                          <option value="yearbook">Year Book</option>
+                        </select>
+                      </div>
+                    </div><!-- end clearfix -->
+
+                    <div class="clearfix">
+                      <label>Contact Mail</label>
+                      <div class="input">
+                        <input class="xlarge" name="contact-email" type="text" >
+                          <xsl:attribute name="value"><xsl:value-of select="contact-email" /></xsl:attribute>
+                        </value>
+                      </div>
+                    </div><!-- end clearfix -->
+
+                    <div class="actions">
+                      <button onclick="getDescriptor()" class="btn primary">get XML</button>
+                      <button onclick="updateDescriptor()" class="btn primary">put XML</button>
+                      <button class="btn" type="reset">Cancel</button>
+                    </div><!-- end actions -->
                   </fieldset>
-                  <div class="actions">
-                    <input type="submit" class="btn primary"
-                      value="Save changes" />
-                    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                    <button type="reset" class="btn">Cancel</button>
-                  </div>
                 </form>
               </div>
             </div><!-- end row -->
