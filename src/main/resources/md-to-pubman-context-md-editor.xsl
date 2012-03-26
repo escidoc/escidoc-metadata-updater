@@ -38,6 +38,90 @@
                   <fieldset>
                     <legend>PubMan Context Metadata/Admin Descriptor</legend>
 
+                    <!-- FIXME after reading the XML file, mark checkbox as checked -->
+                    <div class="clearfix">
+                      <label>Allowed Genres</label>
+                      <div class="input">
+                        <div style="padding: 16px 19px">
+                          <input id="select-all-genres" class="btn small" type="button" name="CheckAll" value="all"/>
+                          <input id="unselect-all-genres" class="btn small" type="button" name="UnCheckAll" value="none"/><br/>
+                        </div>
+                        <ul id="genre" class="inputs-list">
+                          <li><label><input type="checkbox" name="genresList" checked="checked" value="http://purl.org/eprint/type/Book"/>Book</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/BookItem" /> BookItem</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/ConferencePaper"/> Conference Paper</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/ConferencePoster"/> Conference Poster</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/Patent"/> Patent</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/Report"/> Report</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/Thesis"/> Thesis</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/article"/> Article</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/BookReview"/> Book Review</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/case-note"/> Case Note</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/case-study"/> Case Study</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/collected-edition"/> Collected Edition</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/commentary"/> Commentary</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/conference-report"/> Conference Report</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/contribution-to-selected-edition"/> Contribution to selected edition</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/contribution-to-commentary"/> Contribution to Commentary</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/contribution-to-encyclopedia"/> Contribution to Encyclopedia</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/contribution-to-festschrift"/> Contribution to Festschrift</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/contribution-to-handbook"/> Contribution to Handbook</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/handbook"/> Handbook</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/issue"/> Issue</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/journal"/> Journal</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/manual"/> Manual</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/manuscript"/> Manuscript</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/meeting-abstract"/> Meeting Abstract</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/monograph"/> Monograph</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/multi-volume"/> Multiple Volume</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/newspaper"/> Newspaper</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/newspaper-article"/> Newspaper Article</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/opinion"/> Opinion</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/other"/> Other</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/paper"/> Paper</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/proceedings"/> Proceedings</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/series"/> Series</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/escidoc/metadata/ves/publication-types/talk-at-event"/> Talk at Event</label></li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <!-- FIXME after reading the XML file, mark checkbox as checked -->
+                    <div class="clearfix">
+                      <label>Allowed Subject Classification</label>
+                      <div class="input">
+                        <div style="padding: 16px 19px">
+                          <input id="select-all-subjects" class="btn small" type="button" name="CheckAll" value="all"/>
+                          <input id="unselect-all-subjects" class="btn small" type="button" name="UnCheckAll" value="none"/><br/>
+                        </div>
+                        <ul id="subject" class="inputs-list">
+                          <li><label><input type="checkbox" name="subjectList" checked="checked" value="http://purl.org/escidoc/metadata/terms/0.1/DDC"/>DDC</label></li>
+                          <li><label><input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/MPIPKS"/>MPIPKS</label></li>
+                          <li><label><input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/ISO639-3"/>ISO639-3</label></li>
+                          <li><label><input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/JUS"/>JUS</label></li>
+                          <li><label><input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/PACS"/>PACS</label></li>
+                        </ul>
+                      </div>
+                    </div><!-- end clearfix -->
+
+                    <!-- FIXME after reading the XML file, mark option as selected -->
+                    <div class="clearfix">
+                      <label>Workflow</label>
+                      <div class="input">
+                        <select id="workflow" name="workflow">
+                          <option value="standard">Standard</option>
+                          <option value="simple" selected="selected">Simple</option>
+
+                          <!--
+                          <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
+                          -->
+
+                        </select>
+                      </div>
+                    </div><!-- end clearfix -->
+
+                    <!-- FIXME select option -->
+                    <!-- FIXME after reading the XML file, mark option as selected -->
                     <div class="clearfix">
                       <label>Validation Schema</label>
                       <div class="input">
@@ -57,9 +141,9 @@
                     <div class="clearfix">
                       <label>Contact Mail</label>
                       <div class="input">
-                        <input class="xlarge" name="contact-email" type="text" >
+                        <input class="xlarge" name="contact-email" type="email" >
                           <xsl:attribute name="value"><xsl:value-of select="contact-email" /></xsl:attribute>
-                        </value>
+                        </input>
                       </div>
                     </div><!-- end clearfix -->
 
@@ -68,6 +152,7 @@
                       <button onclick="updateDescriptor()" class="btn primary">put XML</button>
                       <button class="btn" type="reset">Cancel</button>
                     </div><!-- end actions -->
+
                   </fieldset>
                 </form>
               </div>
@@ -77,6 +162,7 @@
         <script type="text/javascript"
           src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="/rest/static/js/app.js"></script>
+        <script type="text/javascript" src="/rest/static/js/readAdminDescriptor.js"></script>
         <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
         <script type="text/javascript" src="/rest/static/js/bootstrap-alert.js"></script>
       </body>

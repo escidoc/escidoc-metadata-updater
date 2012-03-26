@@ -1,4 +1,5 @@
 <pubman-admin-descriptor>
+
   <allowed-genres>
     <allowed-genre>http://purl.org/escidoc/metadata/ves/publication-types/article</allowed-genre>
     <allowed-genre>http://purl.org/eprint/type/Book</allowed-genre>
@@ -17,27 +18,32 @@
     <allowed-genre>http://purl.org/escidoc/metadata/ves/publication-types/series</allowed-genre>
     <allowed-genre>http://purl.org/escidoc/metadata/ves/publication-types/other</allowed-genre>
   </allowed-genres>
+
   <!-- These tag could be empty-->
   <template-item/>
+
+  <validation-schema>publication</validation-schema>
   <!-- <validation-schema>greymaterial</validation-schema> -->
   <!-- <validation-schema>jus</validation-schema> -->
   <!-- <validation-schema>externalgreymaterial</validation-schema> -->
   <!-- <validation-schema>cbs</validation-schema> -->
   <!-- <validation-schema>simple</validation-schema> -->
   <!-- <validation-schema>yearbook</validation-schema> -->
-  <validation-schema>publication</validation-schema>
   <!-- <workflow>simple</workflow> -->
+
   <workflow>standard</workflow>
+
   <allowed-subject-classifications>
     <allowed-subject-classification>http://purl.org/escidoc/metadata/terms/0.1/DDC</allowed-subject-classification>
     <!-- <allowed-subject-classification>http://purl.org/escidoc/metadata/terms/0.1/MPIPKS</allowed-subject-classification> -->
     <!-- <allowed-subject-classification>http://purl.org/escidoc/metadata/terms/0.1/ISO639-3</allowed-subject-classification> -->
   </allowed-subject-classifications>
+
   <!-- These tag could be empty but should have a value -->
   <!-- pubman@mpdl.mpg.de -->
   <!-- Christian.Steiger@fiz-karlsruhe.de -->
   <!-- Frank.Schwichtenberg@fiz-karlsruhe.de -->
   <!-- Matthias.Razum@fiz-karlsruhe.de -->
   <contact-email>pubman@mpdl.mpg.de</contact-email>
-</pubman-admin-descriptor>
 
+</pubman-admin-descriptor>

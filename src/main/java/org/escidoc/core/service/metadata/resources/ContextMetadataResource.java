@@ -120,8 +120,8 @@ public class ContextMetadataResource {
 
             // @formatter:off
             return Response
-                .ok(new DOMSource(metadata.getContent())).lastModified(getLastModificationDate(resource)).tag(
-                    getEntityTag(metadata)).build();
+                .ok(new DOMSource(metadata.getContent())).lastModified(getLastModificationDate(resource))
+                .tag(getEntityTag(metadata)).build();
             // @formatter:on
 
         }
@@ -210,12 +210,6 @@ public class ContextMetadataResource {
                 return Response.status(Status.NO_CONTENT).build();
             }
 
-            final ResponseBuilder b =
-                r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(metadata));
-            if (b != null) {
-                return b.build();
-            }
-
             final StringWriter writer = new StringWriter();
             if (isPubmandProfileFound(metadata.getContent())) {
                 Utils.buildPubmanContextMetadataEditor(metadata, writer);
@@ -224,13 +218,17 @@ public class ContextMetadataResource {
                 Utils.buildRawXmlEditor(metadata, writer);
             }
 
+            final ResponseBuilder b =
+                r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(writer.toString()));
+            if (b != null) {
+                return b.build();
+            }
+
             // @formatter:off
             return Response
-                .ok(writer.toString(), MediaType.TEXT_HTML)
-                .lastModified(getLastModificationDate(resource))
-                .tag(getEntityTag(metadata))
-                .build();
-            //@formatter:on
+                .ok(writer.toString(), MediaType.TEXT_HTML).lastModified(getLastModificationDate(resource))
+                .tag(getEntityTag(metadata)).build();
+            // @formatter:on
         }
         catch (final AuthenticationException e) {
             return response401();
