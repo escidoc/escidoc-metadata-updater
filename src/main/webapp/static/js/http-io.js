@@ -10,13 +10,7 @@ function send() {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         var r = xhr.responseText;
-        console.log(r);
-        console.log('uri' + getUri());
-
         var rXml = xhr.responseXML;
-        console.log(rXml);
-
-        console.log(document.getElementsByTagName('input'));
         var list = document.getElementsByTagName('input');
 
         Array.prototype.forEach.call(list, function(li, index, nodeList) {
@@ -56,8 +50,6 @@ function put(xml) {
     if (xhr2.readyState === 4) {
       if (xhr2.status === 200) {
         var r = xhr2.responseXML;
-        console.log("Successfully update the metadata.");
-        console.log(r);
         alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
       } else if (xhr2.status === 303) {
         alert('redirect');
@@ -66,7 +58,7 @@ function put(xml) {
       } else {
         console.log("status: ", xhr2.statusText);
         alert('Snap, something went wrong: ' + xhr2.status + ', reason: '
-            + xhr2.responseText);
+              + xhr2.responseText);
       }
     }
   };
@@ -79,10 +71,8 @@ function getUri() {
 
 function sendRawXml() {
   var userInput = document.getElementById('content').value;
-  console.log('User input: ' + userInput);
 
   var uri = getUri();
-  console.log('will be sent to ' + uri);
 
   putRawXml(getUri(), userInput);
   return false;
@@ -98,18 +88,16 @@ function putRawXml(uri, xml) {
     if (xhr2.readyState === 4) {
       if (xhr2.status === 200) {
         var r = xhr2.responseXML;
-        console.log("Successfully update the metadata.");
-        console.log(r);
         alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
       } else if (xhr2.status === 303) {
         alert('redirect');
       } else if (xhr2.status === 0) {
         alert('zero...');
       } else {
-        console.log("status: ", xhr2.statusText);
+        alert("status: ", xhr2.statusText);
         link
-//        alert('Snap, something went wrong: ' + xhr2.status + ', reason: '
-//            + xhr2.responseText);
+        //        alert('Snap, something went wrong: ' + xhr2.status + ', reason: '
+        //            + xhr2.responseText);
         $(".alert").alert();
       }
     }
@@ -120,17 +108,15 @@ function putRawXml(uri, xml) {
 $(function () {
   $('#pubman-organization-metadata-editor').submit(function (e) {
     e.preventDefault();
-    console.log('sending pubman organization metadata...');
 
     var TEST_URI='http://localhost:8082/rest/v0.9/organizations/escidoc:1/metadata/escidoc?escidocurl=http://esfedrep1.fiz-karlsruhe.de:8080';
     var uri=TEST_URI;
 
     //TODO fetch the xml from the uri. => var serverXml;
     $.get(uri, function(data){
-      console.log('got data: '+data);
+      //
     })
     .success(function (data) {
-      console.log('success: '+data);
       //in the form, find values that are changed by the user.=> var modifiedKeysArray
       //replace that changed values in the xml. => 
       // for each key in modifiedKeysArray do {
@@ -146,49 +132,45 @@ $(function () {
       // TODO send modifiedServerXml back to the uri
       putRawXml(uri,data);
     })
-    .error(function (data) {console.log('failed: '+data);});
+    .error(function (data) {alert('failed: '+data);});
     // TODO show notification of the server reaction, success or error
   });
 });
 
 $(function() {
   $('#pubman-organization-metadata-editor').submit(
-      function(e) {
-        e.preventDefault();
-        console.log('sending pubman organization metadata...');
+    function(e) {
+    e.preventDefault();
 
-        // read user input from the form
-        var map = $.serializeForm();
+    // read user input from the form
+    var map = $.serializeForm();
 
-        // build PubMan Metadata XML
-        $.get('/rest/pubman-organization-metadata-template.xml').success(
-            function(template) {
-              console.log('got template: ' + template);
+    // build PubMan Metadata XML
+    $.get('/rest/pubman-organization-metadata-template.xml').success(
+      function(template) {
 
-              var payload = template;
+      var payload = template;
 
-              for (var key in map) {
-                console.log('key: ' + key + ' = ' + map[key]);
+      for (var key in map) {
 
-                var xmlTagName = $(payload).find(key);
-                console.log('xml tag: ' + xmlTagName.text());
+        var xmlTagName = $(payload).find(key);
 
-                $(payload).find(key).text(map[key]);
-              }
+        $(payload).find(key).text(map[key]);
+      }
 
-              putRawXml(getUri(), payload);
-            }).error(function(data) {
-          // TODO implement notification
-          console.log('error: ' + data);
-        })
-        return false;
-      });
+      putRawXml(getUri(), payload);
+    }).error(function(data) {
+      // TODO implement notification
+      alert('error: ' + data);
+    })
+    return false;
+  });
 });
 
 jQuery.extend({
   serializeForm : function() {
     var fields = $(":input").serializeArray();
-    
+
     var map = {};
     $.each(fields, function(index, field) {
       map[field.name] = field.value;
@@ -202,54 +184,61 @@ function serializePubmanContextForm(){
   var map={};
   map['genres']= $('input[name="genresList"]:checked');
   map['subjects']=$('input[name="subjectList"]:checked');
-  map['workflow']=$('input[name="workflow"]:selected');
-  map['schema']=$('input[name="validation-schema"]:selected');
+  map['workflow']=$('#workflow option:selected');
+  map['schema']=$('#validation-schema option:selected');
   map['email']=$('input[name="contact-email"]');
   return map;
 }
 
 $(function() {
   $('#pubman-context-metadata-editor').submit(
-      function(e) {
-        e.preventDefault();
-        console.log('sending pubman context metadata...');
+    function(e) {
+    e.preventDefault();
 
-        var map = serializePubmanContextForm();
-        $.get('/rest/pubman-context-metadata-template.xml').success(
-            function(template) {
-              console.log('got template: ' + template);
-              var payload = template;
+    var map = serializePubmanContextForm();
+    $.get('/rest/pubman-context-metadata-template.xml').success(
+      function(template) {
+      var payload = template;
 
-              var allowedGenres = $(payload).find('allowed-genre');
-              if(map['genres'].length > 0){
-                for(var key in map['genres']) {
-                  allowedGenres.append('<allowed-genre>'+ key.value +'</allowed-genre>');
-                }
-              }
+      // when the user does not select any genres, remove the element the node '<allowed-genres/>'
+      // other wise, add the selected genres as: <allowed-genre>$(value)</allowed-genre>
+      var selectedGenres=map['genres']; 
+      var genreSize= selectedGenres.length;
+      if(genreSize) {
+        $.each(selectedGenres, function(index, genre){
+          $(payload).find('allowed-genres').append($('<allowed-genre>').text(genre.value)); 
+        });
+      } else{
+        $(payload).find('allowed-genres').remove();
+      }
 
-              var sc = $(payload).find('allowed-subject-classifications');
-              if(map['subject'].length > 0){
-                for(var c in map['subject']) {
-                  sc.append('<allowed-subject-classification>'+ c.value +'</allowed-subject-classification>');
-                }
-              }
-              
-              var validationSchema= $(payload).find('validation-schema');
-              validationSchema.text(map['validation-schema']);
 
-              var workflow= $(payload).find('workflow');
-              workflow.text(map['workflow']);
+      //FIXME refactor to function
+      var selectedSubjects=map['subjects']; 
+      if(selectedSubjects.length) {
+        $.each(selectedSubjects, function(index, subject){
+          $(payload).find('allowed-subject-classifications').append($('<allowed-subject-classification>').text(subject.value)); 
+        });
+      } else{
+        $(payload).find('allowed-subject-classification').remove();
+      }
 
-              var contactEmail= $(payload).find('contact-email');
-              contactEmail.text(map['contact-email']);
+      var validationSchema = $(payload).find('validation-schema');
+      validationSchema.text(map['schema'].val());
 
-               putRawXml(getUri(), payload);
-            }).error(function(data) {
-          // TODO implement notification
-          console.log('error: ' + data);
-        })
-        return false;
-      });
+      var workflow= $(payload).find('workflow');
+      workflow.text(map['workflow'].val());
+
+      var contactEmail= $(payload).find('contact-email');
+      contactEmail.text(map['email'].val());
+
+      putRawXml(getUri(), payload);
+    }).error(function(data) {
+      // TODO implement notification
+      alert('error: ' + data);
+    })
+    return false;
+  });
 });
 
 
