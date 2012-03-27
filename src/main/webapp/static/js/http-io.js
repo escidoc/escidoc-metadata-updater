@@ -201,10 +201,10 @@ jQuery.extend({
 function serializePubmanContextForm(){
   var map={};
   map['genres']= $('input[name="genresList"]:checked');
-  map['subject']=$('input[name="subjectList"]:checked');
+  map['subjects']=$('input[name="subjectList"]:checked');
   map['workflow']=$('input[name="workflow"]:selected');
-  map['validation-schema']=$('input[name="validation-schema"]:selected');
-  map['contact-email']=$('input[name="contact-email"]');
+  map['schema']=$('input[name="validation-schema"]:selected');
+  map['email']=$('input[name="contact-email"]');
   return map;
 }
 
@@ -251,3 +251,17 @@ $(function() {
         return false;
       });
 });
+
+
+//TODO When the user clicks the save button, she should be able to update the pubman context metadata in the escidoc core.
+//TODO 1. read the user input that changes
+//TODO 2. collect them
+//what to collect:
+// 1. Genres 			multiple	
+// 2. Subjects			multiple
+// 3. Workflow			single
+// 4. Validation Schema single
+// 5. Contact Email 	single
+//TODO 3. serialize the values to XML
+//TODO    a. write the xml using JavaScript
+//TODO    b. load a xml template, remove unneccassry element
