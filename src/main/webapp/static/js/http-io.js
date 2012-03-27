@@ -223,14 +223,14 @@ $(function() {
         $(payload).find('allowed-subject-classification').remove();
       }
 
-      var validationSchema = $(payload).find('validation-schema');
-      validationSchema.text(map['schema'].val());
-
-      var workflow= $(payload).find('workflow');
-      workflow.text(map['workflow'].val());
-
-      var contactEmail= $(payload).find('contact-email');
-      contactEmail.text(map['email'].val());
+      $(payload).find('validation-schema').text(map['schema'].val());
+      $(payload).find('workflow').text(map['workflow'].val());
+      
+      if(map['email'].val()){
+	      $(payload).find('contact-email').text(map['email'].val());
+      } else{
+	      $(payload).find('contact-email').remove();
+      }
 
       putRawXml(getUri(), payload);
     }).error(function(data) {

@@ -48,8 +48,8 @@
                         </div>
                         <ul id="genre" class="inputs-list">
                           <li><label><input type="checkbox" name="genresList" checked="checked" value="http://purl.org/eprint/type/Book"/>Book</label></li>
-                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/BookItem" /> BookItem</label></li>
-                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/ConferencePaper"/> Conference Paper</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/BookItem" />BookItem</label></li>
+                          <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/ConferencePaper"/>Conference Paper</label></li>
                           <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/ConferencePoster"/> Conference Poster</label></li>
                           <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/Patent"/> Patent</label></li>
                           <li><label><input type="checkbox" name="genresList" value="http://purl.org/eprint/type/Report"/> Report</label></li>
@@ -95,7 +95,14 @@
                           <input id="unselect-all-subjects" class="btn small" type="button" name="UnCheckAll" value="none"/><br/>
                         </div>
                         <ul id="subject" class="inputs-list">
-                          <li><label><input type="checkbox" name="subjectList" checked="checked" value="http://purl.org/escidoc/metadata/terms/0.1/DDC"/>DDC</label></li>
+                          <li>
+                          <label>
+                              <input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/DDC">
+                                <xsl:attribute name="checked">checked</xsl:attribute>
+                                DDC
+                              </input>
+                            </label>
+                          </li>
                           <li><label><input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/MPIPKS"/>MPIPKS</label></li>
                           <li><label><input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/ISO639-3"/>ISO639-3</label></li>
                           <li><label><input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/JUS"/>JUS</label></li>
