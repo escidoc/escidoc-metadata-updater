@@ -328,6 +328,8 @@
                     <ignore></ignore>
                   </action>
                 </pluginExecution>
+                <!-- Does not work as advertised -->
+                <!--
                 <pluginExecution>
                 	<pluginExecutionFilter>
                 		<groupId>
@@ -361,6 +363,7 @@
                 	</action>
 >>>>>>> b610513... WIP
                 </pluginExecution>
+                -->
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
