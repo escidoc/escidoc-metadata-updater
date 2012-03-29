@@ -329,19 +329,37 @@
                   </action>
                 </pluginExecution>
                 <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId> com.googlecode.maven-java-formatter-plugin
-                    </groupId>
-                    <artifactId> maven-java-formatter-plugin
-                    </artifactId>
-                    <versionRange>[0.3.1,)</versionRange>
-                    <goals>
-                      <goal>format</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
+                	<pluginExecutionFilter>
+                		<groupId>
+                			com.googlecode.maven-java-formatter-plugin
+                		</groupId>
+                		<artifactId>
+                			maven-java-formatter-plugin
+                		</artifactId>
+                		<versionRange>[0.3.1,)</versionRange>
+                		<goals>
+                			<goal>format</goal>
+                		</goals>
+                	</pluginExecutionFilter>
+                	<action>
+                		<ignore></ignore>
+                	</action>
+                </pluginExecution>
+                		<groupId>
+                			com.googlecode.maven-java-formatter-plugin
+                		</groupId>
+                		<artifactId>
+                			maven-java-formatter-plugin
+                		</artifactId>
+                		<versionRange>[0.3.1,)</versionRange>
+                		<goals>
+                			<goal>format</goal>
+                		</goals>
+                	</pluginExecutionFilter>
+                	<action>
+                		<ignore></ignore>
+                	</action>
+>>>>>>> b610513... WIP
                 </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>

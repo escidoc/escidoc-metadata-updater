@@ -72,15 +72,17 @@ import de.escidoc.core.resources.GenericResource;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.om.context.AdminDescriptor;
 
+//FIXME this is a class that collects all static final methods. Some of the methods
+// does not belong here. We need to refactor this class.
 public final class Utils {
 
-    private final static Logger LOG = LoggerFactory.getLogger(Utils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     private Utils() {
         // Utility classes
     }
 
-    public static Element buildSimpleMetadata() throws ParserConfigurationException {
+    public static final Element buildSimpleMetadata() throws ParserConfigurationException {
         final Document doc = createNewDocument();
         final Element dc = doc.createElementNS(AppConstant.DC_URI, "dc");
         final Element titleElement = doc.createElementNS(AppConstant.DC_URI, "title");
@@ -90,11 +92,11 @@ public final class Utils {
         return dc;
     }
 
-    public static Document createNewDocument() throws ParserConfigurationException {
+    public static final Document createNewDocument() throws ParserConfigurationException {
         return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
     }
 
-    public static String asString(final MetadataRecord metadata) {
+    public static final String asString(final MetadataRecord metadata) {
         final Element node = metadata.getContent();
         try {
             final Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -111,14 +113,14 @@ public final class Utils {
         }
     }
 
-    public static String loginToEscidoc(final String escidocUri, final String[] creds) throws AuthenticationException,
-        TransportException, MalformedURLException {
+    public static final String loginToEscidoc(final String escidocUri, final String[] creds)
+        throws AuthenticationException, TransportException, MalformedURLException {
         Preconditions.checkNotNull(escidocUri, "escidocUri is null: %s", escidocUri);
         Preconditions.checkArgument(creds.length > 0);
         return new Authentication(new URL(escidocUri), getUserName(creds), getPassword(creds)).getHandle();
     }
 
-    private static String getPassword(final String[] creds) {
+    private static final String getPassword(final String[] creds) {
         final String decoded = decodeHandle(creds[1]);
         final String[] arrays = decoded.split(":");
         if (arrays.length == 1) {
@@ -127,23 +129,23 @@ public final class Utils {
         return arrays[1];
     }
 
-    private static String getUserName(final String[] creds) {
+    private static final String getUserName(final String[] creds) {
         return decodeHandle(creds[1]).split(":")[0];
     }
 
-    private static boolean notEmpty(final String[] creds) {
+    private static final boolean notEmpty(final String[] creds) {
         return decodeHandle(creds[1]).split(":").length > 0;
     }
 
-    private static boolean useHttpBasicAuth(final String[] creds) {
+    private static final boolean useHttpBasicAuth(final String[] creds) {
         return creds[0].contains(AppConstant.BASIC);
     }
 
-    private static boolean has(final String encodedHandle) {
+    private static final boolean has(final String encodedHandle) {
         return encodedHandle != null;
     }
 
-    public static String computeDigest(final byte[] content) {
+    public static final String computeDigest(final byte[] content) {
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA");
             final byte[] digest = md.digest(content);
@@ -154,11 +156,11 @@ public final class Utils {
         }
     }
 
-    private static InputStream readXsl(final String xsltFile) {
+    private static final InputStream readXsl(final String xsltFile) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(xsltFile);
     }
 
-    public static Response response401() {
+    public static final Response response401() {
         // @formatter:off
         return Response
             .status(Status.UNAUTHORIZED)
@@ -170,14 +172,14 @@ public final class Utils {
         // @formatter:on
     }
 
-    private static String decodeHandle(final String handle) {
+    private static final String decodeHandle(final String handle) {
         if (has(handle)) {
             return Base64.base64Decode(handle);
         }
         return "";
     }
 
-    public static void checkPreconditions(
+    public static final void checkPreconditions(
         final String id, final String metadataName, final String escidocUri, final HttpServletRequest request) {
         Preconditions.checkNotNull(id, "id is null: %s", id);
         Preconditions.checkNotNull(metadataName, "m is null: %s", metadataName);
@@ -185,29 +187,30 @@ public final class Utils {
         checkQueryParameter(escidocUri);
     }
 
-    public static void checkQueryParameter(final String escidocUri) {
+    public static final void checkQueryParameter(final String escidocUri) {
         if (escidocUri == null || escidocUri.isEmpty()) {
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
     }
 
-    public static EntityTag getEntityTag(final String mr) {
+    public static final EntityTag getEntityTag(final String mr) {
         return new EntityTag(computeDigest(mr.getBytes()));
     }
 
-    public static EntityTag getEntityTag(final MetadataRecord mr) {
+    public static final EntityTag getEntityTag(final MetadataRecord mr) {
         return getEntityTag(mr.toString());
     }
 
-    public static EntityTag getEntityTag(final AdminDescriptor mr) {
+    public static final EntityTag getEntityTag(final AdminDescriptor mr) {
         return getEntityTag(mr.toString());
     }
 
-    public static Date getLastModificationDate(final GenericResource r) {
+    public static final Date getLastModificationDate(final GenericResource r) {
         return r.getLastModificationDate().toDate();
     }
 
-    public static String getHandleIfAny(final HttpServletRequest sr, final String escidocUri, final String encodedHandle)
+    public static final String getHandleIfAny(
+        final HttpServletRequest sr, final String escidocUri, final String encodedHandle)
         throws AuthenticationException, TransportException, MalformedURLException {
         if (has(encodedHandle)) {
             return decodeHandle(encodedHandle);
@@ -221,18 +224,17 @@ public final class Utils {
         return "";
     }
 
-    public static boolean hasAuthHeader(final HttpServletRequest sr) {
+    public static final boolean hasAuthHeader(final HttpServletRequest sr) {
         return sr.getHeader(AppConstant.AUTHORIZATION) != null;
     }
 
-    public static void transformXml(final MetadataRecord mr, final String xsltFile, final StringWriter writer) {
+    public static final void transformXml(final MetadataRecord mr, final String xsltFile, final StringWriter writer) {
         try {
+<<<<<<< HEAD
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             dbf.setValidating(false);
             final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-
-            DEBUG(xsltFile);
 
             final InputStream stream = Utils.readXsl(xsltFile);
             Document xsltDoc = docBuilder.parse(stream);
@@ -241,6 +243,11 @@ public final class Utils {
             LOG.debug("transform class is: " + transformer.getClass().getCanonicalName());
 
             transformer.transform(new DOMSource(mr.getContent()), new StreamResult(writer));
+=======
+            TransformerFactory
+                .newInstance().newTransformer(new StreamSource(Utils.readXsl(xsltFile)))
+                .transform(new DOMSource(mr.getContent()), new StreamResult(writer));
+>>>>>>> 1212e34... start writing xsl for pubman organization
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -262,13 +269,13 @@ public final class Utils {
         }
     }
 
-    private static void DEBUG(final String xsltFile) throws IOException {
+    private static final void printToLogger(final String xsltFile) throws IOException {
         LOG.debug("Loading XSLT file: " + xsltFile);
         final String value = readAsString(xsltFile);
         LOG.debug("as Stream is: " + value);
     }
 
-    private static String readAsString(final String xsltFile) throws IOException {
+    private static final String readAsString(final String xsltFile) throws IOException {
         final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(xsltFile);
         final char[] buffer = new char[0x10000];
         final StringBuilder out = new StringBuilder();
@@ -286,7 +293,7 @@ public final class Utils {
 
     }
 
-    public static void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter s) {
+    public static final void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter s) {
         try {
             TransformerFactory
                 .newInstance().newTransformer(new StreamSource(Utils.readXsl(xsltFile)))
@@ -303,15 +310,20 @@ public final class Utils {
         }
     }
 
-    public static void buildRawXmlEditor(final MetadataRecord md, final StringWriter writer) {
+    public static final void buildRawXmlEditor(final MetadataRecord md, final StringWriter writer) {
         transformXml(md, AppConstant.XML_TO_RAW_EDITOR_XSLT, writer);
     }
 
-    public static void buildRawXmlEditor(final AdminDescriptor md, final StringWriter writer) {
+    public static final void buildRawXmlEditor(final AdminDescriptor md, final StringWriter writer) {
         transformXml(md, AppConstant.XML_TO_RAW_EDITOR_XSLT, writer);
     }
 
-    public static void buildPubmanOrganizationEditor(final MetadataRecord md, final StringWriter writer) {
+    public static final void buildPubmanOrganizationEditor(final MetadataRecord md, final StringWriter writer) {
         transformXml(md, AppConstant.XML_TO_PUBMAN_ORGANIZATION_EDITOR_XSLT, writer);
+    }
+
+    public static final void buildPubmanContextMetadataEditor(final AdminDescriptor metadata, final StringWriter writer) {
+        // FIXME replace with the real xslt
+        transformXml(metadata, AppConstant.XML_TO_RAW_EDITOR_XSLT, writer);
     }
 }

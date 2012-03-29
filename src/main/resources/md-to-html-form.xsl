@@ -39,7 +39,12 @@
      </div>
      <footer></footer>
     </div><!--/container -->
+<<<<<<< HEAD
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+=======
+    <script type="text/javascript"
+     src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+>>>>>>> 8b345e9... generate better doctype
     <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
    </body>
   </html>
@@ -57,4 +62,8 @@
    </div>
   </div> <!--/clearfix -->
  </xsl:template>
+<<<<<<< HEAD
 </xsl:stylesheet>
+=======
+</xsl:stylesheet>
+>>>>>>> 8b345e9... generate better doctype

@@ -21,3 +21,4 @@ script/*
 pom.xml.versionsBackup
 /.checkstyle
 *.swp
+.buildpath

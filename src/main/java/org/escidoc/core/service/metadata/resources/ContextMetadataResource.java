@@ -216,11 +216,16 @@ public class ContextMetadataResource {
                 return b.build();
             }
 
-            final StringWriter s = new StringWriter();
-            Utils.buildRawXmlEditor(metadata, s);
+            final StringWriter writer = new StringWriter();
+            if (isPubmandProfileFound(metadata.getContent())) {
+                Utils.buildPubmanContextMetadataEditor(metadata, writer);
+            }
+            else {
+                Utils.buildRawXmlEditor(metadata, writer);
+            }
 
             // @formatter:off
-            return Response.ok(s.toString(), MediaType.TEXT_HTML)
+            return Response.ok(writer.toString(), MediaType.TEXT_HTML)
             //         .lastModified(getLastModificationDate(org))
             .tag(getEntityTag(metadata)).build();
             //@formatter:on
@@ -240,6 +245,11 @@ public class ContextMetadataResource {
                 + ", reason: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // FIXME get the root, isEquals pubman-admin-descriptor?
+    private static boolean isPubmandProfileFound(final Element content) {
+        return true;
     }
 
     private static void debugPut(final String id, final String metadataName, final String escidocUri) {
