@@ -190,7 +190,6 @@
                       <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                       <button class="btn" type="reset">Cancel</button>
                     </div><!-- end actions -->
-
                   </fieldset>
                 </form>
               </div>

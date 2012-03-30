@@ -63,7 +63,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import de.escidoc.core.client.Authentication;
 import de.escidoc.core.client.exceptions.TransportException;
@@ -236,7 +235,7 @@ public final class Utils {
             final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
             final InputStream stream = Utils.readXsl(xsltFile);
-            Document xsltDoc = docBuilder.parse(stream);
+            final Document xsltDoc = docBuilder.parse(stream);
 
             final Transformer transformer = TransformerFactory.newInstance().newTransformer(new DOMSource(xsltDoc));
             LOG.debug("transform class is: " + transformer.getClass().getCanonicalName());
@@ -258,11 +257,12 @@ public final class Utils {
         catch (final ParserConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
-        catch (SAXException e) {
+        catch (final SAXException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @SuppressWarnings("unused")
     private static final void printToLogger(final String xsltFile) throws IOException {
         LOG.debug("Loading XSLT file: " + xsltFile);
         final String value = readAsString(xsltFile);
@@ -287,11 +287,20 @@ public final class Utils {
 
     }
 
-    public static final void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter s) {
+    public static final void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter writer) {
         try {
-            TransformerFactory
-                .newInstance().newTransformer(new StreamSource(Utils.readXsl(xsltFile)))
-                .transform(new DOMSource(mr.getContent()), new StreamResult(s));
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setValidating(false);
+            final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+
+            final InputStream stream = Utils.readXsl(xsltFile);
+            final Document xsltDoc = docBuilder.parse(stream);
+
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer(new DOMSource(xsltDoc));
+            LOG.debug("transform class is: " + transformer.getClass().getCanonicalName());
+
+            transformer.transform(new DOMSource(mr.getContent()), new StreamResult(writer));
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -300,6 +309,15 @@ public final class Utils {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         catch (final TransformerFactoryConfigurationError e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final ParserConfigurationException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final SAXException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
