@@ -169,14 +169,10 @@ public class ItemMetadataResource {
             Utils.buildRawXmlEditor(mr, writer);
 
             // @formatter:off
-<<<<<<< HEAD
-            return Response.ok(writer.toString(), MediaType.TEXT_HTML).lastModified(getLastModificationDate(item)).tag(
-                getEntityTag(mr)).build();
-=======
-            return Response.ok(writer.toString(), MediaType.TEXT_HTML)
-            //          .lastModified(getLastModificationDate(item))
-            .tag(getEntityTag(mr)).build();
->>>>>>> 1212e34... start writing xsl for pubman organization
+            return Response
+                .ok(writer.toString(), MediaType.TEXT_HTML)
+                .lastModified(getLastModificationDate(item))
+                .tag(getEntityTag(mr)).build();
             //@formatter:on
         }
         catch (final AuthenticationException e) {

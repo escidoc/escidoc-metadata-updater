@@ -34,12 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -52,7 +48,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -230,24 +225,9 @@ public final class Utils {
 
     public static final void transformXml(final MetadataRecord mr, final String xsltFile, final StringWriter writer) {
         try {
-<<<<<<< HEAD
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            dbf.setValidating(false);
-            final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-
-            final InputStream stream = Utils.readXsl(xsltFile);
-            Document xsltDoc = docBuilder.parse(stream);
-
-            final Transformer transformer = TransformerFactory.newInstance().newTransformer(new DOMSource(xsltDoc));
-            LOG.debug("transform class is: " + transformer.getClass().getCanonicalName());
-
-            transformer.transform(new DOMSource(mr.getContent()), new StreamResult(writer));
-=======
             TransformerFactory
                 .newInstance().newTransformer(new StreamSource(Utils.readXsl(xsltFile)))
                 .transform(new DOMSource(mr.getContent()), new StreamResult(writer));
->>>>>>> 1212e34... start writing xsl for pubman organization
         }
         catch (final TransformerConfigurationException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
@@ -258,39 +238,6 @@ public final class Utils {
         catch (final TransformerFactoryConfigurationError e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
-        catch (final IOException e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-        catch (final ParserConfigurationException e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-        catch (SAXException e) {
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    private static final void printToLogger(final String xsltFile) throws IOException {
-        LOG.debug("Loading XSLT file: " + xsltFile);
-        final String value = readAsString(xsltFile);
-        LOG.debug("as Stream is: " + value);
-    }
-
-    private static final String readAsString(final String xsltFile) throws IOException {
-        final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(xsltFile);
-        final char[] buffer = new char[0x10000];
-        final StringBuilder out = new StringBuilder();
-        final Reader in = new InputStreamReader(is, "UTF-8");
-        int read;
-        do {
-            read = in.read(buffer, 0, buffer.length);
-            if (read > 0) {
-                out.append(buffer, 0, read);
-            }
-        }
-        while (read >= 0);
-        final String result = out.toString();
-        return result;
-
     }
 
     public static final void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter s) {
