@@ -86,7 +86,10 @@ $(function() {
       var genreSize= selectedGenres.length;
       if(genreSize) {
         $.each(selectedGenres, function(index, genre){
-          $(payload).find('allowed-genres').append($('<allowed-genre>').text(genre.value)); 
+          $(payload)
+          .find('allowed-genres')
+          .append($('<allowed-genre>')
+          .text(genre.value)); 
         });
       } else{
         $(payload).find('allowed-genres').remove();
@@ -97,10 +100,13 @@ $(function() {
       var selectedSubjects=map['subjects']; 
       if(selectedSubjects.length) {
         $.each(selectedSubjects, function(index, subject){
-          $(payload).find('allowed-subject-classifications').append($('<allowed-subject-classification>').text(subject.value)); 
+          $(payload)
+            .find('allowed-subject-classifications')
+            .append($('<allowed-subject-classification>')
+            .text(subject.value)); 
         });
       } else{
-        $(payload).find('allowed-subject-classification').remove();
+        $(payload).find('allowed-subject-classifications').remove();
       }
 
       $(payload).find('validation-schema').text(map['schema'].val());
