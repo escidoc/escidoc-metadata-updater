@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output encoding="utf-8" indent="yes" method="html" />
-  <xsl:template match="/pubman-admin-descriptor">
+  <xsl:template match="pubman-admin-descriptor">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
     <html>
       <head>
