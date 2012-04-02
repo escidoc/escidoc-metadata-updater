@@ -88,7 +88,7 @@ $(function() {
         $.each(selectedGenres, function(index, genre){
           $(payload)
           .find('allowed-genres')
-          .append($('<allowed-genre>')
+          .append($('<allowed-genre />')
           .text(genre.value)); 
         });
       } else{
