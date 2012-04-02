@@ -50,4 +50,6 @@ public class AppConstant {
 
     public static final String XML_TO_PUBMAN_CONTEXT_MD_EDITOR_XSLT = "md-to-pubman-context-md-editor.xsl";
 
+    public static final String PUBMAN_ADMIN_DESCRIPTOR = "pubman-admin-descriptor";
+
 }

@@ -249,7 +249,7 @@ public class ContextMetadataResource {
 
     // FIXME get the root, isEquals pubman-admin-descriptor?
     private static boolean isPubmandProfileFound(final Element content) {
-        return true;
+        return content.getNodeName().equals(AppConstant.PUBMAN_ADMIN_DESCRIPTOR);
     }
 
     private static void debugPut(final String id, final String metadataName, final String escidocUri) {
