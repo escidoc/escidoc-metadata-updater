@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:output encoding="utf-8" indent="yes" method="html" />
+  
+  <xsl:output encoding="UTF-8" indent="yes" method="html" />
+  
   <xsl:template match="pubman-admin-descriptor">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
     <html>
@@ -15,13 +17,10 @@
           href="/rest/static/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css"
           href="/rest/static/css/override-bootstrap.css" />
-        <style rel="stylesheet" type="text/css"> .alert { padding: 8px 35px
-          8px 14px; margin-bottom: 18px; text-shadow: 0 1px 0 rgba(255,
-          255, 255, 0.5); background-color: #FCF8E3; border: 1px solid
-          #FBEED5; -webkit-border-radius: 4px; -moz-border-radius: 4px;
-          border-radius: 4px; color: #C09853; }
-        </style>
+        <link rel="stylesheet" type="text/css"
+          href="/rest/static/css/alert.css" />
       </head>
+      
       <body>
         <div class="container">
           <div class="alert fade in">
@@ -114,65 +113,14 @@
                     <div class="clearfix">
                       <label>Workflow</label>
                       <div class="input">
-                        <xsl:template match="workflow">
-                          <select id="workflow" name="workflow">
-                            <option value="standard">
-                              <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
-                              Standard
-                            </option>
-                            <option value="simple">
-                              <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
-                              Simple
-                            </option>
-                          </select>
-                        </xsl:template>
+                        <xsl:apply-templates select="workflow"/>
                       </div>
                     </div><!-- end clearfix -->
 
                     <div class="clearfix">
                       <label>Validation Schema</label>
                       <div class="input">
-                        <xsl:template match="validation-schema">
-                          <select id="validation-schema" name="validation-schema">
-                            <option value="publication">
-                              <xsl:if test="validation-schema = 'publication'">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                              </xsl:if>
-                              Publication
-                            </option>
-                            <option value="greymaterial">
-                              <xsl:if test="validation-schema = 'greymaterial'">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                              </xsl:if>
-                              Grey Material
-                            </option>
-                            <option value="jus">
-                              <xsl:if test="validation-schema = 'jus'">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                              </xsl:if>
-                              JUS
-                            </option>
-                            <option value="externalgreymaterial">
-                              <xsl:if test="validation-schema = 'externalgreymaterial'">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                              </xsl:if>
-                              External Grey Material
-                            </option>
-                            <option value="simple">
-                              <xsl:if test="validation-schema = 'simple'">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                              </xsl:if>
-                              Simple
-                            </option>
-                            <option value="yearbook">
-                              <xsl:if test="validation-schema = 'yearbook'">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                              </xsl:if>
-                              Year Book
-                            </option>
-                          </select>
-
-                        </xsl:template>
+                        <xsl:apply-templates select="validation-schema"/>
                       </div>
                     </div><!-- end clearfix -->
 
@@ -204,4 +152,59 @@
       </body>
     </html>
   </xsl:template>
+  
+  <xsl:template match="workflow">
+    <select id="workflow" name="workflow">
+      <option value="standard">
+        <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
+        Standard
+      </option>
+      <option value="simple">
+        <xsl:attribute name="selected"><xsl:value-of select="workflow"/></xsl:attribute>
+        Simple
+      </option>
+    </select>
+  </xsl:template>
+
+  <xsl:template match="validation-schema">
+    <select id="validation-schema" name="validation-schema">
+      <option value="publication">
+        <xsl:if test="validation-schema = 'publication'">
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
+        Publication
+      </option>
+      <option value="greymaterial">
+        <xsl:if test="validation-schema = 'greymaterial'">
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
+        Grey Material
+      </option>
+      <option value="jus">
+        <xsl:if test="validation-schema = 'jus'">
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
+        JUS
+      </option>
+      <option value="externalgreymaterial">
+        <xsl:if test="validation-schema = 'externalgreymaterial'">
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
+        External Grey Material
+      </option>
+      <option value="simple">
+        <xsl:if test="validation-schema = 'simple'">
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
+        Simple
+      </option>
+      <option value="yearbook">
+        <xsl:if test="validation-schema = 'yearbook'">
+          <xsl:attribute name="selected">selected</xsl:attribute>
+        </xsl:if>
+        Year Book
+      </option>
+    </select>
+  </xsl:template>
+                  
 </xsl:stylesheet>

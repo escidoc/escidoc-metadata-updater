@@ -303,21 +303,27 @@ public final class Utils {
             transformer.transform(new DOMSource(mr.getContent()), new StreamResult(writer));
         }
         catch (final TransformerConfigurationException e) {
+            LOG.error("An error occurs while transforming the XML to HTML. Message: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         catch (final TransformerException e) {
+            LOG.error("An error occurs while transforming the XML to HTML. Message: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         catch (final TransformerFactoryConfigurationError e) {
+            LOG.error("An error occurs while transforming the XML to HTML. Message: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         catch (final IOException e) {
+            LOG.error("An error occurs while transforming the XML to HTML. Message: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         catch (final ParserConfigurationException e) {
+            LOG.error("An error occurs while transforming the XML to HTML. Message: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         catch (final SAXException e) {
+            LOG.error("An error occurs while transforming the XML to HTML. Message: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
