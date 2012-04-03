@@ -5,22 +5,22 @@ $(function() {
   $('#pubman-organization-metadata-editor')
       .submit(function(e) {
         e.preventDefault();
-    
+
         // read user input from the form
         var map = $.serializeForm();
-    
+
         // build PubMan Metadata XML
         $.get('/rest/pubman-organization-metadata-template.xml')
             .success(
               function(template) {
-            	  
+
               var payload = template;
-              
+
               for (var key in map) {
                 var xmlTagName = $(payload).find(key);
                 $(payload).find(key).text(map[key]);
               }
-        
+
               putRawXml(getUri(), payload);
             })
             .error(function(data) {
@@ -76,55 +76,52 @@ $(function() {
     e.preventDefault();
 
     var map = serializePubmanContextForm();
-    $.get('/rest/pubman-context-metadata-template.xml').success(
-      function(template) {
-      //TODO create the ROOT node XML.
 
-      var payload = template;
+    // create an XML Document
+    var $root = $('<XMLDocument/>');
+    $root
+      .append($('<pubman-admin-descriptor />'));
 
-      // when the user does not select any genres, remove the element the node '<allowed-genres/>'
-      // other wise, add the selected genres as: <allowed-genre>$(value)</allowed-genre>
-      var selectedGenres=map['genres']; 
-      var genreSize= selectedGenres.length;
-      if(genreSize) {
-        $.each(selectedGenres, function(index, genre){
-          $(payload)
-          .find('allowed-genres')
-          .append($('<allowed-genre />'))
-          .text(genre.value); 
-        });
-      } else{
-        $(payload).find('allowed-genres').remove();
-      }
+    // when the user does not select any genres, remove the element the node '<allowed-genres/>'
+    // other wise, add the selected genres as: <allowed-genre>$(value)</allowed-genre>
+    //FIXME refactor to function
+    var selectedGenres=map['genres'];
+    var genreSize= selectedGenres.length;
+    if(genreSize) {
+      $root.find('pubman-admin-descriptor')
+        .append($('<allowed-genres />'));
+      $.each(selectedGenres, function(index, genre){
+      $root.find('allowed-genres')
+        .append($('<allowed-genre />').text(genre.value));
+      });
+    } 
 
+    //FIXME refactor to function
+    var selectedSubjects=map['subjects'];
+    if(selectedSubjects.length) {
+      $root.find('pubman-admin-descriptor')
+        .append($('<allowed-subject-classifications />'));
+      $.each(selectedSubjects, function(index, subject){
+        $root.find('allowed-subject-classifications')
+          .append($('<allowed-subject-classsification />').text(subject.value));
+      });
+    } 
 
-      //FIXME refactor to function
-      var selectedSubjects=map['subjects']; 
-      if(selectedSubjects.length) {
-        $.each(selectedSubjects, function(index, subject){
-          $(payload)
-            .find('allowed-subject-classifications')
-            .append($('<allowed-subject-classification>')
-            .text(subject.value)); 
-        });
-      } else{
-        $(payload).find('allowed-subject-classifications').remove();
-      }
+    //FIXME refactor to function
+    $root.find('pubman-admin-descriptor')
+      .append($('<validation-schema />').text(map['schema'].val()));
 
-      $(payload).find('validation-schema').text(map['schema'].val());
-      $(payload).find('workflow').text(map['workflow'].val());
-      
-      if(map['email'].val()){
-	      $(payload).find('contact-email').text(map['email'].val());
-      } else{
-	      $(payload).find('contact-email').remove();
-      }
+    //FIXME refactor to function
+    $root.find('pubman-admin-descriptor')
+      .append($('<workflow />').text(map['workflow'].val()));
 
-      putRawXml(getUri(), payload);
-    }).error(function(data) {
-      // TODO implement notification
-      alert('error: ' + data);
-    })
+    //FIXME refactor to function
+    if(map['email'].val()){
+      $root.find('pubman-admin-descriptor')
+        .append($('<contact-email />').text(map['email'].val()));
+    } 
+
+    putRawXml(getUri(), $root.html());
     return false;
   });
 });

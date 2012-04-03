@@ -43,13 +43,10 @@
                             type="button" name="UnCheckAll" value="none" />
                           <br />
                         </div>
-
                         <ul id="genre" class="inputs-list">
                           <xsl:apply-templates select="allowed-genres" />
                         </ul>
-
                       </div>
-
                     </div>
                     <div class="clearfix">
                       <label>Allowed Subject Classification</label>
@@ -62,7 +59,7 @@
                           <br />
                         </div>
                         <ul id="subject" class="inputs-list">
-                          <xsl:apply-templates select="allowed-subject-classifications"/>
+                          <xsl:apply-templates select="allowed-subject-classifications" />
                         </ul>
                       </div>
                     </div><!-- end clearfix -->
@@ -108,7 +105,6 @@
       </body>
     </html>
   </xsl:template>
-
 
   <xsl:template match="allowed-genres">
     <li>
