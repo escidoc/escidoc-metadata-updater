@@ -78,6 +78,8 @@ $(function() {
     var map = serializePubmanContextForm();
     $.get('/rest/pubman-context-metadata-template.xml').success(
       function(template) {
+      //TODO create the ROOT node XML.
+
       var payload = template;
 
       // when the user does not select any genres, remove the element the node '<allowed-genres/>'
@@ -88,8 +90,8 @@ $(function() {
         $.each(selectedGenres, function(index, genre){
           $(payload)
           .find('allowed-genres')
-          .append($('<allowed-genre />')
-          .text(genre.value)); 
+          .append($('<allowed-genre />'))
+          .text(genre.value); 
         });
       } else{
         $(payload).find('allowed-genres').remove();
