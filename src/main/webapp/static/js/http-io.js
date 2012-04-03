@@ -1,4 +1,5 @@
 "use strict";
+//TODO general todo: introduce nama spacing and object-oriented JavaScript
 
 // PubMan Organization Metadata/Admin Descriptor
 $(function() {
@@ -31,29 +32,20 @@ $(function() {
   });
 });
 
-// TODO rewrite with jQuery
 function putRawXml(uri, xml) {
-  var xhr2 = new XMLHttpRequest();
-  xhr2.open('PUT', uri, false);
-  xhr2.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
-  xhr2.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
-
-  xhr2.onreadystatechange = function(event) {
-    if (xhr2.readyState === 4) {
-      if (xhr2.status === 200) {
-        var r = xhr2.responseXML;
+    $.ajax({
+        type: "PUT",
+        dataType: "application/xml",
+        contentType: "application/xml",
+        url: uri,
+        data: xml 
+    })
+    .success(function(msg){
         alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
-      } else if (xhr2.status === 303) {
-        alert('redirect');
-      } else if (xhr2.status === 0) {
-        alert('zero...');
-      } else {
-        alert("status: ", xhr2.statusText);
-        $(".alert").alert();
-      }
-    }
-  };
-  xhr2.send(xml);
+    })
+    .error(function(msg){
+        alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
+    });
 }
 
 jQuery.extend({
@@ -152,6 +144,7 @@ function getUri() {
 
 
 // Generic Metadata Editor as flat key:value pairs.
+// TODO rewrite with jQuery Ajax
 function send() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', getUri(), false);
@@ -193,26 +186,5 @@ function send() {
 }
 
 function put(xml) {
-  var xhr2 = new XMLHttpRequest();
-  xhr2.open('PUT', getUri(), false);
-  xhr2.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
-  xhr2.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
-
-  xhr2.onreadystatechange = function(event) {
-    if (xhr2.readyState === 4) {
-      if (xhr2.status === 200) {
-        var r = xhr2.responseXML;
-        alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
-      } else if (xhr2.status === 303) {
-        alert('redirect');
-      } else if (xhr2.status === 0) {
-        alert('zero...');
-      } else {
-        console.log("status: ", xhr2.statusText);
-        alert('Snap, something went wrong: ' + xhr2.status + ', reason: '
-              + xhr2.responseText);
-      }
-    }
-  };
-  xhr2.send(xml);
+  putRawXml(getUri(),xml);
 }
