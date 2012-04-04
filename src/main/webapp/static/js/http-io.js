@@ -21,7 +21,7 @@ $(function() {
                         $(payload).find(key).text(val);
                   })
                   
-                  putRawXml(getUri(), (new XMLSerializer()).serializeToString(payload));
+                  putRawXml(getUri(), toString(payload));
             })
             .error(function(data) {
               // TODO implement notification
@@ -30,6 +30,15 @@ $(function() {
         return false;
   });
 });
+
+function toString(xmlDocument) {
+    if (typeof XMLSerializer != "undefined" && !($.browser.msie && parseInt($.browser.version) == 9)) {
+         return (new XMLSerializer()).serializeToString(xmlDocument);
+    }
+    else {
+        return xmlDocument.xml;
+    }
+}
 
 function putRawXml(uri, xml) {
     $.ajax({
