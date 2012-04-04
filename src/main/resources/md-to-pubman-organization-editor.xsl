@@ -167,7 +167,7 @@
           </div><!-- end content -->
         </div><!--end container -->
         <script type="text/javascript"
-          src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+          src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
         <script type="text/javascript" src="/rest/static/js/app.js"></script>
         <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
         <script type="text/javascript" src="/rest/static/js/bootstrap-alert.js"></script>

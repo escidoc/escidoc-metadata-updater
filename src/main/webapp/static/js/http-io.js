@@ -14,15 +14,14 @@ $(function() {
         $.get('/rest/pubman-organization-metadata-template.xml')
             .success(
               function(template) {
-
-              var payload = template;
-
-              for (var key in map) {
-                var xmlTagName = $(payload).find(key);
-                $(payload).find(key).text(map[key]);
-              }
-
-              putRawXml(getUri(), payload);
+                  var payload = template;
+    
+                  for (var key in map) {
+                    $(payload).find(key).text(map[key]);
+                  }
+    
+                  alert("debug: "+payload);
+                  putRawXml(getUri(), payload);
             })
             .error(function(data) {
               // TODO implement notification
@@ -41,10 +40,10 @@ function putRawXml(uri, xml) {
         data: xml 
     })
     .success(function(msg){
-        alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
+        alert('The response was: ' +msg.status + ', ' + msg.responseText);
     })
     .error(function(msg){
-        alert('The response was: ' + xhr2.status + ', ' + xhr2.responseText);
+        alert('The response was: ' + msg.status + ', ' + msg.responseText);
     });
 }
 
@@ -140,49 +139,6 @@ function sendRawXml() {
 // TODO rewrite with jQuery
 function getUri() {
   return window.location.href;
-}
-
-
-// Generic Metadata Editor as flat key:value pairs.
-// TODO rewrite with jQuery Ajax
-function send() {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', getUri(), false);
-  xhr.setRequestHeader('Accept', 'application/xml;charset=UTF-8');
-  xhr.setRequestHeader('Content-Type', 'application/xml;charset=UTF-8');
-
-  xhr.onreadystatechange = function(event) {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        var r = xhr.responseText;
-        var rXml = xhr.responseXML;
-        var list = document.getElementsByTagName('input');
-
-        Array.prototype.forEach.call(list, function(li, index, nodeList) {
-          if (li.type !== 'button') {
-            if (li.defaultValue !== li.value) {
-              if (li.name != null) {
-                console.log("li: " + li.name);
-                if (rXml != null) {
-                  var found = rXml.getElementsByTagName(li.name);
-                  if (found != null && found.length > 0) {
-                    var input = found[0];
-                    input.textContent = li.value;
-                  }
-                }
-              }
-            }
-          }
-        });
-        put(rXml);
-      } else {
-        console.log("status: ", xhr2.statusText);
-      }
-    }
-  };
-  xhr.send(null);
-
-  return false;
 }
 
 function put(xml) {
