@@ -16,12 +16,12 @@ $(function() {
               function(template) {
                   var payload = template;
     
-                  for (var key in map) {
-                    $(payload).find(key).text(map[key]);
-                  }
-    
-                  alert("debug: "+payload);
-                  putRawXml(getUri(), payload);
+                  // write user input to the xml
+                  $.each(map, function(key, val){
+                        $(payload).find(key).text(val);
+                  })
+                  
+                  putRawXml(getUri(), (new XMLSerializer()).serializeToString(payload));
             })
             .error(function(data) {
               // TODO implement notification
@@ -40,7 +40,7 @@ function putRawXml(uri, xml) {
         data: xml 
     })
     .success(function(msg){
-        alert('The response was: ' +msg.status + ', ' + msg.responseText);
+        alert('The response was: ' + msg.status + ', ' + msg.responseText);
     })
     .error(function(msg){
         alert('The response was: ' + msg.status + ', ' + msg.responseText);
@@ -82,8 +82,8 @@ $(function() {
       $root.find('pubman-admin-descriptor')
         .append($('<allowed-genres />'));
       $.each(selectedGenres, function(index, genre){
-      $root.find('allowed-genres')
-        .append($('<allowed-genre />').text(genre.value));
+          $root.find('allowed-genres')
+            .append($('<allowed-genre />').text(genre.value));
       });
     } 
 
