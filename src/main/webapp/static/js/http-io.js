@@ -87,9 +87,10 @@ $(function() {
     //FIXME refactor to function
     var selectedGenres=map['genres'];
     var genreSize= selectedGenres.length;
+    $root.find('pubman-admin-descriptor')
+      .append($('<allowed-genres />'));
+    
     if(genreSize) {
-      $root.find('pubman-admin-descriptor')
-        .append($('<allowed-genres />'));
       $.each(selectedGenres, function(index, genre){
           $root.find('allowed-genres')
             .append($('<allowed-genre />').text(genre.value));
@@ -97,10 +98,11 @@ $(function() {
     } 
 
     //FIXME refactor to function
+    $root.find('pubman-admin-descriptor')
+      .append($('<allowed-subject-classifications />'));
+    
     var selectedSubjects=map['subjects'];
     if(selectedSubjects.length) {
-      $root.find('pubman-admin-descriptor')
-        .append($('<allowed-subject-classifications />'));
       $.each(selectedSubjects, function(index, subject){
         $root.find('allowed-subject-classifications')
           .append($('<allowed-subject-classsification />').text(subject.value));
