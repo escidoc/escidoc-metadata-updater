@@ -40,33 +40,6 @@ function toString(xmlDocument) {
     }
 }
 
-/*
-function putRawXml(uri, xml) {
-    $.ajax({
-        type: "PUT",
-        dataType: "application/xml",
-        contentType: "application/xml",
-        url: uri,
-        data: xml 
-    })
-    .done(function(msg){
-    	console.log('success: '+msg);
-    	 $("#success-message").fadeIn("slow");
-    	    $("#success-message a.close-notify").click(function() {
-    	        $("#success-message").fadeOut("slow");
-    	        return false;
-    	    });
-    })
-    .fail(function(msg){
-    	console.log('fail: '+msg);
-    	 $("#fail-message").fadeIn("slow");
-    	    $("#fail-message a.close-notify").click(function() {
-    	        $("#fail-message").fadeOut("slow");
-    	        return false;
-    	    });
-    });
-}
-*/
 	
 function putRawXml(uri, xml) {
 	var request = $.ajax({
@@ -77,13 +50,13 @@ function putRawXml(uri, xml) {
      })
     .done(function(msg) {   
         $("#success-message").fadeIn("slow");
-	        $("#success-message a.close-notify").click(function() {
+        $("#success-message a.close-notify").click(function() {
 	        $("#success-message").fadeOut("slow");
 	    });
     })
     .fail(function(request, error) {
-    	 $("#fail-message").fadeIn("slow");
-    	    $("#fail-message a.close-notify").click(function() {
+    	$("#fail-message").fadeIn("slow");
+	    $("#fail-message a.close-notify").click(function() {
             $("#fail-message").fadeOut("slow");
         });
     })
