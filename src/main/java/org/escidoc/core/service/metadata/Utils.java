@@ -344,7 +344,7 @@ public final class Utils {
         transformXml(metadata, AppConstant.XML_TO_PUBMAN_CONTEXT_MD_EDITOR_XSLT, writer);
     }
 
-    public static String foo(final MetadataRecord metadata) {
+    public static String transformToHtml(final MetadataRecord metadata) {
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);

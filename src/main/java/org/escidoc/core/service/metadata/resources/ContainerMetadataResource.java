@@ -207,7 +207,7 @@ public class ContainerMetadataResource {
             // final StringWriter writer = new StringWriter();
 
             // Utils.buildRawXmlEditor(metadata, writer);
-            final String result = Utils.foo(metadata);
+            final String result = Utils.transformToHtml(metadata);
 
             final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(result));
             if (b != null) {
