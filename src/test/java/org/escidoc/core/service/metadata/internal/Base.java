@@ -37,6 +37,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.escidoc.core.service.metadata.servlet.AppServletConfig;
+import org.junit.After;
 import org.junit.Before;
 
 public class Base {
@@ -79,5 +80,10 @@ public class Base {
         // @formatter:off
         resource = client.resource("http://localhost:8089").path("v0.9");
         // @formatter:on
+    }
+
+    @After
+    public void stop() throws Exception {
+        server.stop();
     }
 }

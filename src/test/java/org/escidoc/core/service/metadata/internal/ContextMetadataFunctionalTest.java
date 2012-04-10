@@ -54,10 +54,9 @@ public class ContextMetadataFunctionalTest extends Base implements ContextMetada
 
     private static final String CONTEXT_NAME = "descriptor_for_book";
 
-    private static final String METADATA = "metadata";
-
     private static final String CONTEXT_ID = "escidoc:3829";
 
+    @Override
     @After
     public void stop() throws Exception {
         server.stop();
@@ -68,12 +67,18 @@ public class ContextMetadataFunctionalTest extends Base implements ContextMetada
     public void shouldReturn200ForExistingContextAndMetadata() throws Exception {
         // @formatter:off
         final Builder builder =
-            resource.path(AppConstant.CONTEXTS).path(CONTEXT_ID).path(METADATA).path(CONTEXT_NAME).queryParam(
-                AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML);
+            resource
+            .path(AppConstant.CONTEXTS)
+            .path(CONTEXT_ID)
+            .path(AppConstant.METADATA)
+            .path(CONTEXT_NAME)
+            .queryParam(AppConstant.EU, SERVICE_URL)
+            .accept(MediaType.APPLICATION_XML);
+        
+        // @formatter:on
         assertEquals("response is not equals", 200, builder.get(ClientResponse.class).getStatus());
         final String responseMessage = builder.get(ClientResponse.class).getEntity(String.class);
         LOG.debug("Entity as String: " + responseMessage);
-
     }
 
     @Test
@@ -83,7 +88,7 @@ public class ContextMetadataFunctionalTest extends Base implements ContextMetada
         final String token = new Authentication(new URL(SERVICE_URL), SYSADMIN, SYSADMIN_PASSWORD).getHandle();
         // @formatter:off
         final Builder builder =
-            resource.path(AppConstant.CONTEXTS).path(CONTEXT_ID).path(METADATA).path(CONTEXT_NAME).queryParam(
+            resource.path(AppConstant.CONTEXTS).path(CONTEXT_ID).path(AppConstant.METADATA).path(CONTEXT_NAME).queryParam(
                 AppConstant.EU, SERVICE_URL).accept(MediaType.APPLICATION_XML).cookie(
                 new Cookie("escidocCookie", token));
 

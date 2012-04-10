@@ -52,4 +52,12 @@ public class AppConstant {
 
     public static final String PUBMAN_ADMIN_DESCRIPTOR = "pubman-admin-descriptor";
 
+    public static final String METADATA = "metadata";
+
+    public static final String CONTAINERS = "containers";
+
+    public static final String ESCIDOC_METADATA = "escidoc";
+
+    public static final String CONTAINER = "container";
+
 }
