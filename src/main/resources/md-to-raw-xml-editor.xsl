@@ -13,64 +13,8 @@
           href="/rest/static/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css"
           href="/rest/static/css/override-bootstrap.css" />
-          <style>
-          #fail-message {
-    font-family:Arial,Helvetica,sans-serif;
-    position:fixed;
-    top:0px;
-    left:0px;
-    width:100%;
-    z-index:105;
-    text-align:center;
-    font-weight:bold;
-    font-size:100%;
-    color:white;
-    padding:10px 0px 10px 0px;
-    background-color:#8E1609;
-}
-
-    #success-message {
-      font-family:Arial,Helvetica,sans-serif;
-      position:fixed;
-      top:0px;
-      left:0px;
-      width:100%;
-      z-index:105;
-      text-align:center;
-      font-weight:bold;
-      font-size:100%;
-      color:black
-      padding:10px 0px 10px 0px;
-      background-color:yellow;
-    }
-    
-#fail-message span {
-    text-align: center;
-    width: 95%;
-    float:left;
-}
-
-#success-message span {
-    text-align: center;
-    width: 95%;
-    float:left;
-}
-
-.close-notify {
-    white-space: nowrap;
-    float:right;
-    margin-right:10px;
-    color:#fff;
-    text-decoration:none;
-    border:2px #fff solid;
-    padding-left:3px;
-    padding-right:3px
-}
-
-.close-notify a {
-    color: #fff;
-}
-          </style>
+        <link rel="stylesheet" type="text/css"
+          href="/rest/static/css/notification-msg.css" />
       </head>
       <body>
         <div class="container">
