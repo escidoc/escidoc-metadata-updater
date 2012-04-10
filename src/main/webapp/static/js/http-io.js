@@ -40,6 +40,7 @@ function toString(xmlDocument) {
     }
 }
 
+/*
 function putRawXml(uri, xml) {
     $.ajax({
         type: "PUT",
@@ -48,12 +49,48 @@ function putRawXml(uri, xml) {
         url: uri,
         data: xml 
     })
-    .success(function(msg){
-        alert('The response was: ' + msg.status + ', ' + msg.responseText);
+    .done(function(msg){
+    	console.log('success: '+msg);
+    	 $("#success-message").fadeIn("slow");
+    	    $("#success-message a.close-notify").click(function() {
+    	        $("#success-message").fadeOut("slow");
+    	        return false;
+    	    });
     })
-    .error(function(msg){
-        alert('The response was: ' + msg.status + ', ' + msg.responseText);
+    .fail(function(msg){
+    	console.log('fail: '+msg);
+    	 $("#fail-message").fadeIn("slow");
+    	    $("#fail-message a.close-notify").click(function() {
+    	        $("#fail-message").fadeOut("slow");
+    	        return false;
+    	    });
     });
+}
+*/
+	
+function putRawXml(uri, xml) {
+	var request = $.ajax({
+        type: "PUT",
+        contentType: "application/xml",
+        url: uri,
+        data: xml,
+     })
+    .done(function(msg) {   
+        $("#success-message").fadeIn("slow");
+	        $("#success-message a.close-notify").click(function() {
+	        $("#success-message").fadeOut("slow");
+	    });
+    })
+    .fail(function(request, error) {
+    	 $("#fail-message").fadeIn("slow");
+    	    $("#fail-message a.close-notify").click(function() {
+            $("#fail-message").fadeOut("slow");
+        });
+    })
+    .always(function() {
+    });
+	
+	
 }
 
 jQuery.extend({

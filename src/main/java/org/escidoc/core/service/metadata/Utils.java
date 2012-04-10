@@ -343,4 +343,41 @@ public final class Utils {
     public static final void buildPubmanContextMetadataEditor(final AdminDescriptor metadata, final StringWriter writer) {
         transformXml(metadata, AppConstant.XML_TO_PUBMAN_CONTEXT_MD_EDITOR_XSLT, writer);
     }
+
+    public static String foo(final MetadataRecord metadata) {
+        try {
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setValidating(false);
+            final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+
+            final InputStream stream = Utils.readXsl(AppConstant.XML_TO_RAW_EDITOR_XSLT);
+            final Document xsltDoc = docBuilder.parse(stream);
+
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer(new DOMSource(xsltDoc));
+            LOG.debug("transform class is: " + transformer.getClass().getCanonicalName());
+
+            final StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(metadata.getContent()), new StreamResult(writer));
+            return writer.toString();
+        }
+        catch (final TransformerConfigurationException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final TransformerException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final TransformerFactoryConfigurationError e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final ParserConfigurationException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final SAXException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

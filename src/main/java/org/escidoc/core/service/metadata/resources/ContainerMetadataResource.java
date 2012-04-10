@@ -46,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -143,7 +142,7 @@ public class ContainerMetadataResource {
     @Consumes(MediaType.APPLICATION_XML)
     public Response update(
         @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource s,
+        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource domSource,
         @QueryParam("eSciDocUserHandle") final String encodedHandle) {
 
         checkPreconditions(id, metadataName, escidocUri, sr);
@@ -156,11 +155,13 @@ public class ContainerMetadataResource {
                 return Response.status(Status.NO_CONTENT).build();
             }
 
-            metadata.setContent((Element) s.getNode().getFirstChild());
+            final Element firstChild = (Element) domSource.getNode().getFirstChild();
+            LOG.debug("content: " + firstChild.toString());
+            metadata.setContent(firstChild);
             final GenericResource updated = repo.update(resource);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
-            return Response.ok().build();
+            return Response.ok("<p>success</p>").build();
             // @formatter:on
         }
         catch (final AuthenticationException e) {
@@ -203,20 +204,21 @@ public class ContainerMetadataResource {
                 return Response.status(Status.NO_CONTENT).build();
             }
 
-            final StringWriter writer = new StringWriter();
-            Utils.buildRawXmlEditor(metadata, writer);
+            // final StringWriter writer = new StringWriter();
 
-            final ResponseBuilder b =
-                r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(new StringWriter().toString()));
+            // Utils.buildRawXmlEditor(metadata, writer);
+            final String result = Utils.foo(metadata);
+
+            final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(result));
             if (b != null) {
                 return b.build();
             }
 
             // @formatter:off
             return Response
-                .ok(writer.toString(), MediaType.TEXT_HTML)
+                .ok(result, MediaType.TEXT_HTML)
                 .lastModified(getLastModificationDate(resource))
-                .tag(getEntityTag(writer.toString()))
+                .tag(getEntityTag(result))
                 .build();
             // @formatter:on
         }
@@ -273,7 +275,7 @@ public class ContainerMetadataResource {
         }
         catch (final AuthorizationException e) {
             LOG.debug("Auth. credentials is not valid while accessing protected source. ");
-            throw new AuthorizationException();
+            throw new AuthorizationException(e.getMessage(), e);
         }
         catch (final EscidocException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
