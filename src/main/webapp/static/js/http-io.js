@@ -23,9 +23,8 @@ $(function() {
                   
                   putRawXml(getUri(), toString(payload));
             })
-            .error(function(data) {
-              // TODO implement notification
-              alert('error: ' + data);
+            .error(function(msg) {
+                alert('The response was: ' + msg.status + ', ' + msg.statusText);
             })
         return false;
   });
@@ -49,10 +48,10 @@ function putRawXml(uri, xml) {
         data: xml 
     })
     .success(function(msg){
-        alert('The response was: ' + msg.status + ', ' + msg.responseText);
+        alert('The response was: ' + msg.status + ', ' + msg.statusText);
     })
     .error(function(msg){
-        alert('The response was: ' + msg.status + ', ' + msg.responseText);
+        alert('The response was: ' + msg.status + ', ' + msg.statusText);
     });
 }
 
@@ -105,7 +104,7 @@ $(function() {
     if(selectedSubjects.length) {
       $.each(selectedSubjects, function(index, subject){
         $root.find('allowed-subject-classifications')
-          .append($('<allowed-subject-classsification />').text(subject.value));
+          .append($('<allowed-subject-classification />').text(subject.value));
       });
     } 
 
