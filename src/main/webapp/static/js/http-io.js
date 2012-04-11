@@ -12,8 +12,7 @@ $(function() {
 
         // build PubMan Metadata XML
         $.get('/rest/pubman-organization-metadata-template.xml')
-            .success(
-              function(template) {
+            .done(function(template) {
                   var payload = template;
     
                   // write user input to the xml
@@ -23,10 +22,12 @@ $(function() {
                   
                   putRawXml(getUri(), toString(payload));
             })
-            .error(function(data) {
-              // TODO implement notification
-              alert('error: ' + data);
-            })
+            .fail(function(request, error) {
+            	$("#fail-message").fadeIn("slow");
+        	    $("#fail-message a.close-notify").click(function() {
+                    $("#fail-message").fadeOut("slow");
+                });
+            });
         return false;
   });
 });
@@ -59,11 +60,7 @@ function putRawXml(uri, xml) {
 	    $("#fail-message a.close-notify").click(function() {
             $("#fail-message").fadeOut("slow");
         });
-    })
-    .always(function() {
     });
-	
-	
 }
 
 jQuery.extend({

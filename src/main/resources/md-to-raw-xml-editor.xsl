@@ -9,18 +9,14 @@
         <title>eSciDoc Metadata Editor</title>
         <meta name="description" content="eSciDoc Metadata Editor" />
         <meta name="keywords" content="escidoc, metadata editor" />
-        <link rel="stylesheet" type="text/css"
-          href="/rest/static/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css"
-          href="/rest/static/css/override-bootstrap.css" />
-        <link rel="stylesheet" type="text/css"
-          href="/rest/static/css/notification-msg.css" />
+        <link rel="stylesheet" type="text/css" href="/rest/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/rest/static/css/override-bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="/rest/static/css/notification-msg.css" />
       </head>
       <body>
         <div class="container">
-        
           <div id="notification">
-          
+
             <!-- Le twitter bootstrap alert -->
             <div id="fail-message" class="alert-message error" style="display: none;">
               <a class="close" href="#">
@@ -28,7 +24,7 @@
               </a>
               <p><strong>Oh snap!</strong> Something wrong happens...</p>
             </div>
-            
+
             <div  id="success-message" class="alert-message success" style="display: none;">
               <a class="close" href="#">
                   <xsl:text disable-output-escaping='yes'>X</xsl:text>
