@@ -112,7 +112,7 @@ $(function() {
     if(selectedSubjects.length) {
       $.each(selectedSubjects, function(index, subject){
         $root.find('allowed-subject-classifications')
-          .append($('<allowed-subject-classsification />').text(subject.value));
+          .append($('<allowed-subject-classification />').text(subject.value));
       });
     } 
 
