@@ -45,6 +45,7 @@ Component: MD Update Service
 Authors
 -------
 
+
 **Frank Schwichtenberg**
 
 + https://github.com/fschwic
@@ -52,6 +53,10 @@ Authors
 **Christian Herlambang**
 
 + https://github.com/crh
+
+**Christian Steiger**
+
++ https://github.com/cst1977
 
 Copyright and license
 ---------------------
