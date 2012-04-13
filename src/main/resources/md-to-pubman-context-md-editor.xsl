@@ -480,6 +480,11 @@
     <li>
       <label>
         <input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/DDC">
+        
+          <xsl:if test="allowed-genre = 'http://purl.org/escidoc/metadata/ves/publication-types/talk-at-event' ">
+            <xsl:attribute name="checked">checked</xsl:attribute>
+          </xsl:if>
+        
           <xsl:if test="allowed-subject-classification = 'http://purl.org/escidoc/metadata/terms/0.1/DDC' ">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>
@@ -499,9 +504,7 @@
     </li>
     <li>
       <label>
-        <input type="checkbox" name="subjectList"
-          value="http://purl.org/escidoc/metadata/terms/0.1/ISO639-3" >
-
+        <input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/ISO639-3" >
           <xsl:if test="allowed-subject-classification= 'http://purl.org/escidoc/metadata/terms/0.1/ISO639-3' ">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>
@@ -511,26 +514,20 @@
     </li>
     <li>
       <label>
-        <input type="checkbox" name="subjectList"
-          value="http://purl.org/escidoc/metadata/terms/0.1/JUS" >
-
+        <input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/JUS" >
           <xsl:if test="allowed-subject-classification= 'http://purl.org/escidoc/metadata/terms/0.1/JUS' ">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>
-          
         </input>
         JUS
       </label>
     </li>
     <li>
       <label>
-        <input type="checkbox" name="subjectList"
-          value="http://purl.org/escidoc/metadata/terms/0.1/PACS" >
-
+        <input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/PACS" >
           <xsl:if test="allowed-subject-classification= 'http://purl.org/escidoc/metadata/terms/0.1/PACS' ">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>
-
         </input>
         PACS
       </label>
