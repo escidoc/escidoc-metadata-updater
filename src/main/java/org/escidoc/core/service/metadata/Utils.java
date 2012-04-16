@@ -380,4 +380,8 @@ public final class Utils {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public static String transformToHtml(final MetadataRecord metadata) {
+        throw new UnsupportedOperationException("not-yet-implemented.");
+    }
 }
