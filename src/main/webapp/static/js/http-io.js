@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 //TODO general todo: introduce nama spacing and object-oriented JavaScript
 
 // PubMan Organization Metadata/Admin Descriptor
@@ -18,13 +18,13 @@ $(function() {
                   // write user input to the xml
                   $.each(map, function(key, val){
                         $(payload).find(key).text(val);
-                  })
+                  });
                   
                   putRawXml(getUri(), toString(payload));
             })
             .fail(function(request, error) {
-            	$("#fail-message").fadeIn("slow");
-        	    $("#fail-message a.close-notify").click(function() {
+              $("#fail-message").fadeIn("slow");
+              $("#fail-message a.close-notify").click(function() {
                     $("#fail-message").fadeOut("slow");
                 });
             });
@@ -33,8 +33,8 @@ $(function() {
 });
 
 function toString(xmlDocument) {
-    if (typeof XMLSerializer != "undefined" && !($.browser.msie && parseInt($.browser.version) == 9)) {
-         return (new XMLSerializer()).serializeToString(xmlDocument);
+    if (typeof XMLSerializer !== "undefined" && !($.browser.msie && parseInt($.browser.version, 10) == 9)) {
+      return (new XMLSerializer()).serializeToString(xmlDocument);
     }
     else {
         return xmlDocument.xml;
@@ -47,17 +47,17 @@ function putRawXml(uri, xml) {
         type: "PUT",
         contentType: "application/xml",
         url: uri,
-        data: xml,
+        data: xml
      })
     .done(function(msg) {   
-        $("#success-message").fadeIn("slow");
-        $("#success-message a.close-notify").click(function() {
-	        $("#success-message").fadeOut("slow");
-	    });
+      $("#success-message").fadeIn("slow");
+      $("#success-message a.close-notify").click(function() {
+        $("#success-message").fadeOut("slow");
+      });
     })
     .fail(function(request, error) {
-    	$("#fail-message").fadeIn("slow");
-	    $("#fail-message a.close-notify").click(function() {
+      $("#fail-message").fadeIn("slow");
+      $("#fail-message a.close-notify").click(function() {
             $("#fail-message").fadeOut("slow");
         });
     });
@@ -92,7 +92,7 @@ $(function() {
     // when the user does not select any genres, remove the element the node '<allowed-genres/>'
     // other wise, add the selected genres as: <allowed-genre>$(value)</allowed-genre>
     //FIXME refactor to function
-    var selectedGenres=map['genres'];
+    var selectedGenres=map.genres;
     var genreSize= selectedGenres.length;
     $root.find('pubman-admin-descriptor')
       .append($('<allowed-genres />'));
@@ -108,7 +108,7 @@ $(function() {
     $root.find('pubman-admin-descriptor')
       .append($('<allowed-subject-classifications />'));
     
-    var selectedSubjects=map['subjects'];
+    var selectedSubjects=map.subjects;
     if(selectedSubjects.length) {
       $.each(selectedSubjects, function(index, subject){
         $root.find('allowed-subject-classifications')
@@ -118,16 +118,16 @@ $(function() {
 
     //FIXME refactor to function
     $root.find('pubman-admin-descriptor')
-      .append($('<validation-schema />').text(map['schema'].val()));
+      .append($('<validation-schema />').text(map.schema.val()));
 
     //FIXME refactor to function
     $root.find('pubman-admin-descriptor')
-      .append($('<workflow />').text(map['workflow'].val()));
+      .append($('<workflow />').text(map.workflow.val()));
 
     //FIXME refactor to function
-    if(map['email'].val()){
+    if(map.email.val()){
       $root.find('pubman-admin-descriptor')
-        .append($('<contact-email />').text(map['email'].val()));
+        .append($('<contact-email />').text(map.email.val()));
     } 
 
     putRawXml(getUri(), $root.html());
@@ -137,11 +137,11 @@ $(function() {
 
 function serializePubmanContextForm(){
   var map={};
-  map['genres']= $('input[name="genresList"]:checked');
-  map['subjects']=$('input[name="subjectList"]:checked');
-  map['workflow']=$('#workflow option:selected');
-  map['schema']=$('#validation-schema option:selected');
-  map['email']=$('input[name="contact-email"]');
+  map.genres = $('input[name="genresList"]:checked');
+  map.subjects =$('input[name="subjectList"]:checked');
+  map.workflow =$('#workflow option:selected');
+  map.schema =$('#validation-schema option:selected');
+  map.email =$('input[name="contact-email"]');
   return map;
 }
 
