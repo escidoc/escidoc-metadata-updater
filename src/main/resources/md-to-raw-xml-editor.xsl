@@ -39,8 +39,9 @@
             </div>
             <div class="row">
               <div class="span12">
-                <form id="metadata-editor" onSubmit="return sendRawXml();">
+                <form id="raw-xml-metadata-editor">
                   <fieldset>
+                    <legend>XML Metadata Editor</legend>
                     <div class="clearfix">
                       <label for="content">Content</label>
                       <div class="input">
@@ -50,8 +51,7 @@
                       </div>
                     </div> <!--/clearfix -->
                     <div class="actions">
-                      <input type="submit" class="btn primary"
-                        value="Save changes" />
+                      <input type="submit" class="btn primary" value="Save changes" ></input>
                       <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                       <button type="reset" class="btn">Cancel</button>
                     </div>
@@ -62,8 +62,12 @@
           </div>
           <footer></footer>
         </div><!--/container -->
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
-        <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">
+          <xsl:comment>Comment added so script is recognised</xsl:comment>
+        </script>
+        <script type="text/javascript" src="/rest/static/js/http-io.js">
+          <xsl:comment>Comment added so script is recognised</xsl:comment>
+        </script>
       </body>
     </html>
   </xsl:template>

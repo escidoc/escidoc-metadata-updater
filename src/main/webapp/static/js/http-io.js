@@ -147,13 +147,15 @@ function serializePubmanContextForm(){
 }
 
 // Raw Metadata
-// TODO rewrite with jQuery
-function sendRawXml() {
-  var userInput = document.getElementById('content').value;
-  var uri = getUri();
-  putRawXml(getUri(), userInput);
-  return false;
-}
+
+$(function() {
+  $('#raw-xml-metadata-editor').submit(
+    function(e) {
+    e.preventDefault();
+    putRawXml(getUri(), $('#content').val());
+    return false;
+  });
+});
 
 // TODO rewrite with jQuery
 function getUri() {
