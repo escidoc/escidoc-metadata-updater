@@ -18,19 +18,29 @@
           href="/rest/static/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css"
           href="/rest/static/css/override-bootstrap.css" />
-        <style rel="stylesheet" type="text/css"> .alert { padding: 8px 35px
-          8px 14px; margin-bottom: 18px; text-shadow: 0 1px 0 rgba(255,
-          255, 255, 0.5); background-color: #FCF8E3; border: 1px solid
-          #FBEED5; -webkit-border-radius: 4px; -moz-border-radius: 4px;
-          border-radius: 4px; color: #C09853; }
-        </style>
+        <link rel="stylesheet" type="text/css" href="/rest/static/css/notification-msg.css" />
       </head>
       <body>
         <div class="container">
-          <div class="alert fade in">
-            <a class="close" data-dismiss="alert" href="#">×</a>
-            <strong>Something went wrong</strong>
+          <div id="notification">
+
+            <!-- Le twitter bootstrap alert -->
+            <div id="fail-message" class="alert-message error" style="display: none;">
+              <a class="close" href="#">
+                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
+              </a>
+              <p><strong>Oh snap!</strong> Something wrong happens...</p>
+            </div>
+
+            <div  id="success-message" class="alert-message success" style="display: none;">
+              <a class="close" href="#">
+                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
+              </a>
+              <p><strong>Successfully Update!</strong></p>
+            </div>
+            
           </div>
+          
           <div class="content">
             <div class="page-header">
               <h1>Metadata Editor</h1>

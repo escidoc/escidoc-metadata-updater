@@ -4,64 +4,63 @@
 // PubMan Organization Metadata/Admin Descriptor
 $(function() {
   $('#pubman-organization-metadata-editor')
-  .submit(function(e) {
-    e.preventDefault();
+      .submit(function(e) {
+        e.preventDefault();
 
-    // read user input from the form
-    var map = $.serializeForm();
+        // read user input from the form
+        var map = $.serializeForm();
 
-    // build PubMan Metadata XML
-    $.get('/rest/pubman-organization-metadata-template.xml')
-    .success(
-      function(template) {
-      var payload = template;
-
-      // write user input to the xml
-      $.each(map, function(key, val){
-        $(payload).find(key).text(val);
-      })
-
-      putRawXml(getUri(), toString(payload));
-    })
-    .error(function(msg) {
-      $("#fail-message").fadeIn("slow");
-      $("#fail-message a.close-notify").click(function() {
-        $("#fail-message").fadeOut("slow");
-      });
-    })
-    return false;
+        // build PubMan Metadata XML
+        $.get('/rest/pubman-organization-metadata-template.xml')
+            .done(function(template) {
+                  var payload = template;
+    
+                  // write user input to the xml
+                  $.each(map, function(key, val){
+                        $(payload).find(key).text(val);
+                  })
+                  
+                  putRawXml(getUri(), toString(payload));
+            })
+            .fail(function(request, error) {
+            	$("#fail-message").fadeIn("slow");
+        	    $("#fail-message a.close-notify").click(function() {
+                    $("#fail-message").fadeOut("slow");
+                });
+            });
+        return false;
   });
 });
 
 function toString(xmlDocument) {
-  if (typeof XMLSerializer != "undefined" && !($.browser.msie && parseInt($.browser.version) == 9)) {
-    return (new XMLSerializer()).serializeToString(xmlDocument);
-  }
-  else {
-    return xmlDocument.xml;
-  }
+    if (typeof XMLSerializer != "undefined" && !($.browser.msie && parseInt($.browser.version) == 9)) {
+         return (new XMLSerializer()).serializeToString(xmlDocument);
+    }
+    else {
+        return xmlDocument.xml;
+    }
 }
 
+	
 function putRawXml(uri, xml) {
-  var request = $.ajax({
-    type: "PUT",
-    contentType: "application/xml",
-    url: uri,
-    data: xml,
-  })
-  .done(function(msg) {
-    $("#success-message").fadeIn("slow");
-    $("#success-message a.close-notify").click(function() {
-      $("#success-message").fadeOut("slow");
+	var request = $.ajax({
+        type: "PUT",
+        contentType: "application/xml",
+        url: uri,
+        data: xml,
+     })
+    .done(function(msg) {   
+        $("#success-message").fadeIn("slow");
+        $("#success-message a.close-notify").click(function() {
+	        $("#success-message").fadeOut("slow");
+	    });
+    })
+    .fail(function(request, error) {
+    	$("#fail-message").fadeIn("slow");
+	    $("#fail-message a.close-notify").click(function() {
+            $("#fail-message").fadeOut("slow");
+        });
     });
-  })
-  .fail(function(request, error) {
-    $("#fail-message").fadeIn("slow");
-    $("#fail-message a.close-notify").click(function() {
-      $("#fail-message").fadeOut("slow");
-    });
-  });
-
 }
 
 jQuery.extend({
@@ -88,7 +87,7 @@ $(function() {
     // create an XML Document
     var $root = $('<XMLDocument/>');
     $root
-    .append($('<pubman-admin-descriptor />'));
+      .append($('<pubman-admin-descriptor />'));
 
     // when the user does not select any genres, remove the element the node '<allowed-genres/>'
     // other wise, add the selected genres as: <allowed-genre>$(value)</allowed-genre>
@@ -96,41 +95,40 @@ $(function() {
     var selectedGenres=map['genres'];
     var genreSize= selectedGenres.length;
     $root.find('pubman-admin-descriptor')
-        .append($('<allowed-genres />'));
-
+      .append($('<allowed-genres />'));
+    
     if(genreSize) {
       $.each(selectedGenres, function(index, genre){
-        $root.find('allowed-genres')
-        .append($('<allowed-genre />').text(genre.value));
+          $root.find('allowed-genres')
+            .append($('<allowed-genre />').text(genre.value));
       });
-    }
-    $('a').
+    } 
 
     //FIXME refactor to function
     $root.find('pubman-admin-descriptor')
-    .append($('<allowed-subject-classifications />'));
-
+      .append($('<allowed-subject-classifications />'));
+    
     var selectedSubjects=map['subjects'];
     if(selectedSubjects.length) {
       $.each(selectedSubjects, function(index, subject){
         $root.find('allowed-subject-classifications')
-        .append($('<allowed-subject-classification />').text(subject.value));
+          .append($('<allowed-subject-classification />').text(subject.value));
       });
-    }
+    } 
 
     //FIXME refactor to function
     $root.find('pubman-admin-descriptor')
-    .append($('<validation-schema />').text(map['schema'].val()));
+      .append($('<validation-schema />').text(map['schema'].val()));
 
     //FIXME refactor to function
     $root.find('pubman-admin-descriptor')
-    .append($('<workflow />').text(map['workflow'].val()));
+      .append($('<workflow />').text(map['workflow'].val()));
 
     //FIXME refactor to function
     if(map['email'].val()){
       $root.find('pubman-admin-descriptor')
-      .append($('<contact-email />').text(map['email'].val()));
-    }
+        .append($('<contact-email />').text(map['email'].val()));
+    } 
 
     putRawXml(getUri(), $root.html());
     return false;

@@ -23,6 +23,25 @@
             <a class="close" data-dismiss="alert" href="#">×</a>
             <strong>Something went wrong</strong>
           </div>
+          
+          <div id="notification">
+
+            <!-- Le twitter bootstrap alert -->
+            <div id="fail-message" class="alert-message error" style="display: none;">
+              <a class="close" href="#">
+                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
+              </a>
+              <p><strong>Oh snap!</strong> Something wrong happens...</p>
+            </div>
+
+            <div  id="success-message" class="alert-message success" style="display: none;">
+              <a class="close" href="#">
+                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
+              </a>
+              <p><strong>Successfully Update!</strong></p>
+            </div>
+          </div>
+          
           <div class="content">
             <div class="page-header">
               <h1>Metadata Editor</h1>
