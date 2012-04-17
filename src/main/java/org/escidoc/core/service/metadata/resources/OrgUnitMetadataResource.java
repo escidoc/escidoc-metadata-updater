@@ -285,7 +285,9 @@ public class OrgUnitMetadataResource {
             final GenericResource updated = repo.update(org);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
-            return Response.ok().build();
+            return Response
+                .ok("<updated></updated>")
+                .build();
             // @formatter:on
         }
         catch (final AuthorizationException e) {

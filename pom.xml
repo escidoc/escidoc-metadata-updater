@@ -384,7 +384,7 @@
       <organization>FIZ Karlsruhe</organization>
       <organizationUrl>http://www.fiz-karlsruhe.de</organizationUrl>
       <roles>
-        <role>front end team leader</role>
+        <role>team leader</role>
       </roles>
       <timezone>+2</timezone>
     </developer>
@@ -400,9 +400,9 @@
       <timezone>+2</timezone>
     </developer>
     <developer>
-      <id>arb</id>
-      <name>Armand Brahaj</name>
-      <email>armand.brahaj@fiz-karlsruhe.de</email>
+      <id>cst</id>
+      <name>Christian Steiger</name>
+      <email>Christian.Steiger@fiz-karlsruhe.de</email>
       <organization>FIZ Karlsruhe</organization>
       <organizationUrl>http://www.fiz-karlsruhe.de</organizationUrl>
       <roles>
