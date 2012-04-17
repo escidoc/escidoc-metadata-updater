@@ -46,6 +46,7 @@ function putRawXml(uri, xml) {
 	var request = $.ajax({
         type: "PUT",
         contentType: "application/xml",
+        processData: false,
         url: uri,
         data: xml
      })
