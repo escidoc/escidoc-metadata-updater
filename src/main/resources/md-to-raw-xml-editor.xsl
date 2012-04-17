@@ -9,9 +9,17 @@
         <title>eSciDoc Metadata Editor</title>
         <meta name="description" content="eSciDoc Metadata Editor" />
         <meta name="keywords" content="escidoc, metadata editor" />
+
         <link rel="stylesheet" type="text/css" href="/rest/static/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="/rest/static/css/override-bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="/rest/static/css/notification-msg.css" />
+
+        <link rel="stylesheet" href="/rest/static/css/codemirror.css" />
+        <script src="/rest/static/js/codemirror.js"></script>
+        <script src="/rest/static/js/xmlpure.js"></script>
+
+        <style type="text/css">.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
+        <link rel="stylesheet" href="css/docs.css" />
       </head>
       <body>
         <div class="container">
@@ -44,8 +52,7 @@
                     <div class="clearfix">
                       <label for="content">Content</label>
                       <div class="input">
-                        <textarea class="span8" id="content"
-                          rows="30">
+                        <textarea class="span8" id="content" name="content" rows="30">
                           <xsl:copy-of select="." />
                         </textarea>
                       </div>
@@ -66,6 +73,9 @@
         <script type="text/javascript"
           src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
         <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
+        <script type="text/javascript">
+            var editor = CodeMirror.fromTextArea(document.getElementById("content"), {mode: {name: "xmlpure"}});
+        </script>
       </body>
     </html>
   </xsl:template>
