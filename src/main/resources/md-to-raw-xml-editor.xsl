@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:output encoding="utf-8" indent="yes" method="html" />
+  <xsl:output encoding="utf-8" indent="yes" method="xml" />
   <xsl:template match="*">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
     <html>
@@ -44,8 +44,7 @@
                     <div class="clearfix">
                       <label for="content">Content</label>
                       <div class="input">
-                        <textarea class="span8" id="content"
-                          rows="30">
+                        <textarea class="span8" id="content" rows="30">
                           <xsl:copy-of select="." />
                         </textarea>
                       </div>
@@ -63,8 +62,7 @@
           </div>
           <footer></footer>
         </div><!--/container -->
-        <script type="text/javascript"
-          src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
         <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
       </body>
     </html>
