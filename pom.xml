@@ -3,8 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.escidoc.core.service</groupId>
   <artifactId>escidoc-metadata-updater</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>eSciDoc Metadata Updater Web Service</name>
+  <version>0.0.2-SNAPSHOT</version>
+  <name>eSciDoc Metadata Update Web Service</name>
+  <url>https://github.com/escidoc/escidoc-metadata-updater</url>
   <packaging>war</packaging>
   <properties>
     <compiler.level>1.6</compiler.level>
@@ -144,6 +145,11 @@
       </build>
     </profile>
   </profiles>
+  <scm>
+    <url>https://crh@github.com/escidoc/escidoc-metadata-updater.git</url>
+    <connection>scm:git:https://crh@github.com/escidoc/escidoc-metadata-updater.git</connection>
+    <developerConnection>scm:git:https://crh@github.com/escidoc/escidoc-metadata-updater.git</developerConnection>
+  </scm>
   <build>
     <finalName>rest</finalName>
     <plugins>
@@ -300,10 +306,20 @@
         </executions>
       </plugin>
        -->
-    </plugins>
-    <pluginManagement>
-      <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>downloads-maven-plugin</artifactId>
+            <version>0.4</version>
+            <configuration>
+              <description>${project.version} release of ${project.name}</description>
+              <override>true</override>
+              <includeAttached>true</includeAttached>
+            </configuration>
+          </plugin>
+        </plugins>
+        <pluginManagement>
+          <plugins>
+            <!--This plugin's configuration is used to store Eclipse m2e settings 
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -331,36 +347,36 @@
                 <!-- Does not work as advertised -->
                 <!--
                 <pluginExecution>
-                	<pluginExecutionFilter>
-                		<groupId>
-                			com.googlecode.maven-java-formatter-plugin
-                		</groupId>
-                		<artifactId>
-                			maven-java-formatter-plugin
-                		</artifactId>
-                		<versionRange>[0.3.1,)</versionRange>
-                		<goals>
-                			<goal>format</goal>
-                		</goals>
-                	</pluginExecutionFilter>
-                	<action>
-                		<ignore></ignore>
-                	</action>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      com.googlecode.maven-java-formatter-plugin
+                    </groupId>
+                    <artifactId>
+                      maven-java-formatter-plugin
+                    </artifactId>
+                    <versionRange>[0.3.1,)</versionRange>
+                    <goals>
+                      <goal>format</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
                 </pluginExecution>
-                		<groupId>
-                			com.googlecode.maven-java-formatter-plugin
-                		</groupId>
-                		<artifactId>
-                			maven-java-formatter-plugin
-                		</artifactId>
-                		<versionRange>[0.3.1,)</versionRange>
-                		<goals>
-                			<goal>format</goal>
-                		</goals>
-                	</pluginExecutionFilter>
-                	<action>
-                		<ignore></ignore>
-                	</action>
+                    <groupId>
+                      com.googlecode.maven-java-formatter-plugin
+                    </groupId>
+                    <artifactId>
+                      maven-java-formatter-plugin
+                    </artifactId>
+                    <versionRange>[0.3.1,)</versionRange>
+                    <goals>
+                      <goal>format</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
 >>>>>>> b610513... WIP
                 </pluginExecution>
                 -->
@@ -442,6 +458,10 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+    </pluginRepository>
+    <pluginRepository>
+      <id>oss-sonatype-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </pluginRepository>
     <!--
     <pluginRepository>
