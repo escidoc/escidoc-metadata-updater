@@ -156,7 +156,6 @@ public class ContainerMetadataResource {
             }
 
             final Element firstChild = (Element) domSource.getNode().getFirstChild();
-            LOG.debug("content: " + firstChild.toString());
             metadata.setContent(firstChild);
             final GenericResource updated = repo.update(resource);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
@@ -179,8 +178,8 @@ public class ContainerMetadataResource {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         catch (final TransportException e) {
-            LOG.error("Can not update metadata with the name, " + metadataName + ", from organizational unit, " + id
-                + ", reason: " + e.getMessage());
+            LOG.error("Can not update metadata with the name, " + metadataName + ", from " + AppConstant.CONTAINER
+                + ", " + id + ", reason: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -229,8 +228,8 @@ public class ContainerMetadataResource {
             if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
                 return response401();
             }
-            LOG.error("Can not fetch metadata with the name, " + metadataName + ", from organizational unit, " + id
-                + ", reason: " + e.getMessage());
+            LOG.error("Can not fetch metadata with the name, " + metadataName + ", from " + AppConstant.CONTAINER
+                + ", " + id + ", reason: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
