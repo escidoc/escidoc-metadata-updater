@@ -169,14 +169,18 @@ function put(xml) {
 
 function back () {
     if(document.referrer === "") {
-      console.log('empty, tell user to close the Web Browser tab/window');
+      //Do nothing.
+      log('empty, tell user to close the Web Browser tab/window');
     } else{
-      console.log('go back');
       window.open(document.referrer,'_self');
     }
 }
+function log (aString) {
+    if(typeof console !== "undefinded" && typeof console.log !== "undefinded"){
+      console.log(aString);
+    }  
+}
 
 $('#cancel').click(function () {
-  console.log('cancel button clicked');
   back();
 });
