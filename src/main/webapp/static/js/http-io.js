@@ -172,7 +172,7 @@ function back () {
       //Do nothing.
       log('empty, tell user to close the Web Browser tab/window');
     } else{
-      window.open(document.referrer,'_self');
+      history.back();
     }
 }
 function log (aString) {
