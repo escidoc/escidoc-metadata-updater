@@ -30,7 +30,7 @@
           <div class="actions">
            <input type="submit" class="btn primary" value="Save changes" />
            <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-           <button type="reset" class="btn">Cancel</button>
+           <button id="cancel" type="reset" class="btn">Cancel</button>
           </div>
          </fieldset>
         </form>

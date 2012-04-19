@@ -55,6 +55,7 @@ function putRawXml(uri, xml) {
       $("#success-message a.close-notify").click(function() {
         $("#success-message").fadeOut("slow");
       });
+      back();
     })
     .fail(function(request, error) {
       $("#fail-message").fadeIn("slow");
@@ -165,3 +166,17 @@ function getUri() {
 function put(xml) {
   putRawXml(getUri(),xml);
 }
+
+function back () {
+    if(document.referrer === "") {
+      console.log('empty, tell user to close the Web Browser tab/window');
+    } else{
+      console.log('go back');
+      window.open(document.referrer,'_self');
+    }
+}
+
+$('#cancel').click(function () {
+  console.log('cancel button clicked');
+  back();
+});

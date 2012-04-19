@@ -108,7 +108,7 @@
                       <input type="submit" class="btn primary"
                         value="Save changes" />
                       <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                      <button class="btn" type="reset">Cancel</button>
+                      <button id="cancel" type="reset" class="btn">Cancel</button>
                     </div><!-- end actions -->
                   </fieldset>
                 </form>
