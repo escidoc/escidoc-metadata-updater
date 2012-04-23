@@ -51,10 +51,15 @@ function putRawXml(uri, xml) {
         data: xml
      })
     .done(function(msg) {   
+
+      /*
       $("#success-message").fadeIn("slow");
       $("#success-message a.close-notify").click(function() {
         $("#success-message").fadeOut("slow");
       });
+      */
+      $('#success-message').show();
+      back();
     })
     .fail(function(request, error) {
       $("#fail-message").fadeIn("slow");
@@ -165,3 +170,25 @@ function getUri() {
 function put(xml) {
   putRawXml(getUri(),xml);
 }
+
+function back () {
+    if(document.referrer === "") {
+      //Do nothing.
+      log('empty, tell user to close the Web Browser tab/window');
+    } else{
+      history.back();
+    }
+}
+function log (aString) {
+    if(typeof console !== "undefinded" && typeof console.log !== "undefinded"){
+      console.log(aString);
+    }  
+}
+
+$('#cancel').click(function () {
+  back();
+});
+
+$(function () {
+  $('.alert').alert();
+});

@@ -4,39 +4,23 @@
   <xsl:output encoding="utf-8" indent="yes" method="xml" />
   <xsl:template match="*">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
-    <html>
+    <html lang="en">
       <head>
         <title>eSciDoc Metadata Editor</title>
+        <meta charset="utf-8"/>
         <meta name="description" content="eSciDoc Metadata Editor" />
         <meta name="keywords" content="escidoc, metadata editor" />
 
-        <link rel="stylesheet" type="text/css" href="/rest/static/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="/rest/static/css/override-bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="/rest/static/css/notification-msg.css" />
+        <link rel="stylesheet" href="/rest/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/rest/static/css/override-bootstrap.css" />
+
         <link rel="stylesheet" type="text/css" href="/rest/static/css/codemirror.css" />
         <link rel="stylesheet" href="rest/static/css/docs.css" />
-        <style type="text/css">.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
+
+        <style>.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
       </head>
       <body>
         <div class="container">
-          <div id="notification">
-
-            <!-- Le twitter bootstrap alert -->
-            <div id="fail-message" class="alert-message error" style="display: none;">
-              <a class="close" href="#">
-                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
-              </a>
-              <p><strong>Oh snap!</strong> Something wrong happens...</p>
-            </div>
-
-            <div  id="success-message" class="alert-message success" style="display: none;">
-              <a class="close" href="#">
-                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
-              </a>
-              <p><strong>Successfully Update!</strong></p>
-            </div>
-          </div>
-          
           <div class="content">
             <div class="page-header">
               <h1>Metadata Editor</h1>
@@ -44,6 +28,19 @@
             <div class="row">
               <div class="span12">
                 <form id="raw-xml-metadata-editor">
+
+                  <!-- Le twitter bootstrap alert -->
+                  <div id="notification">
+                    <div id="fail-message" class="alert-message error" style="display: none;">
+                      <a class="close" data-dismiss="alert" href="#">×</a>
+                      <p><strong>Oops!</strong> Failed to update</p>
+                    </div>
+                    <div id="success-message" class="alert-message success" style="display: none;">
+                      <a class="close" data-dismiss="alert" href="#">×</a>
+                      <p><strong>Successfully Update!</strong></p>
+                    </div>
+                  </div><!-- end bootstrap alert -->
+
                   <fieldset>
                     <legend>XML Metadata Editor</legend>
                     <div class="clearfix">
@@ -57,7 +54,7 @@
                     <div class="actions">
                       <input type="submit" class="btn primary" value="Save changes" ></input>
                       <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                      <button type="reset" class="btn">Cancel</button>
+                      <button id="cancel" type="reset" class="btn">Cancel</button>
                     </div>
                   </fieldset>
                 </form>
@@ -66,10 +63,13 @@
           </div>
           <footer></footer>
         </div><!--/container -->
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">
           <xsl:comment>Comment added so script is recognised</xsl:comment>
         </script>
-        <script type="text/javascript" src="/rest/static/js/http-io.js">
+        <script src="/rest/static/js/http-io.js">
+          <xsl:comment>Comment added so script is recognised</xsl:comment>
+        </script>
+        <script src="/rest/static/js/bootstrap-alert.js">
           <xsl:comment>Comment added so script is recognised</xsl:comment>
         </script>
         <script src="/rest/static/js/codemirror.js">

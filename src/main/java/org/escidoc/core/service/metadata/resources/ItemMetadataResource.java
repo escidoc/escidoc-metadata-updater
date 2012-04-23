@@ -46,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -89,7 +88,7 @@ public class ItemMetadataResource {
     private Request r;
 
     @Inject
-    private ItemRepository ir;
+    private ItemRepository repo;
 
     // TODO we should use the browser cookie instead of eSciDocUserHandle query
     // parameter
@@ -117,8 +116,11 @@ public class ItemMetadataResource {
             }
 
             // @formatter:off
-            return Response.ok(new DOMSource(mr.getContent())).lastModified(getLastModificationDate(resource)).tag(
-                getEntityTag(mr)).build();
+            return Response
+                .ok(new DOMSource(mr.getContent()))
+                .lastModified(getLastModificationDate(resource))
+                .tag(getEntityTag(mr))
+                .build();
             // @formatter:on
 
         }
@@ -154,25 +156,23 @@ public class ItemMetadataResource {
         LOG.debug(msg);
 
         try {
-            final Item item = find(id, escidocUri, encodedHandle);
-            final MetadataRecord mr = findMetadataByName(metadataName, item);
-            if (mr.getContent() == null) {
+            final Item resource = find(id, escidocUri, encodedHandle);
+            final MetadataRecord metadata = findMetadataByName(metadataName, resource);
+            if (metadata.getContent() == null) {
                 return Response.status(Status.NO_CONTENT).build();
             }
 
-            final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(item), getEntityTag(mr));
+            final String result = Utils.transformToHtml(metadata);
+            final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(result));
             if (b != null) {
                 return b.build();
             }
 
-            final StringWriter writer = new StringWriter();
-            Utils.buildRawXmlEditor(mr, writer);
-
             // @formatter:off
             return Response
-                .ok(writer.toString(), MediaType.TEXT_HTML)
-                .lastModified(getLastModificationDate(item))
-                .tag(getEntityTag(mr)).build();
+                .ok(result, MediaType.TEXT_HTML)
+                .lastModified(getLastModificationDate(resource))
+                .tag(getEntityTag(result)).build();
             //@formatter:on
         }
         catch (final AuthenticationException e) {
@@ -186,34 +186,29 @@ public class ItemMetadataResource {
             if (e.getCause() instanceof org.jibx.runtime.JiBXException) {
                 return response401();
             }
-            LOG.error("Can not fetch metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-                + e.getMessage());
+            LOG.error("Can not fetch metadata with the name, " + metadataName + ", from " + AppConstant.ITEM + ", "
+                + id + ", reason: " + e.getMessage());
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PUT
     @Consumes("application/xml")
-    @Produces("application/xml")
     public Response update(
         @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
         @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource s,
         @QueryParam("eSciDocUserHandle") final String encodedHandle) {
         checkPreconditions(id, metadataName, escidocUri, sr);
-        final String msg =
-            "HTTP PUT request for item with the id: " + id + ", metadata name: " + metadataName + ", server uri: "
-                + escidocUri;
-        LOG.debug(msg);
 
         try {
-            final Item item = find(id, escidocUri, encodedHandle);
-            final MetadataRecord mr = findMetadataByName(metadataName, item);
-            if (mr.getContent() == null) {
+            final Item resource = find(id, escidocUri, encodedHandle);
+            final MetadataRecord metadata = findMetadataByName(metadataName, resource);
+            if (metadata.getContent() == null) {
                 return Response.status(Status.NO_CONTENT).build();
             }
 
-            mr.setContent((Element) s.getNode().getFirstChild());
-            final Item updated = ir.update(item);
+            metadata.setContent((Element) s.getNode().getFirstChild());
+            final Item updated = repo.update(resource);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
             return Response.ok().build();
@@ -250,7 +245,7 @@ public class ItemMetadataResource {
         throws AuthenticationException, AuthorizationException, InternalClientException {
         try {
             final String decodedHandle = getHandleIfAny(sr, escidocUri, encodedHandle);
-            final Item resource = ir.find(id, new URI(escidocUri), decodedHandle);
+            final Item resource = repo.find(id, new URI(escidocUri), decodedHandle);
             if (resource == null) {
                 throw new NotFoundException("Item," + id + ", not found");
             }
@@ -258,6 +253,10 @@ public class ItemMetadataResource {
         }
         catch (final AuthenticationException e) {
             throw new AuthenticationException(e.getMessage(), e);
+        }
+        catch (final AuthorizationException e) {
+            LOG.debug("Auth. credentials is not valid while accessing protected source. ");
+            throw new AuthorizationException(e.getMessage(), e);
         }
         catch (final ItemNotFoundException e) {
             throw new NotFoundException("Item," + id + ", not found");
