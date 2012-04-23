@@ -51,10 +51,14 @@ function putRawXml(uri, xml) {
         data: xml
      })
     .done(function(msg) {   
+
+      /*
       $("#success-message").fadeIn("slow");
       $("#success-message a.close-notify").click(function() {
         $("#success-message").fadeOut("slow");
       });
+      */
+      $('#success-message').show();
       back();
     })
     .fail(function(request, error) {
@@ -183,4 +187,8 @@ function log (aString) {
 
 $('#cancel').click(function () {
   back();
+});
+
+$(function () {
+  $('.alert').alert();
 });

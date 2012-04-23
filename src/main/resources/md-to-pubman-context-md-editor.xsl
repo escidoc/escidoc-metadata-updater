@@ -2,46 +2,19 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output encoding="UTF-8" indent="yes" method="html" />
-
   <xsl:template match="pubman-admin-descriptor">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
-    <html>
+    <html lang="en">
       <head>
         <title>Pubman context Metadata Editor</title>
+        <meta charset="utf-8" />
         <meta name="description" content="Editor for Pubman Context Metadata Profile" />
-        <meta name="keywords"
-          content="escidoc, context, pubman, metadata, metadata editor" />
-        <link rel="stylesheet" type="text/css"
-          href="/rest/static/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css"
-          href="/rest/static/css/override-bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="/rest/static/css/alert.css" />
+        <meta name="keywords" content="escidoc, context, pubman, metadata, metadata editor" />
+        <link rel="stylesheet" href="/rest/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/rest/static/css/override-bootstrap.css" />
       </head>
       <body>
         <div class="container">
-          <div class="alert fade in">
-            <a class="close" data-dismiss="alert" href="#">×</a>
-            <strong>Something went wrong</strong>
-          </div>
-          
-          <div id="notification">
-
-            <!-- Le twitter bootstrap alert -->
-            <div id="fail-message" class="alert-message error" style="display: none;">
-              <a class="close" href="#">
-                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
-              </a>
-              <p><strong>Oh snap!</strong> Something wrong happens...</p>
-            </div>
-
-            <div  id="success-message" class="alert-message success" style="display: none;">
-              <a class="close" href="#">
-                  <xsl:text disable-output-escaping='yes'>X</xsl:text>
-              </a>
-              <p><strong>Successfully Update!</strong></p>
-            </div>
-          </div>
-          
           <div class="content">
             <div class="page-header">
               <h1>Metadata Editor</h1>
@@ -49,6 +22,18 @@
             <div class="row">
               <div class="span12">
                 <form id="pubman-context-metadata-editor">
+                  <!-- Le twitter bootstrap alert -->
+                  <div id="notification">
+                    <div id="fail-message" class="alert-message error" style="display: none;">
+                      <a class="close" data-dismiss="alert" href="#">×</a>
+                      <p><strong>Oops!</strong> Failed to update</p>
+                    </div>
+                    <div id="success-message" class="alert-message success" style="display: none;">
+                      <a class="close" data-dismiss="alert" href="#">×</a>
+                      <p><strong>Successfully Update!</strong></p>
+                    </div>
+                  </div><!-- end bootstrap alert -->
+                  
                   <fieldset>
                     <legend>PubMan Context Metadata/Admin Descriptor
                     </legend>
@@ -116,11 +101,10 @@
             </div><!-- end row -->
           </div><!-- end content -->
         </div><!--end container -->
-        <script type="text/javascript"
-          src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-        <script type="text/javascript" src="/rest/static/js/app.js"></script>
-        <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
-        <script type="text/javascript" src="/rest/static/js/bootstrap-alert.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="/rest/static/js/app.js"></script>
+        <script src="/rest/static/js/http-io.js"></script>
+        <script src="/rest/static/js/bootstrap-alert.js"></script>
       </body>
     </html>
   </xsl:template>
@@ -499,16 +483,16 @@
     <li>
       <label>
         <input type="checkbox" name="subjectList" value="http://purl.org/escidoc/metadata/terms/0.1/DDC">
-        
+
           <xsl:if test="allowed-genre = 'http://purl.org/escidoc/metadata/ves/publication-types/talk-at-event' ">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>
-        
+
           <xsl:if test="allowed-subject-classification = 'http://purl.org/escidoc/metadata/terms/0.1/DDC' ">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>
         </input>
-          DDC
+        DDC
       </label>
     </li>
     <li>
