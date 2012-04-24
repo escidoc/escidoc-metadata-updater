@@ -14,9 +14,6 @@
         <link rel="stylesheet" href="/rest/static/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/rest/static/css/override-bootstrap.css" />
 
-        <link rel="stylesheet" type="text/css" href="/rest/static/css/codemirror.css" />
-        <link rel="stylesheet" href="rest/static/css/docs.css" />
-
         <style>.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
       </head>
       <body>
@@ -71,15 +68,6 @@
         </script>
         <script src="/rest/static/js/bootstrap-alert.js">
           <xsl:comment>Comment added so script is recognised</xsl:comment>
-        </script>
-        <script src="/rest/static/js/codemirror.js">
-          <xsl:comment>Comment added so script is recognised</xsl:comment>
-        </script>
-        <script src="/rest/static/js/xmlpure.js">
-          <xsl:comment>Comment added so script is recognised</xsl:comment>
-        </script>
-        <script type="text/javascript">
-            var editor = CodeMirror.fromTextArea(document.getElementById("content"), {mode: {name: "xmlpure"}});
         </script>
       </body>
     </html>
