@@ -35,11 +35,11 @@ import com.sun.jersey.api.NotFoundException;
 
 import static org.escidoc.core.service.metadata.Utils.checkPreconditions;
 import static org.escidoc.core.service.metadata.Utils.getEntityTag;
-import static org.escidoc.core.service.metadata.Utils.getHandleIfAny;
 import static org.escidoc.core.service.metadata.Utils.getLastModificationDate;
 import static org.escidoc.core.service.metadata.Utils.response401;
 
 import org.escidoc.core.service.metadata.AppConstant;
+import org.escidoc.core.service.metadata.AuthentificationUtils;
 import org.escidoc.core.service.metadata.Utils;
 import org.escidoc.core.service.metadata.repository.ContainerRepository;
 import org.slf4j.Logger;
@@ -52,6 +52,7 @@ import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -83,10 +84,10 @@ public class ContainerMetadataResource {
     private final static Logger LOG = LoggerFactory.getLogger(ContainerMetadataResource.class);
 
     @Context
-    private HttpServletRequest sr;
+    private HttpServletRequest servletRequest;
 
     @Context
-    private Request r;
+    private Request request;
 
     @Inject
     private ContainerRepository repo;
@@ -94,29 +95,32 @@ public class ContainerMetadataResource {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getAsXml(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
-
-        checkPreconditions(id, metadataName, escidocUri, sr);
+        // @formatter:off
+        @PathParam(AppConstant.ID) final String id,
+        @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri,
+        @CookieParam("escidocCookie") final String escidocCookie) {
+	   // @formatter:on
+        checkPreconditions(id, metadataName, escidocUri, servletRequest);
 
         try {
-            final Container resource = find(id, escidocUri, encodedHandle);
+            final Container resource = find(id, escidocUri, escidocCookie);
             final MetadataRecord metadata = findMetadataByName(metadataName, resource);
             if (metadata.getContent() == null) {
                 return Response.status(Status.NO_CONTENT).build();
             }
             final ResponseBuilder b =
-                r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(metadata));
+                request.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(metadata));
             if (b != null) {
                 return b.build();
             }
 
             // @formatter:off
             return Response
-                .ok(new DOMSource(metadata.getContent())).lastModified(getLastModificationDate(resource))
+                .ok(new DOMSource(metadata.getContent()))
+                .lastModified(getLastModificationDate(resource))
                 .tag(getEntityTag(metadata)).build();
             // @formatter:on
-
         }
         catch (final AuthenticationException e) {
             LOG.debug("Auth. credentials is not valid while accessing protected source. ");
@@ -141,15 +145,17 @@ public class ContainerMetadataResource {
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     public Response update(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource domSource,
-        @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+        // @formatter:off
+        @PathParam(AppConstant.ID) final String id,
+        @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri,
+        final DOMSource domSource,
+        @CookieParam("escidocCookie") final String escidocCookie) {
+	   // @formatter:on
 
-        checkPreconditions(id, metadataName, escidocUri, sr);
-
+        checkPreconditions(id, metadataName, escidocUri, servletRequest);
         try {
-
-            final Container resource = find(id, escidocUri, encodedHandle);
+            final Container resource = find(id, escidocUri, escidocCookie);
             final MetadataRecord metadata = findMetadataByName(metadataName, resource);
             if (metadata.getContent() == null) {
                 return Response.status(Status.NO_CONTENT).build();
@@ -160,7 +166,7 @@ public class ContainerMetadataResource {
             final GenericResource updated = repo.update(resource);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
-            return Response.ok("<p>success</p>").build();
+            return Response.ok().build();
             // @formatter:on
         }
         catch (final AuthenticationException e) {
@@ -187,24 +193,26 @@ public class ContainerMetadataResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getAsHtml(
-        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, @QueryParam("eSciDocUserHandle") final String encodedHandle) {
+       // @formatter:off
+        @PathParam(AppConstant.ID) final String id,
+        @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri,
+        @CookieParam("escidocCookie") final String escidocCookie) {
+	   // @formatter:on 
 
-        checkPreconditions(id, metadataName, escidocUri, sr);
-        final String msg =
-            "HTTP GET request for with the id: " + id + ", metadata name: " + metadataName + ", server uri: "
-                + escidocUri;
-        LOG.debug(msg);
+        checkPreconditions(id, metadataName, escidocUri, servletRequest);
+        debug(id, metadataName, escidocUri);
 
         try {
-            final Container resource = find(id, escidocUri, encodedHandle);
+            final Container resource = find(id, escidocUri, escidocCookie);
             final MetadataRecord metadata = findMetadataByName(metadataName, resource);
             if (metadata.getContent() == null) {
                 return Response.status(Status.NO_CONTENT).build();
             }
 
             final String result = Utils.transformToHtml(metadata);
-            final ResponseBuilder b = r.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(result));
+            final ResponseBuilder b =
+                request.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(result));
             if (b != null) {
                 return b.build();
             }
@@ -234,6 +242,13 @@ public class ContainerMetadataResource {
         }
     }
 
+    private static void debug(final String id, final String metadataName, final String escidocUri) {
+        final String msg =
+            "HTTP GET request for with the id: " + id + ", metadata name: " + metadataName + ", server uri: "
+                + escidocUri;
+        LOG.debug(msg);
+    }
+
     private static MetadataRecord findMetadataByName(final String metadataName, final Container resource) {
         final MetadataRecords list = resource.getMetadataRecords();
         if (list == null || list.isEmpty()) {
@@ -248,12 +263,16 @@ public class ContainerMetadataResource {
     }
 
     /**
-     * throws {@link AuthorizationException} is a RuntimeException
-     * */
+     * Runtime Exceptions
+     * 
+     * @throws {@link AuthenticationException} is a RuntimeException
+     * @throws {@link AuthorizationException} is a RuntimeException
+     */
     private Container find(final String id, final String escidocUri, final String encodedHandle)
         throws AuthenticationException, InternalClientException, AuthorizationException {
         try {
-            final String decodedHandle = getHandleIfAny(sr, escidocUri, encodedHandle);
+            final String decodedHandle =
+                AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, encodedHandle);
             final Container resource = repo.find(id, new URI(escidocUri), decodedHandle);
             if (resource == null) {
                 final StringBuilder builder = new StringBuilder();
@@ -285,5 +304,4 @@ public class ContainerMetadataResource {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

@@ -10,8 +10,11 @@
         <meta charset="utf-8"/>
         <meta name="description" content="eSciDoc Metadata Editor" />
         <meta name="keywords" content="escidoc, metadata editor" />
+
         <link rel="stylesheet" href="/rest/static/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/rest/static/css/override-bootstrap.css" />
+
+        <style>.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
       </head>
       <body>
         <div class="container">
@@ -40,7 +43,7 @@
                     <div class="clearfix">
                       <label for="content">Content</label>
                       <div class="input">
-                        <textarea class="span8" id="content" rows="30">
+                        <textarea class="span8" id="content" name="content" rows="30">
                           <xsl:copy-of select="." />
                         </textarea>
                       </div>

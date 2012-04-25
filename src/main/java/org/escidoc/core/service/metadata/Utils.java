@@ -28,8 +28,6 @@ package org.escidoc.core.service.metadata;
 
 import com.google.common.base.Preconditions;
 
-import com.sun.jersey.core.util.Base64;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -38,12 +36,8 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.util.Date;
 
@@ -64,9 +58,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import de.escidoc.core.client.Authentication;
-import de.escidoc.core.client.exceptions.TransportException;
-import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.resources.GenericResource;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.om.context.AdminDescriptor;
@@ -112,38 +103,6 @@ public final class Utils {
         }
     }
 
-    public static final String loginToEscidoc(final String escidocUri, final String[] creds)
-        throws AuthenticationException, TransportException, MalformedURLException {
-        Preconditions.checkNotNull(escidocUri, "escidocUri is null: %s", escidocUri);
-        Preconditions.checkArgument(creds.length > 0);
-        return new Authentication(new URL(escidocUri), getUserName(creds), getPassword(creds)).getHandle();
-    }
-
-    private static final String getPassword(final String[] creds) {
-        final String decoded = decodeHandle(creds[1]);
-        final String[] arrays = decoded.split(":");
-        if (arrays.length == 1) {
-            return "";
-        }
-        return arrays[1];
-    }
-
-    private static final String getUserName(final String[] creds) {
-        return decodeHandle(creds[1]).split(":")[0];
-    }
-
-    private static final boolean notEmpty(final String[] creds) {
-        return decodeHandle(creds[1]).split(":").length > 0;
-    }
-
-    private static final boolean useHttpBasicAuth(final String[] creds) {
-        return creds[0].contains(AppConstant.BASIC);
-    }
-
-    private static final boolean has(final String encodedHandle) {
-        return encodedHandle != null;
-    }
-
     public static final String computeDigest(final byte[] content) {
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA");
@@ -169,13 +128,6 @@ public final class Utils {
             .entity("Authentification credentials are required")
             .build();
         // @formatter:on
-    }
-
-    private static final String decodeHandle(final String handle) {
-        if (has(handle)) {
-            return Base64.base64Decode(handle);
-        }
-        return "";
     }
 
     public static final void checkPreconditions(
@@ -206,25 +158,6 @@ public final class Utils {
 
     public static final Date getLastModificationDate(final GenericResource r) {
         return r.getLastModificationDate().toDate();
-    }
-
-    public static final String getHandleIfAny(
-        final HttpServletRequest sr, final String escidocUri, final String encodedHandle)
-        throws AuthenticationException, TransportException, MalformedURLException {
-        if (has(encodedHandle)) {
-            return decodeHandle(encodedHandle);
-        }
-        else if (hasAuthHeader(sr)) {
-            final String[] creds = sr.getHeader(AppConstant.AUTHORIZATION).split(" ");
-            if (useHttpBasicAuth(creds) && notEmpty(creds)) {
-                return loginToEscidoc(escidocUri, creds);
-            }
-        }
-        return "";
-    }
-
-    public static final boolean hasAuthHeader(final HttpServletRequest sr) {
-        return sr.getHeader(AppConstant.AUTHORIZATION) != null;
     }
 
     public static final void transformXml(final MetadataRecord mr, final String xsltFile, final StringWriter writer) {
@@ -260,31 +193,6 @@ public final class Utils {
         catch (final SAXException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @SuppressWarnings("unused")
-    private static final void printToLogger(final String xsltFile) throws IOException {
-        LOG.debug("Loading XSLT file: " + xsltFile);
-        final String value = readAsString(xsltFile);
-        LOG.debug("as Stream is: " + value);
-    }
-
-    private static final String readAsString(final String xsltFile) throws IOException {
-        final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(xsltFile);
-        final char[] buffer = new char[0x10000];
-        final StringBuilder out = new StringBuilder();
-        final Reader in = new InputStreamReader(is, "UTF-8");
-        int read;
-        do {
-            read = in.read(buffer, 0, buffer.length);
-            if (read > 0) {
-                out.append(buffer, 0, read);
-            }
-        }
-        while (read >= 0);
-        final String result = out.toString();
-        return result;
-
     }
 
     public static final void transformXml(final AdminDescriptor mr, final String xsltFile, final StringWriter writer) {
