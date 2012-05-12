@@ -46,17 +46,21 @@ public class AuthentificationUtils {
         // Utility class
     }
 
+    // FIXME what happens, if escidoc handle is expired? We haven't handle that case yet.
+    // IMO, we should redirect the client to eSciDoc Login page.
     public static final String getHandleIfAny(
         final HttpServletRequest sr, final String escidocUri, final String encodedHandle)
         throws AuthenticationException, TransportException, MalformedURLException {
-        if (has(encodedHandle)) {
-            return encodedHandle;
-        }
-        else if (hasAuthHeader(sr)) {
+        Preconditions.checkNotNull(sr, "sr is null: %s", sr);
+        Preconditions.checkNotNull(escidocUri, "escidocUri is null: %s", escidocUri);
+        if (hasAuthHeader(sr)) {
             final String[] creds = sr.getHeader(AppConstant.AUTHORIZATION).split(" ");
             if (useHttpBasicAuth(creds) && notEmpty(creds)) {
                 return loginToEscidoc(escidocUri, creds);
             }
+        }
+        else if (has(encodedHandle)) {
+            return encodedHandle;
         }
         return "";
     }
