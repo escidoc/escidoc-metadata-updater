@@ -14,7 +14,9 @@
         <meta name="description" content="Editor for Pubman Organization Metadata Profile" />
         <meta name="keywords" content="escidoc, organization, pubman, metadata, metadata editor" />
         <link rel="stylesheet" href="/rest/static/css/bootstrap.min.css" />
+        <!-- 
         <link rel="stylesheet" href="/rest/static/css/override-bootstrap.css" />
+         -->
       </head>
       <body>
         <div class="container">
@@ -23,8 +25,8 @@
               <h1>Metadata Editor</h1>
             </div>
             <div class="row">
-              <div class="span12">
-                <form id="pubman-organization-metadata-editor">
+              <div class="span6">
+                <form class="form-horizontal" id="pubman-organization-metadata-editor">
                   
                   <!-- Le twitter bootstrap alert -->
                   <div id="notification">
@@ -40,9 +42,9 @@
                   
                   <fieldset>
                     <legend>PubMan Organization Metadata</legend>
-                    <div class="clearfix">
-                      <label for="title">Organization Name</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="title">Organization Name</label>
+                      <div class="controls">
                         <input class="span6" id="title" name="title"
                           type="text" required="required" autofocus="autofocus"
                           placeholder="Name of your organization">
@@ -51,10 +53,10 @@
                         </input>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="alternative">Organization Alternative Name
+                    <div class="control-group">
+                      <label class="control-label" for="alternative">Organization Alternative Name
                       </label>
-                      <div class="input">
+                      <div class="controls">
                         <input class="span6" id="alternative"
                           name="alternative" type="text" size="45"
                           placeholder="Alternative name of your organization">
@@ -64,9 +66,9 @@
                         </input>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="type">Organization Type</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="type">Organization Type</label>
+                      <div class="controls">
                         <input class="span6" id="type"
                           name="organization-type" type="text" size="45"
                           placeholder="Type such as: Department, Institute, Project, Group, etc">
@@ -76,19 +78,19 @@
                         </input>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="identifier">Identifier</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="identifier">Identifier</label>
+                      <div class="controls">
                         <input class="span6" id="type" name="identifier"
                           type="text" size="45" placeholder="pubman:ext">
                           <xsl:attribute name="value"><xsl:value-of
                               select="dc:identifier" /></xsl:attribute>
                         </input>
-                      </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="description">Short Description</label>
-                      <div class="input">
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="description">Short Description</label>
+                      <div class="controls">
                         <textarea class="span6" id="description"
                           name="description" rows="5"
                           placeholder="Short description about your organization">
@@ -96,9 +98,9 @@
                         </textarea>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="city">City</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="city">City</label>
+                      <div class="controls">
                         <input required="required" class="span6"
                           id="city" name="city" type="text" placeholder="Munich">
                           <xsl:attribute name="value"><xsl:value-of
@@ -107,9 +109,9 @@
                         </input>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="country">Country</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="country">Country</label>
+                      <div class="controls">
                         <input required="required" class="span6"
                           id="country" name="country" type="text"
                           placeholder="Germany">
@@ -119,9 +121,9 @@
                         </input>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="coordinates">Geographical Location</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="coordinates">Geographical Location</label>
+                      <div class="controls">
                         <input class="span6" id="coordinates"
                           name="coordinates" type="text"
                           placeholder="48°21′14″N 011°47′10″E">
@@ -131,9 +133,9 @@
                         </input>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="start-date">Start</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="start-date">Start</label>
+                      <div class="controls">
                         <input required="required" min="1000-01-01"
                           class="span6" id="start-date" name="start-date"
                           type="date" placeholder="2012-03-30">
@@ -143,9 +145,9 @@
                         </input>
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <label for="end-date">End</label>
-                      <div class="input">
+                    <div class="control-group">
+                      <label class="control-label" for="end-date">End</label>
+                      <div class="controls">
                         <input class="span6" id="end-date" name="end-date"
                           type="date">
                           <xsl:attribute name="value"><xsl:value-of
@@ -154,13 +156,12 @@
                         </input>
                       </div>
                     </div>
+	                <div class="form-actions">
+	                    <button type="submit" class="btn btn-primary">Save changes</button>
+	                    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+	                    <button id="cancel" type="reset" class="btn">Cancel</button>
+	                 </div><!-- end form actions -->
                   </fieldset>
-                  <div class="actions">
-                    <input type="submit" class="btn primary"
-                      value="Save changes" />
-                    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                    <button id="cancel" type="reset" class="btn">Cancel</button>
-                  </div>
                 </form>
               </div>
             </div><!-- end row -->

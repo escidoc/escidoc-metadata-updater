@@ -89,12 +89,11 @@
                         </input>
                       </div>
                     </div><!-- end clearfix -->
-                    <div class="actions">
-                      <input type="submit" class="btn primary"
-                        value="Save changes" />
-                      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                      <button id="cancel" type="reset" class="btn">Cancel</button>
-                    </div><!-- end actions -->
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+                    <button id="cancel" type="reset" class="btn">Cancel</button>
+                  </div><!-- end form actions -->
                   </fieldset>
                 </form>
               </div>

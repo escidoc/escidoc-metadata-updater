@@ -24,7 +24,7 @@
             </div>
             <div class="row">
               <div class="span12">
-                <form id="raw-xml-metadata-editor">
+                <form class="form-horizontal" id="raw-xml-metadata-editor">
 
                   <!-- Le twitter bootstrap alert -->
                   <div id="notification">
@@ -48,11 +48,11 @@
                         </textarea>
                       </div>
                     </div> <!--/clearfix -->
-                    <div class="actions">
-                      <input type="submit" class="btn primary" value="Save changes" ></input>
-                      <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                      <button id="cancel" type="reset" class="btn">Cancel</button>
-                    </div>
+                    <div class="form-actions">
+	                    <input type="submit" class="btn btn-primary" value="Save changes"/>
+	                    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+	                    <button id="cancel" type="reset" class="btn">Cancel</button>
+	                </div><!-- end form actions -->
                   </fieldset>
                 </form>
               </div>

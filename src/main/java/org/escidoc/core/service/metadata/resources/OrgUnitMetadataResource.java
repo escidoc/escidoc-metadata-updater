@@ -99,12 +99,10 @@ public class OrgUnitMetadataResource {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getAsXml(
-    // @formatter:off
-        @PathParam(AppConstant.ID) final String id,
-        @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri,
-        @CookieParam("escidocCookie") final String escidocCookie) {
-   // @formatter:on
+        // @formatter:off
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, @CookieParam("escidocCookie") final String escidocCookie) {
+        // @formatter:on
 
         checkPreconditions(id, metadataName, escidocUri, sevletRequest);
         debug(id, metadataName, escidocUri);
@@ -122,8 +120,9 @@ public class OrgUnitMetadataResource {
             }
 
             // @formatter:off
-            return Response.ok(new DOMSource(mr.getContent())).lastModified(getLastModificationDate(resource)).tag(
-                getEntityTag(mr)).build();
+            return Response
+                .ok(new DOMSource(mr.getContent())).lastModified(getLastModificationDate(resource))
+                .tag(getEntityTag(mr)).build();
             // @formatter:on
 
         }
@@ -207,11 +206,9 @@ public class OrgUnitMetadataResource {
     @Produces(MediaType.TEXT_HTML)
     public Response getAsHtml(
         // @formatter:off
-        @PathParam(AppConstant.ID) final String id,
-        @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri,
-        @CookieParam("escidocCookie") final String escidocCookie) {
-	   // @formatter:on
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, @CookieParam("escidocCookie") final String escidocCookie) {
+        // @formatter:on
 
         checkPreconditions(id, metadataName, escidocUri, sevletRequest);
         debug(id, metadataName, escidocUri);
@@ -241,10 +238,9 @@ public class OrgUnitMetadataResource {
 
             // @formatter:off
             return Response
-                .ok(writer.toString(), MediaType.TEXT_HTML)
-                .lastModified(getLastModificationDate(org))
+                .ok(writer.toString(), MediaType.TEXT_HTML).lastModified(getLastModificationDate(org))
                 .tag(getEntityTag(mr)).build();
-            //@formatter:on
+            // @formatter:on
         }
         catch (final AuthenticationException e) {
             return response401();
@@ -272,12 +268,10 @@ public class OrgUnitMetadataResource {
     @Consumes(MediaType.APPLICATION_XML)
     public Response update(
         // @formatter:off
-        @PathParam(AppConstant.ID) final String id,
-        @PathParam("metadata-name") final String metadataName,
-        @QueryParam(AppConstant.EU) final String escidocUri, 
-        final DOMSource domSource,
+        @PathParam(AppConstant.ID) final String id, @PathParam("metadata-name") final String metadataName,
+        @QueryParam(AppConstant.EU) final String escidocUri, final DOMSource domSource,
         @CookieParam("escidocCookie") final String escidocCookie) {
-	   // @formatter:on
+        // @formatter:on
 
         checkPreconditions(id, metadataName, escidocUri, sevletRequest);
         debugPut(id, metadataName, escidocUri);
@@ -293,9 +287,7 @@ public class OrgUnitMetadataResource {
             final GenericResource updated = repository.update(org);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
-            return Response
-                .ok("<updated/>")
-                .build();
+            return Response.ok("<updated/>").build();
             // @formatter:on
         }
         catch (final AuthorizationException e) {
