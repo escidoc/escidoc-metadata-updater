@@ -4,6 +4,7 @@
 a RESTful Web Service for fetching and updating eSciDoc Sub Resources i.e. Metadata,
 Properties, etc.
 
+
 ## Quick Start
 
 Clone the repo, `git clone git@github.com:escidoc/https://github.com/escidoc/escidoc-metadata-updater.git ,
@@ -11,6 +12,7 @@ $mvn clean jetty:run
 
 or [download the latest release](https://github.com/downloads/escidoc/escidoc-metadata-updater/rest.war)
 and put the war in your favorite Java Web Container, e.g., Tomcat, etc
+
 
 ## How to use
 
@@ -25,6 +27,7 @@ $`curl` --user name:password -http://{service-hostname}:{portnumber}/rest/v0.9/i
 + **update**
 
 $`curl` --user name:password --upload-file metadata.xml http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
+
 
 ## Example's Use:
 
