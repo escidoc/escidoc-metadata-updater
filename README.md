@@ -2,7 +2,7 @@
 ==========
 
 a RESTful Web Service for fetching and updating eSciDoc Sub Resources i.e. Metadata,
-Properties, etc
+Properties, etc.
 
 ## Quick Start
 
@@ -13,6 +13,8 @@ or [download the latest release](https://github.com/downloads/escidoc/escidoc-me
 and put the war in your favorite Java Web Container, e.g., Tomcat, etc
 
 ## How to use
+
+Authentication can be done via username and password if DB-Auth is configured or by sending a cookie with a valid eSciDoc-Handle.
 
 + **fetch**
 
