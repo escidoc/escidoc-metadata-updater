@@ -43,11 +43,8 @@
                     <div class="clearfix">
                       <label for="title">Organization Name</label>
                       <div class="input">
-                        <input class="span6" id="title" name="title"
-                          type="text" required="required" autofocus="autofocus"
-                          placeholder="Name of your organization">
-                          <xsl:attribute name="value"><xsl:value-of
-                              select="dc:title" /></xsl:attribute>
+                        <input class="span6" id="title" name="title" type="text" required="required" autofocus="autofocus" placeholder="Name of your organization">
+                          <xsl:attribute name="value"><xsl:value-of select="dc:title" /></xsl:attribute>
                         </input>
                       </div>
                     </div>
@@ -55,12 +52,8 @@
                       <label for="alternative">Organization Alternative Name
                       </label>
                       <div class="input">
-                        <input class="span6" id="alternative"
-                          name="alternative" type="text" size="45"
-                          placeholder="Alternative name of your organization">
-                          <xsl:attribute name="value"><xsl:value-of
-                              select="dcterms:alternative" />
-                          </xsl:attribute>
+                        <input class="span6" id="alternative" name="alternative" type="text" size="45" placeholder="Alternative name of your organization">
+                          <xsl:attribute name="value"><xsl:value-of select="dcterms:alternative" /></xsl:attribute>
                         </input>
                       </div>
                     </div>
@@ -99,23 +92,16 @@
                     <div class="clearfix">
                       <label for="city">City</label>
                       <div class="input">
-                        <input required="required" class="span6"
-                          id="city" name="city" type="text" placeholder="Munich">
-                          <xsl:attribute name="value"><xsl:value-of
-                              select="eterms:city" />
-                          </xsl:attribute>
+                        <input class="span6" id="city" name="city" type="text" placeholder="Munich">
+                          <xsl:attribute name="value"><xsl:value-of select="eterms:city" /></xsl:attribute>
                         </input>
                       </div>
                     </div>
                     <div class="clearfix">
                       <label for="country">Country</label>
                       <div class="input">
-                        <input required="required" class="span6"
-                          id="country" name="country" type="text"
-                          placeholder="Germany">
-                          <xsl:attribute name="value"><xsl:value-of
-                              select="eterms:country" />
-                          </xsl:attribute>
+                        <input class="span6" id="country" name="country" type="text" placeholder="Germany">
+                          <xsl:attribute name="value"><xsl:value-of select="eterms:country" /></xsl:attribute>
                         </input>
                       </div>
                     </div>
@@ -134,12 +120,8 @@
                     <div class="clearfix">
                       <label for="start-date">Start</label>
                       <div class="input">
-                        <input required="required" min="1000-01-01"
-                          class="span6" id="start-date" name="start-date"
-                          type="date" placeholder="2012-03-30">
-                          <xsl:attribute name="value"><xsl:value-of
-                              select="eterms:start-date" />
-                          </xsl:attribute>
+                        <input min="1000-01-01" class="span6" id="start-date" name="start-date" type="date" placeholder="2012-03-30">
+                          <xsl:attribute name="value"><xsl:value-of select="eterms:start-date" /></xsl:attribute>
                         </input>
                       </div>
                     </div>
