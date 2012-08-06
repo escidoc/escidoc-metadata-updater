@@ -17,7 +17,18 @@ $(function() {
     
                   // write user input to the xml
                   $.each(map, function(key, val){
-                        $(payload).find(key).text(val);
+                    
+                    
+                    if($(payload).find(key).length === 0) {
+                      var inputElement = $('#'+key)[0];
+                      if(inputElement && inputElement.dataset){
+                        var prefix = inputElement.dataset['prefix'];
+                        var tagname = inputElement.dataset['tagname'];
+                        $(payload).find(prefix + '\\:' + tagname).text(val);
+                      }
+                    }
+                    
+                    $(payload).find(key).text(val);
                   });
                   
                   putRawXml(getUri(), toString(payload));
@@ -41,7 +52,6 @@ function toString(xmlDocument) {
     }
 }
 
-	
 function putRawXml(uri, xml) {
 	var request = $.ajax({
         type: "PUT",
@@ -51,14 +61,10 @@ function putRawXml(uri, xml) {
         data: xml
      })
     .done(function(msg) {   
-
-      /*
       $("#success-message").fadeIn("slow");
       $("#success-message a.close-notify").click(function() {
         $("#success-message").fadeOut("slow");
       });
-      */
-      $('#success-message').show();
       back();
     })
     .fail(function(request, error) {

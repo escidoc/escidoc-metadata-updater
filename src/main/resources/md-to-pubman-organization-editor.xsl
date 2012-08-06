@@ -43,7 +43,7 @@
                     <div class="clearfix">
                       <label for="title">Organization Name</label>
                       <div class="input">
-                        <input class="span6" id="title" name="title" type="text" required="required" autofocus="autofocus" placeholder="Name of your organization">
+                        <input data-prefix="dc" data-tagname="title" class="span6" id="title" name="title" type="text" required="required" autofocus="autofocus" placeholder="Name of your organization">
                           <xsl:attribute name="value"><xsl:value-of select="dc:title" /></xsl:attribute>
                         </input>
                       </div>
@@ -52,7 +52,7 @@
                       <label for="alternative">Organization Alternative Name
                       </label>
                       <div class="input">
-                        <input class="span6" id="alternative" name="alternative" type="text" size="45" placeholder="Alternative name of your organization">
+                        <input data-prefix="dcterms" data-tagname="alternative" class="span6" id="alternative" name="alternative" type="text" size="45" placeholder="Alternative name of your organization">
                           <xsl:attribute name="value"><xsl:value-of select="dcterms:alternative" /></xsl:attribute>
                         </input>
                       </div>
@@ -60,29 +60,23 @@
                     <div class="clearfix">
                       <label for="type">Organization Type</label>
                       <div class="input">
-                        <input class="span6" id="type"
-                          name="organization-type" type="text" size="45"
-                          placeholder="Type such as: Department, Institute, Project, Group, etc">
-                          <xsl:attribute name="value"><xsl:value-of
-                              select="eterms:organization-type" />
-                          </xsl:attribute>
+                        <input data-prefix="eterms" data-tagname="organization-type" class="span6" id="organization-type" name="organization-type" type="text" size="45" placeholder="Type such as: Department, Institute, Project, Group, etc">
+                          <xsl:attribute name="value"><xsl:value-of select="eterms:organization-type" /></xsl:attribute>
                         </input>
                       </div>
                     </div>
                     <div class="clearfix">
                       <label for="identifier">Identifier</label>
                       <div class="input">
-                        <input class="span6" id="type" name="identifier"
-                          type="text" size="45" placeholder="pubman:ext">
-                          <xsl:attribute name="value"><xsl:value-of
-                              select="dc:identifier" /></xsl:attribute>
+                        <input data-prefix="dc" data-tagname="identifier" class="span6" id="identifier" name="identifier" type="text" size="45" placeholder="pubman:ext">
+                          <xsl:attribute name="value"><xsl:value-of select="dc:identifier" /></xsl:attribute>
                         </input>
                       </div>
                     </div>
                     <div class="clearfix">
                       <label for="description">Short Description</label>
                       <div class="input">
-                        <textarea class="span6" id="description"
+                        <textarea data-prefix="dc" data-tagname="description" class="span6" id="description"
                           name="description" rows="5"
                           placeholder="Short description about your organization">
                           <xsl:value-of select="dc:description" />
@@ -92,7 +86,7 @@
                     <div class="clearfix">
                       <label for="city">City</label>
                       <div class="input">
-                        <input class="span6" id="city" name="city" type="text" placeholder="Munich">
+                        <input data-prefix="eterms" data-tagname="city" class="span6" id="city" name="city" type="text" placeholder="Munich">
                           <xsl:attribute name="value"><xsl:value-of select="eterms:city" /></xsl:attribute>
                         </input>
                       </div>
@@ -100,7 +94,7 @@
                     <div class="clearfix">
                       <label for="country">Country</label>
                       <div class="input">
-                        <input class="span6" id="country" name="country" type="text" placeholder="Germany">
+                        <input data-prefix="eterms" data-tagname="country" class="span6" id="country" name="country" type="text" placeholder="Germany">
                           <xsl:attribute name="value"><xsl:value-of select="eterms:country" /></xsl:attribute>
                         </input>
                       </div>
@@ -108,7 +102,7 @@
                     <div class="clearfix">
                       <label for="coordinates">Geographical Location</label>
                       <div class="input">
-                        <input class="span6" id="coordinates"
+                        <input data-prefix="kml" data-tagname="coordinates" class="span6" id="coordinates"
                           name="coordinates" type="text"
                           placeholder="48°21′14″N 011°47′10″E">
                           <xsl:attribute name="value"><xsl:value-of
@@ -120,7 +114,7 @@
                     <div class="clearfix">
                       <label for="start-date">Start</label>
                       <div class="input">
-                        <input min="1000-01-01" class="span6" id="start-date" name="start-date" type="date" placeholder="2012-03-30">
+                        <input data-prefix="eterms" data-tagname="start-date" min="1000-01-01" class="span6" id="start-date" name="start-date" type="date" placeholder="2012-03-30">
                           <xsl:attribute name="value"><xsl:value-of select="eterms:start-date" /></xsl:attribute>
                         </input>
                       </div>
@@ -128,8 +122,7 @@
                     <div class="clearfix">
                       <label for="end-date">End</label>
                       <div class="input">
-                        <input class="span6" id="end-date" name="end-date"
-                          type="date">
+                        <input data-prefix="eterms" data-tagname="end-date" class="span6" id="end-date" name="end-date" type="date">
                           <xsl:attribute name="value"><xsl:value-of
                               select="eterms:end-date" />
                           </xsl:attribute>
@@ -148,7 +141,7 @@
             </div><!-- end row -->
           </div><!-- end content -->
         </div><!--end container -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
         <script type="text/javascript" src="/rest/static/js/app.js"></script>
         <script type="text/javascript" src="/rest/static/js/http-io.js"></script>
         <script type="text/javascript" src="/rest/static/js/bootstrap-alert.js"></script>
