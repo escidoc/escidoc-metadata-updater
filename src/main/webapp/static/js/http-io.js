@@ -22,8 +22,8 @@ $(function() {
                     if($(payload).find(key).length === 0) {
                       var inputElement = $('#'+key)[0];
                       if(inputElement && inputElement.dataset){
-                        var prefix = inputElement.dataset['prefix'];
-                        var tagname = inputElement.dataset['tagname'];
+                        var prefix = inputElement.dataset.prefix;
+                        var tagname = inputElement.dataset.tagname;
                         $(payload).find(prefix + '\\:' + tagname).text(val);
                       }
                     }
