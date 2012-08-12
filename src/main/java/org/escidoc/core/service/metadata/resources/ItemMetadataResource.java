@@ -166,7 +166,8 @@ public class ItemMetadataResource {
             }
 
             final String result = Utils.transformToHtml(metadata);
-            final ResponseBuilder b = request.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(result));
+            final ResponseBuilder b =
+                request.evaluatePreconditions(getLastModificationDate(resource), getEntityTag(result));
             if (b != null) {
                 return b.build();
             }
@@ -268,7 +269,8 @@ public class ItemMetadataResource {
         throws AuthenticationException, AuthorizationException, InternalClientException {
         try {
             final Item resource =
-                repository.find(id, new URI(escidocUri), AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, escidocCookie));
+                repository.find(id, new URI(escidocUri),
+                    AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, escidocCookie));
             if (resource == null) {
                 throw new NotFoundException("Item," + id + ", not found");
             }

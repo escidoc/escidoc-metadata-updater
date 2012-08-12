@@ -125,7 +125,7 @@ public final class Utils {
             .header("WWW-Authenticate",
             "Basic realm=\"" + AppConstant.BASIC_REALM + "\"")
             .type("text/plain")
-            .entity("Authentification credentials are required")
+            .entity("Authentification credentials were missing or incorrect.")
             .build();
         // @formatter:on
     }
