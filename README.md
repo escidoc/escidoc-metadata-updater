@@ -1,8 +1,10 @@
 [eSciDoc Sub Resource Update Service](https://github.com/escidoc/escidoc-metadata-updater)
-==========
+====================================
 
-a RESTful Web Service for fetching and updating eSciDoc Sub Resources i.e. Metadata,
-Properties, etc
+## Description
+
+a RESTful Web Service for retrieving and updating eSciDoc[https://escidoc.org] Sub 
+Resources i.e. Metadata, Properties, Files, etc
 
 ## Quick Start
 
@@ -12,15 +14,15 @@ $mvn clean jetty:run
 or [download the latest release](https://github.com/downloads/escidoc/escidoc-metadata-updater/rest.war)
 and put the war in your favorite Java Web Container, e.g., Tomcat, etc
 
-## How to use
+## USAGE
 
-+ **fetch**
++ **Retrieve**
 
-Fetch an item's metadata with the item id:{item-id} and the metadata name:{metadata-name}
+Retrieve an item's metadata with the item id:{item-id} and the metadata name:{metadata-name}
 
 $`curl` --user name:password -http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
 
-+ **update**
++ **Update**
 
 $`curl` --user name:password --upload-file metadata.xml http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
 
@@ -44,7 +46,6 @@ Component: MD Update Service
 
 Authors
 -------
-
 
 **Frank Schwichtenberg**
 
