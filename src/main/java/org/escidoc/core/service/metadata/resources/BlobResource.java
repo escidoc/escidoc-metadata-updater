@@ -28,12 +28,11 @@
  */
 package org.escidoc.core.service.metadata.resources;
 
-import com.google.inject.Inject;
+import com.google.common.base.Preconditions;
 
 import org.escidoc.core.service.metadata.AppConstant;
 import org.escidoc.core.service.metadata.AuthentificationUtils;
 import org.escidoc.core.service.metadata.Utils;
-import org.escidoc.core.service.metadata.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +42,14 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -71,12 +71,6 @@ public class BlobResource {
     @Context
     private HttpServletRequest servletRequest;
 
-    @Context
-    private Request request;
-
-    @Inject
-    private ItemRepository itemRepo;
-
     @PUT
     @Consumes(MediaType.WILDCARD)
     public Response update(
@@ -84,30 +78,37 @@ public class BlobResource {
         @PathParam("item-id") final String itemId, 
         @PathParam("component-id") final String componentId, 
         @QueryParam(AppConstant.EU) final String escidocUri,
+        @CookieParam("escidocCookie") final String escidocCookie,
         final InputStream is) {
         //@formatter:on
-        // TODO check for preconditions
+        checkPreconditions(itemId, componentId, servletRequest);
+        checkQueryParameter(escidocUri);
+
         try {
+            // TODO move clients to an extra class
+            final ItemHandlerClient itemClient = new ItemHandlerClient(new URL(escidocUri));
+            final String token = AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, escidocCookie);
+            itemClient.setHandle(token);
+
             final StagingHandlerClient stagingClient = new StagingHandlerClient(new URL(escidocUri));
-            stagingClient.setHandle(AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, ""));
+            stagingClient.setHandle(token);
             final URL upload = stagingClient.upload(is);
             LOG.debug("Succesfully upload file to " + upload.toString());
 
-            final ItemHandlerClient itemClient = new ItemHandlerClient(new URL(escidocUri));
-            itemClient.setHandle(AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, ""));
-
             // TODO create an issue in escidoc-ijc fix for 1.4.3
-            // final Component component = c.retrieveComponent(itemId, componentId);
-
+            // missing '/' in ItemRestServiceLocator.java Line 244
+            // final Component component = itemClient.retrieveComponent(itemId, componentId);
             final Item item = itemClient.retrieve(itemId);
             final Component component = item.getComponents().get(componentId);
 
             component.getContent().setXLinkHref(upload.toString());
             component.getContent().setStorageType(StorageType.INTERNAL_MANAGED);
 
-            // TODO create an issue in escidoc-ijc fix for 1.4.3
-            itemClient.updateComponent(itemId, component);
-            final Item updatedItem = itemClient.update(item);
+            // TODO last modification date of component is null, we should get it from the item.
+            // why we need the last modification date from the item?
+            component.setLastModificationDate(item.getLastModificationDate());
+            final Component updated = itemClient.updateComponent(itemId, component);
+            LOG.info("Succesfully update component with the id: " + updated.getObjid());
             // TODO 200 or 204?
             return Response.noContent().build();
         }
@@ -127,6 +128,18 @@ public class BlobResource {
             return Response
                 .status(Status.BAD_REQUEST).entity(escidocUri + " is not a valid URL, details: " + e.getMessage())
                 .type(MediaType.TEXT_PLAIN_TYPE).build();
+        }
+    }
+
+    static final void checkPreconditions(final String itemId, final String componentId, final HttpServletRequest request) {
+        Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
+        Preconditions.checkNotNull(componentId, "componentId is null: %s", componentId);
+        Preconditions.checkNotNull(request, "request is null: %s", request);
+    }
+
+    private static final void checkQueryParameter(final String escidocUri) {
+        if (escidocUri == null || escidocUri.isEmpty()) {
+            throw new WebApplicationException(Status.BAD_REQUEST);
         }
     }
 }
