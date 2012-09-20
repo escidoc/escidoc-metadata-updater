@@ -14,19 +14,23 @@ $mvn clean jetty:run
 or [download the latest release](https://github.com/downloads/escidoc/escidoc-metadata-updater/rest.war)
 and put the war in your favorite Java Web Container, e.g., Tomcat, etc
 
-## USAGE
+## Usage
 
-+ **Retrieve**
++ **Retrieve Metadata**
 
 Retrieve an item's metadata with the item id:{item-id} and the metadata name:{metadata-name}
 
 $`curl` --user name:password -http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
 
-+ **Update**
++ **Update Metadata**
 
-$`curl` --user name:password --upload-file metadata.xml http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
+$`curl` --user name:password --upload-file {metadata.xml} http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
 
-## Example's Use:
++ **Update Blob**
+
+$`curl` --user name:password --upload-file {file} http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/files/{file-id}/blob?escidocurl=http://{escidoc-hostname:portnumber}
+
+## Example:
 
 + $`curl` --user admin:swordfish https://api.escidoc.org:80/rest/v0.9/items/escidoc:1/metadata/mine?escidocurl=https://core.escidoc.org:80 > metadata.xml
 
@@ -35,6 +39,9 @@ $`curl` --user name:password --upload-file metadata.xml http://{service-hostname
 
 + $`curl` --user admin:swordfish --upload-file metadata.xml https://api.escidoc.org:80/rest/v0.9/items/escidoc:1/metadata/mine?escidocurl=https://core.escidoc.org:80
 
++ **Update Blob**
+
++ $`curl` --user admin:swordfish --upload-file /tmp/publication.pdf https://api.escidoc.org:80/rest/v0.9/items/escidoc:1/files/escidoc:2/blob?escidocurl=https://core.escidoc.org:80
 
 Bug tracker
 -----------
