@@ -58,6 +58,7 @@ import de.escidoc.core.client.StagingHandlerClient;
 import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
+import de.escidoc.core.client.exceptions.application.notfound.ItemNotFoundException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.om.item.Item;
 import de.escidoc.core.resources.om.item.StorageType;
@@ -90,16 +91,21 @@ public class BlobResource {
             final String token = AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, escidocCookie);
             itemClient.setHandle(token);
 
-            final StagingHandlerClient stagingClient = new StagingHandlerClient(new URL(escidocUri));
-            stagingClient.setHandle(token);
-            final URL upload = stagingClient.upload(is);
-            LOG.debug("Succesfully upload file to " + upload.toString());
-
             // TODO create an issue in escidoc-ijc fix for 1.4.3
             // missing '/' in ItemRestServiceLocator.java Line 244
             // final Component component = itemClient.retrieveComponent(itemId, componentId);
             final Item item = itemClient.retrieve(itemId);
             final Component component = item.getComponents().get(componentId);
+            if (component == null) {
+                return Response
+                    .status(Status.NOT_FOUND).entity("Can not find a component with the id " + componentId).build();
+            }
+
+            final StagingHandlerClient stagingClient = new StagingHandlerClient(new URL(escidocUri));
+            stagingClient.setHandle(token);
+
+            final URL upload = stagingClient.upload(is);
+            LOG.debug("Succesfully upload file to " + upload.toString());
 
             component.getContent().setXLinkHref(upload.toString());
             component.getContent().setStorageType(StorageType.INTERNAL_MANAGED);
@@ -116,13 +122,16 @@ public class BlobResource {
             if (e instanceof AuthorizationException) {
                 return Utils.response401();
             }
+            else if (e instanceof ItemNotFoundException) {
+                return Response.status(Status.NOT_FOUND).entity("Can not find an item with the id " + itemId).build();
+            }
             return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
         catch (final InternalClientException e) {
             return Response.serverError().entity("Something strange happens in our server: " + e.getMessage()).build();
         }
         catch (final TransportException e) {
-            return Response.serverError().entity("Something strange happens in our server: " + e.getMessage()).build();
+            return Response.serverError().entity("eSciDoc Server is unreachable, details: " + e.getMessage()).build();
         }
         catch (final MalformedURLException e) {
             return Response
@@ -131,7 +140,8 @@ public class BlobResource {
         }
     }
 
-    static final void checkPreconditions(final String itemId, final String componentId, final HttpServletRequest request) {
+    private static final void checkPreconditions(
+        final String itemId, final String componentId, final HttpServletRequest request) {
         Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
         Preconditions.checkNotNull(componentId, "componentId is null: %s", componentId);
         Preconditions.checkNotNull(request, "request is null: %s", request);
