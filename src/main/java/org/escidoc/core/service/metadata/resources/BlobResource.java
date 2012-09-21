@@ -91,9 +91,6 @@ public class BlobResource {
             final String token = AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, escidocCookie);
             itemClient.setHandle(token);
 
-            // TODO create an issue in escidoc-ijc fix for 1.4.3
-            // missing '/' in ItemRestServiceLocator.java Line 244
-            // final Component component = itemClient.retrieveComponent(itemId, componentId);
             final Item item = itemClient.retrieve(itemId);
             final Component component = item.getComponents().get(componentId);
             if (component == null) {

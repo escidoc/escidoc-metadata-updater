@@ -2,10 +2,11 @@
 
 ## Usage
 
-$ curl -v --data-binary "@401.jpg" --request PUT --header "Content-Type:images/jpeg" \
+```
+$`curl` -v --data-binary "@401.jpg" --request PUT --header "Content-Type:images/jpeg" \
 -u"username:password" \
 http://localhost:8082/rest/v0.9/items/escidoc:1/files/escidoc:2/blob\?escidocurl\=http://whvmescidev5.fiz-karlsruhe.de:8080
-[[u]]
+```
 
 ## Design
 
