@@ -50,6 +50,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -68,6 +69,9 @@ import de.escidoc.core.resources.om.item.component.Component;
 public class BlobResource {
 
     private final static Logger LOG = LoggerFactory.getLogger(BlobResource.class);
+
+    @Context
+    private Request request;
 
     @Context
     private HttpServletRequest servletRequest;
@@ -106,6 +110,14 @@ public class BlobResource {
 
             component.getContent().setXLinkHref(upload.toString());
             component.getContent().setStorageType(StorageType.INTERNAL_MANAGED);
+
+            final String contentType = servletRequest.getContentType();
+            if (contentType.isEmpty()) {
+                component.getProperties().setMimeType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            else {
+                component.getProperties().setMimeType(contentType);
+            }
 
             // TODO last modification date of component is null, we should get it from the item.
             // why we need the last modification date from the item?
