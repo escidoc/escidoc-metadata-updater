@@ -43,9 +43,22 @@ import de.escidoc.core.client.exceptions.application.security.AuthenticationExce
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.client.interfaces.ItemHandlerClientInterface;
 import de.escidoc.core.resources.om.item.Item;
+import de.escidoc.core.resources.om.item.component.Component;
 
 public class ItemRepositoryImpl implements ItemRepository {
+
     private ItemHandlerClientInterface c;
+
+    public ItemRepositoryImpl(final URI serviceUri) throws MalformedURLException {
+        Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
+        c = new ItemHandlerClient(serviceUri.toURL());
+    }
+
+    public ItemRepositoryImpl login(final String token) throws InternalClientException {
+        Preconditions.checkNotNull(token, "token is null: %s", token);
+        c.setHandle(token);
+        return this;
+    }
 
     // TODO NOTE: it can throw Authentification or AuthorizationException
     @Override
@@ -65,5 +78,14 @@ public class ItemRepositoryImpl implements ItemRepository {
         InternalClientException, TransportException {
         Preconditions.checkNotNull(item, "item is null: %s", item);
         return c.update(item);
+    }
+
+    @Override
+    public Component update(final String itemId, final Component component) throws EscidocException,
+        InternalClientException, TransportException {
+        Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
+        Preconditions.checkNotNull(component, "component is null: %s", component);
+
+        return c.updateComponent(itemId, component);
     }
 }

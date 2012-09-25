@@ -37,6 +37,7 @@ import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
 import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.om.item.Item;
+import de.escidoc.core.resources.om.item.component.Component;
 
 public interface ItemRepository {
 
@@ -45,4 +46,7 @@ public interface ItemRepository {
 
     Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
         InternalClientException, TransportException;
+
+    Component update(final String itemId, final Component component) throws EscidocException, InternalClientException,
+        TransportException;
 }

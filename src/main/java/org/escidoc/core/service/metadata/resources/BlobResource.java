@@ -29,15 +29,20 @@
 package org.escidoc.core.service.metadata.resources;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
 import org.escidoc.core.service.metadata.AppConstant;
 import org.escidoc.core.service.metadata.AuthentificationUtils;
 import org.escidoc.core.service.metadata.Utils;
+import org.escidoc.core.service.metadata.repository.ItemRepository;
+import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +77,9 @@ public class BlobResource {
     @Context
     private HttpServletRequest servletRequest;
 
+    @Inject
+    private ItemRepository repository;
+
     @PUT
     @Consumes(MediaType.WILDCARD)
     public Response update(
@@ -86,6 +94,8 @@ public class BlobResource {
         checkQueryParameter(escidocUri);
 
         try {
+            repository = new ItemRepositoryImpl(new URI(escidocUri));
+
             // TODO move clients to an extra class
             final ItemHandlerClient itemClient = new ItemHandlerClient(new URL(escidocUri));
             final String token = AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, escidocCookie);
@@ -118,8 +128,11 @@ public class BlobResource {
             // TODO last modification date of component is null, we should get it from the item.
             // why we need the last modification date from the item?
             component.setLastModificationDate(item.getLastModificationDate());
-            final Component updated = itemClient.updateComponent(itemId, component);
+            // final Component updated = itemClient.updateComponent(itemId, component);
+
+            final Component updated = repository.update(item.getObjid(), component);
             LOG.info("Succesfully update component with the id: " + updated.getObjid());
+
             // TODO 200 or 204?
             return Response.noContent().build();
         }
@@ -139,6 +152,11 @@ public class BlobResource {
             return Response.serverError().entity("eSciDoc Server is unreachable, details: " + e.getMessage()).build();
         }
         catch (final MalformedURLException e) {
+            return Response
+                .status(Status.BAD_REQUEST).entity(escidocUri + " is not a valid URL, details: " + e.getMessage())
+                .type(MediaType.TEXT_PLAIN_TYPE).build();
+        }
+        catch (final URISyntaxException e) {
             return Response
                 .status(Status.BAD_REQUEST).entity(escidocUri + " is not a valid URL, details: " + e.getMessage())
                 .type(MediaType.TEXT_PLAIN_TYPE).build();
