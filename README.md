@@ -27,9 +27,6 @@ $`curl` --user name:password -http://{service-hostname}:{portnumber}/rest/v0.9/i
 $`curl` --user name:password --upload-file {metadata.xml} http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
 
 + **Update Blob**
-
-$`curl` --user name:password --upload-file {file} http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/files/{file-id}/blob?escidocurl=http://{escidoc-hostname:portnumber}
-
 $`curl` --upload-file {file} --header "Content-Type: ${file-mime-type}" -u"username:password" http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/files/{file-id}/blob\?escidocurl\=http://{escidoc-hostname:portnumber}
 
 ## Example:
