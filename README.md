@@ -26,10 +26,12 @@ $`curl` --user name:password -http://{service-hostname}:{portnumber}/rest/v0.9/i
 
 $`curl` --user name:password --upload-file {metadata.xml} http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
 
-+ **Update Blob**
++ **Update Component's Content**
 $`curl` --upload-file {file} --header "Content-Type: ${file-mime-type}" -u"username:password" http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/files/{file-id}/blob\?escidocurl\=http://{escidoc-hostname:portnumber}
 
 ## Example:
+
+**Update Item's Metadata**
 
 + $`curl` --user admin:swordfish https://api.escidoc.org:80/rest/v0.9/items/escidoc:1/metadata/mine?escidocurl=https://core.escidoc.org:80 > metadata.xml
 
@@ -38,11 +40,9 @@ $`curl` --upload-file {file} --header "Content-Type: ${file-mime-type}" -u"usern
 
 + $`curl` --user admin:swordfish --upload-file metadata.xml https://api.escidoc.org:80/rest/v0.9/items/escidoc:1/metadata/mine?escidocurl=https://core.escidoc.org:80
 
-+ **Update Blob**
+**Update Component's Content**
 
-+ $`curl` --user admin:swordfish --upload-file /tmp/publication.pdf https://api.escidoc.org:80/rest/v0.9/items/escidoc:1/files/escidoc:2/blob?escidocurl=https://core.escidoc.org:80
-
-curl -v --upload-file 200.jpg --header "Content-Type: images/jpeg" -u"admin:swordfish" http://api.escidoc.org:80/rest/v0.9/items/escidoc:16/files/escidoc:17/blob\?escidocurl\=http://api.escidoc.org:80
+`curl` -v --upload-file 200.jpg --header "Content-Type: images/jpeg" -u"admin:swordfish" http://api.escidoc.org:80/rest/v0.9/items/escidoc:16/files/escidoc:17/blob\?escidocurl\=http://api.escidoc.org:80
 
 Bug tracker
 -----------
