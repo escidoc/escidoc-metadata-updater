@@ -50,7 +50,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -69,9 +68,6 @@ import de.escidoc.core.resources.om.item.component.Component;
 public class BlobResource {
 
     private final static Logger LOG = LoggerFactory.getLogger(BlobResource.class);
-
-    @Context
-    private Request request;
 
     @Context
     private HttpServletRequest servletRequest;
@@ -156,6 +152,7 @@ public class BlobResource {
         Preconditions.checkNotNull(request, "request is null: %s", request);
     }
 
+    // TODO refactor, move to Util class
     private static final void checkQueryParameter(final String escidocUri) {
         if (escidocUri == null || escidocUri.isEmpty()) {
             throw new WebApplicationException(Status.BAD_REQUEST);
