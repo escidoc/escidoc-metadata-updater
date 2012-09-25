@@ -186,6 +186,9 @@ public class OrgUnitMetadataResource {
         catch (final AuthenticationException e) {
             throw new AuthenticationException(e.getMessage(), e);
         }
+        catch (final AuthorizationException e) {
+            throw new AuthorizationException(e.getMessage(), e);
+        }
         catch (final OrganizationalUnitNotFoundException e) {
             throw new NotFoundException("Organisation," + id + ", not found");
         }

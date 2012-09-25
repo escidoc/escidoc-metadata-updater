@@ -16,6 +16,8 @@ and put the war in your favorite Java Web Container, e.g., Tomcat, etc
 
 ## Usage
 
+Authentication can be done via username and password if DB-Auth is configured or by sending a cookie with a valid eSciDoc-Handle.
+
 + **Retrieve Metadata**
 
 Retrieve an item's metadata with the item id:{item-id} and the metadata name:{metadata-name}
@@ -27,7 +29,7 @@ $`curl` --user name:password -http://{service-hostname}:{portnumber}/rest/v0.9/i
 $`curl` --user name:password --upload-file {metadata.xml} http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/metadata/{metadata-name}?escidocurl=http://{escidoc-hostname:portnumber}
 
 + **Update Component's Content**
-$`curl` --upload-file {file} --header "Content-Type: ${file-mime-type}" -u"username:password" http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/files/{file-id}/blob\?escidocurl\=http://{escidoc-hostname:portnumber}
+$`curl` --upload-file {file} --header "Content-Type: ${file-mime-type}" -u"name:password" http://{service-hostname}:{portnumber}/rest/v0.9/items/{item-id}/files/{file-id}/blob\?escidocurl\=http://{escidoc-hostname:portnumber}
 
 ## Example:
 
