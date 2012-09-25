@@ -43,6 +43,7 @@ import org.escidoc.core.service.metadata.repository.internal.ContainerRepository
 import org.escidoc.core.service.metadata.repository.internal.ContextRepositoryImpl;
 import org.escidoc.core.service.metadata.repository.internal.ItemRepositoryImpl;
 import org.escidoc.core.service.metadata.repository.internal.OrgUnitRepositoryImpl;
+import org.escidoc.core.service.metadata.resources.BlobResource;
 import org.escidoc.core.service.metadata.resources.ContainerMetadataResource;
 import org.escidoc.core.service.metadata.resources.ContextMetadataResource;
 import org.escidoc.core.service.metadata.resources.HelloResource;
@@ -64,6 +65,7 @@ public class AppServletConfig extends GuiceServletContextListener {
                 bind(OrgUnitMetadataResource.class);
                 bind(ContextMetadataResource.class);
                 bind(ContainerMetadataResource.class);
+                bind(BlobResource.class);
 
                 bind(ItemRepository.class).to(ItemRepositoryImpl.class);
                 bind(OrgUnitRepository.class).to(OrgUnitRepositoryImpl.class);
