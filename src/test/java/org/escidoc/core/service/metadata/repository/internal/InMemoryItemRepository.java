@@ -46,6 +46,7 @@ import de.escidoc.core.client.exceptions.EscidocException;
 import de.escidoc.core.client.exceptions.InternalClientException;
 import de.escidoc.core.client.exceptions.TransportException;
 import de.escidoc.core.client.exceptions.application.security.AuthenticationException;
+import de.escidoc.core.client.exceptions.application.security.AuthorizationException;
 import de.escidoc.core.resources.common.MetadataRecord;
 import de.escidoc.core.resources.common.MetadataRecords;
 import de.escidoc.core.resources.om.item.Item;
@@ -109,7 +110,8 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Item update(final Item item) throws EscidocException, InternalClientException, TransportException {
-        return item;
+    public Item update(final Item item, final URI serviceUri, final String token) throws AuthenticationException,
+        AuthorizationException, EscidocException, InternalClientException, TransportException, MalformedURLException {
+        throw new UnsupportedOperationException("not-yet-implemented.");
     }
 }

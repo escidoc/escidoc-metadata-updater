@@ -43,6 +43,6 @@ public interface ItemRepository {
     Item find(String itemId, URI serviceUri, String token) throws AuthenticationException, AuthorizationException,
         EscidocException, InternalClientException, TransportException, MalformedURLException;
 
-    Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
-        InternalClientException, TransportException;
+    Item update(final Item item, final URI serviceUri, final String token) throws AuthenticationException,
+        AuthorizationException, EscidocException, InternalClientException, TransportException, MalformedURLException;
 }

@@ -45,7 +45,6 @@ import de.escidoc.core.client.interfaces.ItemHandlerClientInterface;
 import de.escidoc.core.resources.om.item.Item;
 
 public class ItemRepositoryImpl implements ItemRepository {
-    private ItemHandlerClientInterface c;
 
     // TODO NOTE: it can throw Authentification or AuthorizationException
     @Override
@@ -55,15 +54,17 @@ public class ItemRepositoryImpl implements ItemRepository {
         Preconditions.checkNotNull(itemId, "itemId is null: %s", itemId);
         Preconditions.checkNotNull(serviceUri, "serviceUri is null: %s", serviceUri);
 
-        c = new ItemHandlerClient(serviceUri.toURL());
+        final ItemHandlerClientInterface c = new ItemHandlerClient(serviceUri.toURL());
         c.setHandle(token);
         return c.retrieve(itemId);
     }
 
     @Override
-    public Item update(final Item item) throws AuthenticationException, AuthorizationException, EscidocException,
-        InternalClientException, TransportException {
+    public Item update(final Item item, final URI serviceUri, final String token) throws AuthenticationException,
+        AuthorizationException, EscidocException, InternalClientException, TransportException, MalformedURLException {
         Preconditions.checkNotNull(item, "item is null: %s", item);
+        final ItemHandlerClientInterface c = new ItemHandlerClient(serviceUri.toURL());
+        c.setHandle(token);
         return c.update(item);
     }
 }

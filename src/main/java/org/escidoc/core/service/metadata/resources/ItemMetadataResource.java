@@ -232,7 +232,7 @@ public class ItemMetadataResource {
             }
 
             metadata.setContent((Element) domSource.getNode().getFirstChild());
-            final Item updated = repository.update(resource);
+            final Item updated = update(resource, escidocUri, escidocCookie);
             Preconditions.checkNotNull(updated, "updated is null: %s", updated);
             // @formatter:off
             return Response.ok().build();
@@ -244,19 +244,45 @@ public class ItemMetadataResource {
         catch (final AuthenticationException e) {
             return response401();
         }
-        catch (final EscidocException e) {
-            LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-                + e.getMessage());
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
         catch (final InternalClientException e) {
             return response401();
         }
-        catch (final TransportException e) {
-            LOG.error("Can not update metadata with the name, " + metadataName + ", from item, " + id + ", reason: "
-                + e.getMessage());
+    }
+
+    private Item update(final Item resource, final String escidocUri, final String escidocCookie)
+        throws AuthenticationException, AuthorizationException, InternalClientException {
+        try {
+            final Item updated =
+                repository.update(resource, new URI(escidocUri),
+                    AuthentificationUtils.getHandleIfAny(servletRequest, escidocUri, escidocCookie));
+            if (updated == null) {
+                throw new NotFoundException("Item," + resource.getObjid() + ", not found");
+            }
+            return updated;
+        }
+        catch (final AuthenticationException e) {
+            throw new AuthenticationException(e.getMessage(), e);
+        }
+        catch (final AuthorizationException e) {
+            LOG.debug("Auth. credentials is not valid while accessing protected source. ");
+            throw new AuthorizationException(e.getMessage(), e);
+        }
+        catch (final ItemNotFoundException e) {
+            throw new NotFoundException("Item," + resource.getObjid() + ", not found");
+        }
+        catch (final EscidocException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
+        catch (final TransportException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final MalformedURLException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+        catch (final URISyntaxException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     /**
